@@ -44,7 +44,10 @@ def sha256(path: Path) -> str:
 
 
 def read_json(path: Path):
-    return json.loads(path.read_text(encoding="utf-8"))
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError("Expected a JSON object")
+    return value
 
 
 def read_header(archive: zipfile.ZipFile, name: str) -> tuple[dict, int]:
