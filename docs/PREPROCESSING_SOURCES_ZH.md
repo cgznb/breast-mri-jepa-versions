@@ -45,7 +45,48 @@ MeWM 裁剪模块还提供 `python -m mewm_ispy2.registered_roi32_data --config 
 
 这里保存的是原裁剪和核验所需的小型来源材料；完整已配准 NIfTI 可从本机
 `/public_fast_storage/cxx26/organized_v1/03_registered_nifti/` 按官方身份映射对应。
-上述目录没有另外复制全部三相 NIfTI、旧 VQ 权重或独立 latent 数组。本次直接运行当前项目只需迁移后的 NPZ。
+上述重建输入目录没有另外复制全部三相 NIfTI、原 VQ-GAN 完整训练恢复检查点或独立 latent 数组。
+当前 VLA 所需的 VQ 权重导出已经另存于 `data/pretrained/codec.pt`，具体内容见下节。
+
+## VQ-GAN 的代码、权重和当前用法
+
+已复制当前 V1 运行所需的 VQ 代码与预训练权重：
+
+| 文件 | 内容 |
+| --- | --- |
+| `versions/v1_evolution/src/mri_vla_jepa/vq_encoder.py` | 当前 VLA 的单相编码器与连续特征前端，严格加载原 encoder / pre_quant 权重 |
+| `versions/v1_evolution/src/mri_vla_jepa/encoder.py` | 三相共享同一前端，拼接后做网格池化、投影与空间 Transformer |
+| `preprocessing/upstream/MeWM-ISPY2/mewm_ispy2/vqgan.py` | 原 VQ-GAN 结构：3D encoder、pre_quant、EMA 码本、post_quant、decoder 与判别器实现 |
+| `preprocessing/upstream/MeWM-ISPY2/mewm_ispy2/registered_roi32_vq.py` | 原 ROI32 VQ-GAN 训练逻辑，含重建、感知、码本承诺、2D/3D 对抗和特征匹配损失 |
+| `preprocessing/upstream/symm-fm-trjepa-v2/trjepa/codec.py` | 可独立加载安全权重导出的完整自编码器实现 |
+| `data/pretrained/codec.pt` | 当前模型使用的安全权重导出，8,479,721 bytes，SHA256 与原服务器一致 |
+
+`codec.pt` 的格式为 `symm_world_codec_v2`，保存 87 个状态张量，
+包含 encoder、pre_quant、quantizer、post_quant 和 decoder。
+它记录的来源是原服务器 `MeWM-ISPY2/runs/registered_dce0_roi32_firstpostmask_v1/vq/best.pt`。
+本机已分别验证当前 VLA 前端和完整自编码器均能严格加载该导出。
+这份导出不含 GAN 判别器权重、优化器或训练进度；原 VQ-GAN 完整续训检查点没有迁移。
+
+完整自编码器的单相路径是：
+
+```text
+MRI [1,32,128,128]
+  → 3D encoder [64,8,32,32]
+  → pre_quant [8,8,32,32]
+  → 16384 项 EMA 码本
+  → post_quant + decoder
+  → MRI 重建 [1,32,128,128]
+```
+
+当前 seed17 / seed43 的设置为 `encoder_type: vq_encoder`、`encoder_training: frozen`。
+实际读取 encoder 输出的每相 64 通道特征，跳过 8 通道压缩和码本量化，
+也不调用重建 decoder 或 GAN 判别器。
+三相共享这套单通道编码权重，拼接成 192 通道，再池化、投影为 JEPA 使用的空间 tokens。
+当前前端加载 34 个 encoder / pre_quant 状态张量，保留 pre_quant 的检查点兼容性，
+但 encoder64 模式不执行 pre_quant 的前向计算。
+
+旧 NPZ 的 `latent: float16 [24,8,32,32]` 是上游三相 prequant 历史缓存。
+当前 VLA 读取 `image` 并在运行时提取上述 64 通道特征，不读取该历史 latent 字段。
 
 ## 复现时需要适配的内容
 
