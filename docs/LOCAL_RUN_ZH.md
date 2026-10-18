@@ -3,6 +3,7 @@
 项目根目录为 `/personal_fast_storage/VLA-PCRV1`，运行版本为 `versions/v1_evolution`。
 本次迁移原实验处理好的 ROI32 数据，保留原患者划分和数值，准备独立环境及本机配置。
 正式训练由你后续手动启动；环境检查不会启动训练。准备阶段的少量工程验证结果记录在 `private_outputs/setup_runtime/`。
+本次完整迁移、校验和真实 GPU 推理均已通过，记录见 [LOCAL_VALIDATION_ZH.md](LOCAL_VALIDATION_ZH.md)。
 
 ## 本机路径
 
