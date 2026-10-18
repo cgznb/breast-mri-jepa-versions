@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "breast-mri-response-jepa-joint"
+version = "0.2.1"
+readme = "README.md"
+description = "Joint or staged MRI representation, latent forecasting and pCR research implementation"
+requires-python = ">=3.11"
+dependencies = ["torch>=2.5,<3", "numpy>=1.24,<3", "PyYAML>=6,<7", "scikit-learn>=1.3,<2"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[project.scripts]
+response-jepa-joint = "response_jepa.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

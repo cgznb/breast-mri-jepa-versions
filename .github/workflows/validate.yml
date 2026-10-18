@@ -1,0 +1,61 @@
+name: Validate version packages
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cpu:
+    name: ${{ matrix.project }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: versions/v1
+            extras: raw,test
+            module: mri_vla_jepa
+          - project: versions/v2_joint
+            extras: test
+            module: response_jepa.cli
+          - project: versions/vq/encoder
+            extras: raw,test
+            module: mri_vla_jepa
+          - project: versions/vq/dualtask
+            extras: raw,test
+            module: mri_vla_jepa
+          - project: versions/v1_evolution
+            extras: raw,test
+            module: mri_vla_jepa
+    env:
+      # Keep CI deterministic without downloading CUDA dependencies.
+      TORCH_VERSION: 2.5.1
+      CUDA_VISIBLE_DEVICES: ""
+      OMP_NUM_THREADS: "2"
+      MKL_NUM_THREADS: "2"
+      OPENBLAS_NUM_THREADS: "2"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: ${{ matrix.project }}/pyproject.toml
+      - name: Install CPU PyTorch
+        run: python -m pip install "torch==$TORCH_VERSION" --index-url https://download.pytorch.org/whl/cpu
+      - name: Install this version and build tools
+        run: python -m pip install -e '${{ matrix.project }}[${{ matrix.extras }}]' build
+      - name: Check the package CLI
+        working-directory: ${{ matrix.project }}
+        env:
+          PYTHONPATH: src
+        run: python -m ${{ matrix.module }} --help
+      - name: Run existing tests with synthetic fixtures
+        run: python tools/run_cpu_tests.py --project '${{ matrix.project }}'
+      - name: Build wheel and source distribution
+        run: python -m build '${{ matrix.project }}' --outdir "$RUNNER_TEMP/dist"

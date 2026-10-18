@@ -1,0 +1,41 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "V1: T0 数据、前向与完整损失 (CPU)",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "${command:python.interpreterPath}",
+      "program": "${workspaceFolder}/scripts/debug_vla_jepa.py",
+      "cwd": "${workspaceFolder}",
+      "args": ["--device", "cpu", "--mode", "loss"],
+      "env": {"PYTHONPATH": "${workspaceFolder}/src", "OMP_NUM_THREADS": "4"},
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "V1: 动态 T2 单步反向、AdamW、EMA (CUDA)",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "${command:python.interpreterPath}",
+      "program": "${workspaceFolder}/scripts/debug_vla_jepa.py",
+      "cwd": "${workspaceFolder}",
+      "args": ["--config", "configs/registered_roi32_epoch200_dynamic_seed17.yaml", "--landmark", "2", "--device", "cuda", "--precision", "bf16", "--mode", "train-step"],
+      "env": {"PYTHONPATH": "${workspaceFolder}/src", "OMP_NUM_THREADS": "4"},
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "V1: 已训练 T0 best.pt 的 pCR 推理 (CPU)",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "${command:python.interpreterPath}",
+      "program": "${workspaceFolder}/scripts/debug_vla_jepa.py",
+      "cwd": "${workspaceFolder}",
+      "args": ["--checkpoint", "runs/registered_roi32_epoch200_20261003/t0_seed17/best.pt", "--split", "val", "--device", "cpu", "--mode", "predict"],
+      "env": {"PYTHONPATH": "${workspaceFolder}/src", "OMP_NUM_THREADS": "4"},
+      "console": "integratedTerminal",
+      "justMyCode": false
+    }
+  ]
+}

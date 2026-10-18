@@ -1,0 +1,85 @@
+schema: breast_response_jepa_v2
+model:
+  encoder: multiscale
+  dim: 128
+  heads: 4
+  token_grid:
+  - 4
+  - 8
+  - 8
+  widths:
+  - 24
+  - 48
+  - 96
+  - 128
+  depths:
+  - 2
+  - 2
+  - 2
+  - 2
+  spatial_depth: 2
+  fusion_depth: 2
+  predictor_depth: 4
+  context_queries: 32
+  state_queries: 8
+  pcr_queries: 4
+  dropout: 0.1
+  world_arch: transformer
+  residual_world: true
+  readout: direct
+  forecast_detach: false
+  use_mri: true
+  use_clinical: true
+  use_arm: true
+  encoder_chunk: 4
+  activation_checkpoint: false
+  gate_bias: -2.0
+loss:
+  masked: 1.0
+  variance: 1.0
+  covariance: 0.04
+  token_variance: 0.1
+  repr_pcr: 0.0
+  tf: 0
+  rollout: 0
+  fused: 1.0
+  direct: 0.5
+  forecast: 0.25
+  align: 0.0
+  mask_ratio: 0.35
+  variance_floor: 1.0
+  token_variance_floor: 0.25
+train:
+  phase: C
+  profile: single_t0
+  seed: 17
+  epochs: 60
+  patience: 15
+  min_delta: 1.0e-05
+  batch_size: 4
+  accumulation: 4
+  lr: 0.0001
+  backbone_lr: 3.0e-05
+  weight_decay: 0.01
+  warmup_epochs: 5
+  min_lr_ratio: 0.05
+  clip_grad: 1.0
+  precision: bf16
+  device: cuda
+  workers: 0
+  pin_memory: true
+  freeze_encoder: true
+  ema: 0.996
+  prefix_sampling: balanced_cycle
+  augment: false
+  threads: 4
+  deterministic: true
+  eval_batch_size: 4
+  world_eval: false
+  save_predictions: false
+  allow_synthetic: false
+  image_shape:
+  - 32
+  - 128
+  - 128
+  image_cache: null

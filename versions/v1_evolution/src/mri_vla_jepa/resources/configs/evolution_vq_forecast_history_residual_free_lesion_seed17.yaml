@@ -1,0 +1,83 @@
+schema: responsewm_raw_vla_jepa_train_v1
+model:
+  clinical_dim: 4
+  dim: 128
+  token_grid:
+  - 2
+  - 4
+  - 4
+  encoder_depth: 2
+  fusion_depth: 2
+  predictor_depth: 2
+  heads: 4
+  state_queries: 8
+  pcr_queries: 4
+  fm_channels: 24
+  ema_decay: 0.995
+  dropout: 0.3
+  enable_flow: false
+  encoder_type: vq_prequant
+  vq_hidden_channels: 16
+  vq_embedding_dim: 8
+  vq_bottleneck_blocks: 1
+  vq_num_groups: 32
+  vq_activation_checkpointing: true
+  fixed_transition_queries: true
+  pcr_readout: forecast
+  history_delta: true
+  world_residual: true
+  lesion_world_weighting: true
+  lesion_pooling: false
+  lesion_weight_strength: 4.0
+image_shape:
+- 32
+- 128
+- 128
+schedule: one_stage
+training_unit: epochs
+max_epochs: 200
+early_stopping_patience: 50
+early_stopping_min_delta: 0.0
+representation_steps: 0
+joint_steps: 5000
+freeze_encoder_after_representation: false
+landmarks: all_observed
+task_weight: 1.0
+jepa_weight: 0.5
+flow_weight: 0.0
+reconstruction_weight: 0.0
+variance_weight: 0.0
+variance_definition: 'off'
+diagnostics_every_epochs: 5
+diagnostics_patients: 32
+diagnostics_batch_size: 16
+diagnostics_seed: 20261004
+batch_size: 16
+accumulation: 1
+lr: 0.0001
+encoder_checkpoint: /root/autodl-tmp/MAM/symm-fm-world-v2/data/registered_roi32/codec.pt
+encoder_training: frozen
+encoder_lr: null
+initialize_from_checkpoint: null
+lr_scheduler: none
+plateau_factor: 0.5
+plateau_patience: 5
+plateau_min_lr: 1.0e-06
+plateau_threshold: 0.0
+image_cache: /root/autodl-tmp/line b/breast-mri-vla-jepa/data/registered_roi32/image_cache_20261004
+prefetch_batches: 2
+loader_workers: 2
+pin_memory: true
+non_blocking_transfer: true
+weight_decay: 0.01
+grad_clip: 1.0
+validation_every: 1
+checkpoint_every: 48
+validation_batch_size: 16
+device: cuda
+precision: bf16
+seed: 17
+threads: 4
+deterministic: false
+allow_synthetic: false
+rollout_weight: 0.5
