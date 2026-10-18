@@ -1,0 +1,25 @@
+# Same substantive module types, much smaller dimensions for CPU correctness tests.
+extends: three_phase.yaml
+allow_untrained_smoke: true
+semantic: {dim: 24, depth: 2, heads: 4, patch: [4, 4, 4], checkpointing: false}
+mask_predictor: {predictor_dim: 24, depth: 2, heads: 4, checkpointing: false}
+response: {depth: 2, queries: 4, checkpointing: false}
+dynamics: {depth: 2, checkpointing: false}
+flow: {dim: 24, depth: 2, heads: 4, patch: [1, 1, 1], bridge_channels: 6, checkpointing: false}
+bridge: {token_grid: [2, 2, 2]}
+loss: {semantic_every: 1}
+train:
+  steps: {B: 2, C: 2, D: 2, E: 2}
+  learning_rate: 0.001
+  precision: fp32
+  batch_size: 2
+  accumulation: 1
+  cpu_threads: 1
+  warmup_steps: 1
+  validation_every: 1
+  validation_batches: 1
+  checkpoint_every: 1
+  log_every: 1
+codec: {hidden_channels: 2, embedding_dim: 8, n_codes: 32, num_groups: 2, nearest_chunk_size: 64}
+discriminator: {width: 4, levels: 2}
+codec_train: {steps: 2, batch_size: 1, learning_rate: 0.001, gan_start: 1, validation_every: 1, validation_batches: 1, checkpoint_every: 1}

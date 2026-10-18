@@ -1,0 +1,35 @@
+data:
+  backend: current
+  bundle_json: /root/autodl-tmp/MAM/MOTFM/runs/ispy2_longitudinal_3d/data_bundle/bundle.json
+  phase_manifest_csv: /root/autodl-tmp/Datasets/manifest-1781750940386/ISPY2/processed_ispy2_world_phase3_scan/manifest/ispy2_breastdcedl_full_manifest.csv
+  cache_dir: /root/autodl-tmp/MAM/MeWM-ISPY2/runs/cache/smoke_dce0
+  output_shape_zyx: [128, 128, 128]
+  model_conditions:
+    - source_dce0
+    - source_mask
+    - action_text
+    - clinical_text
+    - delta_days
+    - stage_id
+diffusion:
+  denoiser_architecture: film_unet3d_v1
+  input_channels: 17
+  semantic_channels: 0
+  prediction_type: epsilon
+  samples_per_transition: 8
+  timesteps: 12
+  sampler: ancestral_ddpm
+  latent_contract: continuous_codebook_minmax_v1
+  ema_decay: 0.995
+runtime:
+  smoke: true
+  output_dir: /root/autodl-tmp/MAM/MeWM-ISPY2/runs/smoke_dce0
+  seed: 2026
+models:
+  vqgan:
+    image_channels: 1
+    embedding_dim: 8
+    n_codes: 16
+    downsample_factor: 4
+  segmenter:
+    architecture: tiny-conv

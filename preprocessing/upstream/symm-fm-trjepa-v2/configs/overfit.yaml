@@ -1,0 +1,15 @@
+# Pipeline correctness experiment, not a model-selection or generalization run.
+extends: renderer_only.yaml
+train:
+  limit_train_pairs: 8
+  batch_size: 1
+  accumulation: 1
+  steps: {D: 2000}
+  validation_every: 100
+  checkpoint_every: 100
+  early_stopping_patience: 0
+  ema_decay: 0.99
+loss: {condition_dropout: 0.0, fm_roi_balance: 0.25}
+stage_overrides:
+  D:
+    train: {learning_rate: 0.0003, warmup_steps: 50}

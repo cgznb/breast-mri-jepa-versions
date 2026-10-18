@@ -1,0 +1,71 @@
+data:
+  backend: current
+  bundle_json: /root/autodl-tmp/MAM/MOTFM/runs/ispy2_longitudinal_3d/data_bundle/bundle.json
+  phase_manifest_csv: /root/autodl-tmp/Datasets/manifest-1781750940386/ISPY2/.ispy2_phase3_import_20260723_part3/commit_audit/manifest_before.csv
+  cache_dir: /root/autodl-tmp/MAM/MeWM-ISPY2/runs/cache/current_dce0
+  roi_cache_dir: /root/autodl-tmp/MAM/MOTFM/runs/ispy2_longitudinal_3d/roi_cache
+  output_shape_zyx: [128, 128, 128]
+  model_conditions:
+    - source_dce0
+    - source_mask
+    - action_text
+    - clinical_text
+    - delta_days
+    - stage_id
+diffusion:
+  denoiser_architecture: mewm_paper_faithful_v1
+  input_channels: 49
+  semantic_channels: 32
+  prediction_type: epsilon
+  samples_per_transition: 8
+  timesteps: 200
+  sampler: ancestral_ddpm
+  latent_contract: continuous_codebook_minmax_v1
+  ema_decay: 0.995
+  paper:
+    architecture_id: mewm_paper_faithful_v1
+    paper_version: arxiv:2506.02327v1
+    official_code_revision: d8e9d9b31fcb96e7778e6518338433e8ce953e04
+    clip_model_id: openai/clip-vit-base-patch32
+    clip_revision: 3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268
+    action_vocabulary_sha256: c0794245acb535d3cf52e5579b1651199ca7c934b4c420fa70a2b389810b8f2c
+    bundle_contract_sha256: 940af2a569ff8cedf6da36bede71d1f53c2bc2c687a949dbb45f9b72890ad6aa
+    phase_manifest_sha256: 3d7835e9a17b08645979bc6000a4969a3b1840dfb7953c0f0cedf3d83fc9f5b4
+    data_contract_sha256: e5a89abea7d5fa5d79b2bc8beb69918417d69d84185d8fa76ba076dfdfd737c0
+    vqgan_sha256: ff639cb5b456e531d20c1a67b0e3cec47b43cbdc12f38348034b7daed764f33c
+    clinical_policy_version: ispy2_structured_hr_her2_mp_v1
+    unknown_age_policy: exact_literal_mean_impute_zero_v1
+    age_mean: 49.633027522935777
+    age_std: 10.278680067148208
+    context_dim: 512
+    context_tokens: 7
+    cross_attention_topology: down4_middle1_up4_v1
+    attenuation_policy: uniform_four_level_source_only_v1
+    attenuation_levels:
+      - {level: 1, morphology: identity, radius: 0, sigma: 2.0, exponent: 0.7, decay: 0.7}
+      - {level: 2, morphology: opening, radius: 1, sigma: 4.0, exponent: 0.5, decay: 0.5}
+      - {level: 3, morphology: erosion, radius: 1, sigma: 6.0, exponent: 0.4, decay: 0.3}
+      - {level: 4, morphology: erosion, radius: 2, sigma: 8.0, exponent: 0.3, decay: 0.1}
+    ccl_pairing_version: same_fold_arm_stage_subtype_other_patient_v1
+    ccl_negative_count: 2
+    ccl_temperature: 0.07
+    ccl_weight: 0.1
+    ccl_timestep_min: 100
+    ccl_timestep_max: 199
+    epsilon_objective: l2
+    warm_start_path: /root/autodl-tmp/MAM/MeWM-ISPY2/runs/current_dce0_ct_unet3d_replica_v1/diffusion/checkpoints/step-0010600.ckpt
+    warm_start_sha256: 609f9be6a31dbe704fc264ab45dd464b81c458f29075861d866ea92bf8da8285
+runtime:
+  smoke: false
+  output_dir: /root/autodl-tmp/MAM/MeWM-ISPY2/runs/current_dce0_mewm_paper_faithful_v1
+  seed: 2026
+models:
+  vqgan:
+    image_channels: 1
+    hidden_channels: 16
+    embedding_dim: 8
+    n_codes: 16384
+    downsample_factor: 4
+    bottleneck_blocks: 1
+    ct_source_repo: MrGiovanni/DiffTumor
+    ct_source_revision: 089ba0f3f94a7858603a55106791d7d977d7bc0b

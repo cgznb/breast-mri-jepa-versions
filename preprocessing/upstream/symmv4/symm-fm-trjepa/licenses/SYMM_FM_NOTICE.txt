@@ -1,0 +1,17 @@
+Copyright 2026 I-SPY2 SymmFlow contributors.
+Source: https://github.com/cgznb/symm-fm
+Inspected commit: 92265d3b1749ae3b686f2089843c49da129fd4d2
+
+The repository's root LICENSE declares Apache-2.0 with third-party exceptions,
+including non-commercial MeWM-derived VQGAN code. The workflow has additional
+LICENSE.md terms. These upstream terms are not replaced by this distribution.
+https://github.com/cgznb/symm-fm/blob/92265d3b1749ae3b686f2089843c49da129fd4d2/LICENSE
+https://github.com/cgznb/symm-fm/blob/92265d3b1749ae3b686f2089843c49da129fd4d2/workflows/first_post_three_phase/LICENSE.md
+https://www.apache.org/licenses/LICENSE-2.0
+https://creativecommons.org/licenses/by-nc/4.0/legalcode
+
+trjepa/codec.py extracts the original workflow's MRI encoder, decoder and EMA
+quantizer with compatible state-dict names. Changes: removed Lightning and
+unrelated utilities; input differentiability preserved through frozen decode;
+explicit latent mode; dead-code restart resets EMA sums/counts; added validation.
+No pretrained parameters are included.

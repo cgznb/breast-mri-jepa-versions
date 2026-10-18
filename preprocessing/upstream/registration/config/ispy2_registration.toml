@@ -1,0 +1,28 @@
+[paths]
+input_root = "/root/autodl-tmp/Datasets/manifest-1781750940386/ISPY2/processed_ispy2_world_phase3_scan"
+manifest = "/root/autodl-tmp/Datasets/manifest-1781750940386/ISPY2/processed_ispy2_world_phase3_scan/manifest/ispy2_breastdcedl_full_manifest.csv"
+output_root = "/root/autodl-tmp/Datasets/manifest-1781750940386/ISPY2/processed_ispy2_world_phase3_scan_phase_aligned_multires_registered_to_T0"
+
+[registration]
+fixed_visit = "T0"
+moving_visits = ["T1", "T2", "T3"]
+workers = 4
+elastix_threads = 8
+seed = 20260719
+tumor_weight = 0.5
+rigid_samples = 5000
+rigid_iterations = 500
+rigid_learning_rate = 2.0
+rigid_min_step = 0.0001
+rigid_relaxation_factor = 0.5
+rigid_shrink_factors = [4, 2, 1]
+rigid_smoothing_sigmas = [2.0, 1.0, 0.0]
+bspline_resolutions = 4
+bspline_iterations = [300, 300, 300, 1200]
+bspline_spatial_samples = 5000
+
+[qc]
+max_ftv_volume_change = 0.10
+similarity_tolerance = 1e-6
+protected_margin_mm = 10.0
+max_outside_fold_fraction = 0.02

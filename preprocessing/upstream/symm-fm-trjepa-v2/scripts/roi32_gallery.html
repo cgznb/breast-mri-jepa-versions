@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TR-JEPA v2 · 三相 MRI</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f7f7;color:#20282a;font:14px system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:0}main{max-width:1540px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:1px solid #d4dcde;padding-bottom:16px}h1{font-size:23px;margin:0 0 7px;font-weight:650}p{margin:0;color:#5b676d;line-height:1.6}a{color:#096a72;text-decoration:none}a:hover{text-decoration:underline}.links{display:flex;flex-wrap:wrap;gap:14px;font-size:13px}.toolbar{display:flex;align-items:flex-end;flex-wrap:wrap;gap:12px;padding:18px 0}.control{display:flex;flex-direction:column;gap:5px;font-size:12px;color:#56646a}.control select{height:36px;max-width:100%;border:1px solid #bbc7ca;background:white;border-radius:4px;padding:0 10px;color:#20282a;font:14px inherit}.case-control{min-width:184px}.step-buttons{display:flex;gap:6px}.icon{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #bbc7ca;background:white;color:#263c40;border-radius:4px;cursor:pointer}.icon:disabled{opacity:.35;cursor:default}.icon:hover:not(:disabled){background:#e5f1f1}.icon svg{width:18px;height:18px}.slice{min-width:195px;flex:1;max-width:340px}.slider-line{display:flex;align-items:center;gap:10px;height:36px}.slider-line input{width:100%;accent-color:#087c81}.slider-line output{min-width:52px;font-variant-numeric:tabular-nums;color:#1f3034}.check{display:flex;gap:6px;align-items:center;height:36px;white-space:nowrap}.check input{accent-color:#087c81}.case-meta{display:flex;flex-wrap:wrap;gap:8px 20px;padding:0 0 14px;color:#59666b;font-size:13px}.unverified{color:#9a5438}.board-scroll{overflow-x:auto;border-top:1px solid #d4dcde;border-bottom:1px solid #d4dcde;background:#fff;padding:14px 10px}.board{min-width:960px;display:grid;grid-template-columns:70px repeat(6,minmax(0,1fr));gap:8px}.head{font-size:12px;font-weight:650;line-height:1.4;text-align:center;min-height:35px;display:flex;align-items:center;justify-content:center}.phase{display:flex;align-items:center;font-size:13px;color:#59676a;line-height:1.5}.tile{margin:0;min-width:0;aspect-ratio:1;background:#090b0c;position:relative}.tile canvas{width:100%;height:100%;display:block;image-rendering:pixelated}.metrics{margin-top:22px;overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:560px;font-size:13px;text-align:right}th,td{padding:9px 12px;border-bottom:1px solid #dce2e3;font-variant-numeric:tabular-nums}th:first-child,td:first-child{text-align:left}th{color:#58676d;font-weight:500;background:#edf2f2}.lower{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-top:14px;font-size:12px;color:#626e72}#error{color:#b63838;display:none;padding:12px}#loading{color:#556b70;min-height:20px;font-size:12px}.chart-section{margin-top:28px;border-top:1px solid #d4dcde;padding-top:20px}.chart-section h2{font-size:17px;margin:0 0 12px}.chart-section img{display:block;width:100%;max-width:1300px;height:auto}.legend{font-size:12px;line-height:1.5;color:#606d73;margin-top:8px}.legend span{display:inline-block;margin-right:16px}.scale{display:inline-block;width:100px;height:10px;margin:0 5px;vertical-align:middle;background:linear-gradient(to right,#000004,#51127c,#b53679,#fb8861,#fcfdbf)}@media(max-width:640px){main{padding:14px}header{display:block}.links{margin-top:12px}h1{font-size:20px}.toolbar{gap:10px}.case-control{width:calc(100% - 84px);min-width:0}.slice{width:100%;max-width:none;flex:auto}.board-scroll{margin:0 -4px;padding:10px 6px}.control select{font-size:13px}.case-meta{font-size:12px}.board{min-width:890px}.metrics{margin-top:18px}}
+</style>
+<main>
+<header><div><h1>TR-JEPA v2 · 缩小三相 MRI</h1><p>30 名验证患者 · 32 步 Heun · 最佳 EMA 144 / 最后 EMA 576</p></div><nav class="links"><a href="comparison_30cases.pdf">30 例 PDF</a><a href="overview.png">六种时间间隔总览</a><a href="metrics.csv">指标 CSV</a><a href="README.md">实验记录</a></nav></header>
+<section class="toolbar" aria-label="影像控制">
+<label class="control case-control">病例<select id="case"></select></label>
+<div class="step-buttons"><button class="icon" id="previous" aria-label="上一例" title="上一例"><i data-lucide="chevron-left"></i></button><button class="icon" id="next" aria-label="下一例" title="下一例"><i data-lucide="chevron-right"></i></button></div>
+<label class="control">视图<select id="view"><option value="forecast">生成对照</option><option value="error">误差与波动</option></select></label>
+<label class="control">相位<select id="phase"><option value="all">全部三相</option><option value="0">Pre · 平扫</option><option value="1">Early · 早期增强</option><option value="2">Late · 延迟增强</option></select></label>
+<label class="control slice">轴位层面<div class="slider-line"><input id="slice" type="range" min="0" max="31" value="16" aria-label="轴位层面"><output id="slice-value">16 / 31</output></div></label>
+<label class="check"><input type="checkbox" id="roi">固定 T0 ROI</label>
+<button class="icon" id="reset" aria-label="回到 ROI 中心层" title="回到 ROI 中心层"><i data-lucide="crosshair"></i></button>
+<a class="icon" id="png-link" aria-label="下载当前病例对照图" title="下载当前病例对照图" download><i data-lucide="download"></i></a>
+</section>
+<div class="case-meta"><span id="interval"></span><span id="alignment"></span><span id="window"></span></div>
+<div id="loading" role="status"></div><div id="error" role="alert"></div>
+<div class="board-scroll"><div class="board" id="board"></div></div>
+<div class="legend" id="legend" hidden><span>均值绝对误差 0 <b class="scale"></b> ≥ 2</span><span>四次生成标准差 0–1；非校准置信区间</span></div>
+<section class="metrics"><table><thead><tr><th>当前病例 · 全三维体积</th><th>覆盖区 MAE ↓</th><th>固定 ROI MAE ↓</th><th>MAE + 0.25 ROI ↓</th></tr></thead><tbody id="metrics"></tbody></table></section>
+<div class="lower"><span>窗宽固定于该病例的源影像；所有相位与模型共用。</span><span>验证集展示 · 空间未核验病例的体素误差包含配准影响</span></div>
+<section class="chart-section"><h2>训练记录</h2><a href="training_curves.png"><img src="training_curves.png" alt="B、C、D 的训练验证曲线及更新次数对比"></a></section>
+</main>
+<script src="lucide.min.js"></script>
+<script>
+const report=__REPORT__;
+const $=id=>document.getElementById(id);
+const names={source:'真实源影像',target:'真实未来',best_sample:'最佳模型 · 单次',best_mean:'最佳模型 · 四次均值',last_sample:'最后模型 · 单次',target_codec:'真实未来 · VQ 重建',error:'均值绝对误差',sd:'四次生成标准差'};
+const methods={copy_source:'复制源影像',best_sample:'最佳模型 · 固定单次',best_mean:'最佳模型 · 四次均值',best_expected_sample:'最佳模型 · 四次单样本平均',last_sample:'最后模型 · 固定单次',target_codec:'真实未来 · VQ 重建'};
+const cache=new Map();let token=0;
+const imgFor=src=>{if(!cache.has(src))cache.set(src,new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(new Error(src));im.src=src}));return cache.get(src)};
+for(const c of report.cases){const o=new Option(`${c.case} · ${c.transition.replace('->',' → ')}` ,c.case);$('case').add(o)}
+function columns(){return $('view').value==='forecast'?['source','target','best_sample','best_mean','last_sample','target_codec']:['source','target','best_mean','error','sd','target_codec']}
+function selected(){return report.cases.find(c=>c.case===$('case').value)}
+function fmt(x){return x==null?'—':x.toFixed(4)}
+async function draw(reset=false){
+ const c=selected();const ticket=++token;if(reset)$('slice').value=c.center;
+ const z=Number($('slice').value),cols=columns(),phases=$('phase').value==='all'?[0,1,2]:[Number($('phase').value)];
+ $('slice-value').value=`${z} / 31`;$('interval').textContent=`${c.case} · ${c.transition.replace('->',' → ')} · ${c.delta_days} 天`;
+ $('alignment').textContent=c.spatial_verified?'空间对应已核验':'空间对应未核验';$('alignment').className=c.spatial_verified?'':'unverified';
+ $('window').textContent=`灰度窗 ${c.window.map(x=>x.toFixed(2)).join(' / ')}`;
+ $('previous').disabled=report.cases.indexOf(c)===0;$('next').disabled=report.cases.indexOf(c)===report.cases.length-1;
+ $('png-link').href=`figures/${c.case}.png`;$('legend').hidden=$('view').value!=='error';
+ $('metrics').replaceChildren();for(const key of Object.keys(methods)){const r=document.createElement('tr');const values=[methods[key],...['supported_mae','roi_mae','selection_score'].map(k=>fmt(c.metrics[key][k]))];for(const value of values){const td=document.createElement('td');td.textContent=value;r.append(td)}$('metrics').append(r)}
+ $('loading').textContent='';$('error').style.display='none';
+ try{
+  const images=await Promise.all(cols.map(k=>imgFor(`atlases/${c.case}_${k}.png`)));const mask=$('roi').checked?await imgFor(`atlases/${c.case}_roi.png`):null;
+  if(ticket!==token)return;
+  const board=$('board');board.replaceChildren();board.append(document.createElement('span'));
+  for(const key of cols){const h=document.createElement('div');h.className='head';h.textContent=names[key];board.append(h)}
+  for(const phase of phases){const label=document.createElement('div');label.className='phase';label.textContent=['Pre 平扫','Early 早期','Late 延迟'][phase];board.append(label);
+   for(let j=0;j<cols.length;j++){const tile=document.createElement('figure');tile.className='tile';const canvas=document.createElement('canvas');canvas.width=128;canvas.height=128;canvas.dataset.kind=cols[j];canvas.dataset.phase=phase;canvas.setAttribute('aria-label',`${c.case} ${label.textContent} ${names[cols[j]]} z=${z}`);const ctx=canvas.getContext('2d');const x=(z%8)*128,y=(phase*4+Math.floor(z/8))*128;ctx.drawImage(images[j],x,y,128,128,0,0,128,128);if(mask)ctx.drawImage(mask,x,y,128,128,0,0,128,128);tile.append(canvas);board.append(tile)}
+  }
+  board.dataset.case=c.case;board.dataset.slice=z;board.dataset.view=$('view').value;
+  history.replaceState(null,'',`#${c.case}/${z}/${$('view').value}/${$('phase').value}`);
+ }catch(e){$('error').textContent=`影像载入失败：${e.message}`;$('error').style.display='block'}
+}
+$('case').onchange=()=>draw(true);$('view').onchange=()=>draw();$('phase').onchange=()=>draw();$('slice').oninput=()=>draw();$('roi').onchange=()=>draw();$('reset').onclick=()=>draw(true);
+function move(delta){const i=report.cases.indexOf(selected());$('case').value=report.cases[Math.max(0,Math.min(report.cases.length-1,i+delta))].case;draw(true)}
+$('previous').onclick=()=>move(-1);$('next').onclick=()=>move(1);
+function restore(){const [name,z,view,phase]=location.hash.slice(1).split('/');if(report.cases.some(c=>c.case===name))$('case').value=name;if(['forecast','error'].includes(view))$('view').value=view;if(['all','0','1','2'].includes(phase))$('phase').value=phase;const valid=z!==undefined&&Number.isInteger(Number(z))&&Number(z)>=0&&Number(z)<=31;if(valid)$('slice').value=z;draw(!valid)}
+window.addEventListener('hashchange',restore);lucide.createIcons();restore();
+</script>
+</html>

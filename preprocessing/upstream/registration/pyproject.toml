@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ispy2-registration"
+version = "0.1.0"
+description = "Longitudinal ISPY2 DCE-MRI registration to T0"
+requires-python = ">=3.12"
+dependencies = [
+  "itk==5.4.6",
+  "itk-elastix==0.25.3",
+  "matplotlib>=3.9,<4",
+  "nibabel>=5.3,<6",
+  "numpy>=1.26,<2.5",
+  "pydicom>=3.0,<4",
+  "scikit-image>=0.24,<1",
+  "scipy>=1.14,<2",
+  "SimpleITK==2.3.1",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[project.scripts]
+ispy2-register = "ispy2_registration.cli:entrypoint"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+pythonpath = ["src"]
+testpaths = ["tests"]
+filterwarnings = [
+  "error",
+  "ignore:builtin type SwigPyPacked has no __module__ attribute:DeprecationWarning",
+  "ignore:builtin type SwigPyObject has no __module__ attribute:DeprecationWarning",
+  "ignore:builtin type swigvarlink has no __module__ attribute:DeprecationWarning",
+]

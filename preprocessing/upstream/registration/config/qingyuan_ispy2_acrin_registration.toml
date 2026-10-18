@@ -1,0 +1,28 @@
+[paths]
+input_root = "/data1/cxx/ispy2_acrin_t0_registration_v1/preprocessed"
+output_root = "/data1/cxx/ispy2_acrin_t0_registration_v1/registered"
+manifest = "/data1/cxx/ispy2_acrin_t0_registration_v1/manifest/ispy2_acrin_preprocessed_manifest.csv"
+
+[registration]
+fixed_visit = "T0"
+moving_visits = ["T1", "T2", "T3"]
+workers = 8
+elastix_threads = 3
+seed = 20260719
+tumor_weight = 0.5
+rigid_samples = 5000
+rigid_iterations = 500
+rigid_learning_rate = 2.0
+rigid_min_step = 0.0001
+rigid_relaxation_factor = 0.5
+rigid_shrink_factors = [4, 2, 1]
+rigid_smoothing_sigmas = [2.0, 1.0, 0.0]
+bspline_resolutions = 4
+bspline_iterations = [300, 300, 300, 1200]
+bspline_spatial_samples = 5000
+
+[qc]
+max_ftv_volume_change = 0.10
+similarity_tolerance = 0.000001
+protected_margin_mm = 10.0
+max_outside_fold_fraction = 0.02

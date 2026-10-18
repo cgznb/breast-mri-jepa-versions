@@ -1,0 +1,5 @@
+# Optional expensive E regularizer. 4-step Euler is NOT the evaluation solver.
+extends: optimized.yaml
+stage_overrides:
+  E:
+    loss: {consistency_mode: ode, consistency_steps: 4}

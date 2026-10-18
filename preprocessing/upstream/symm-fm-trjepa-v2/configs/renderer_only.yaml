@@ -1,0 +1,10 @@
+# Train stage D directly, without B/C and WITHOUT random semantic conditions.
+# Predict future latent directly; does not assert anatomical registration.
+extends: optimized.yaml
+renderer_only: true
+flow: {mode: direct_cfm}
+bridge: {use_response: false, use_future: false, use_spatial: false, use_structured: true}
+train:
+  require_spatial: false
+  steps: {D: 30000}
+loss: {jepa: 0.0, semantic: 0.0, change: 0.0, pcr: 0.0, response: 0.0, survival: 0.0}

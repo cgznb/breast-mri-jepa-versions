@@ -1,0 +1,7 @@
+# Memory fallback only; no claim that a particular GPU can fit full volumes.
+# Turning off this regularizer is explicit, not pretending accumulation supplies image variance.
+extends: optimized.yaml
+stage_overrides:
+  B:
+    train: {batch_size: 1, accumulation: 8}
+    jepa_pretrain: {image_variance_weight: 0.0}

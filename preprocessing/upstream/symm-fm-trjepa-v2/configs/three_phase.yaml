@@ -1,0 +1,93 @@
+seed: 2026
+latent_mode: prequant
+decode_mode: requantize
+allow_untrained_smoke: false
+semantic:
+  dim: 384
+  depth: 12
+  heads: 6
+  patch: [8, 16, 16]
+  checkpointing: true
+mask_predictor:
+  predictor_dim: 192
+  depth: 6
+  heads: 6
+  checkpointing: true
+mask_ratio: 0.5
+response:
+  depth: 4
+  queries: 8
+  checkpointing: true
+dynamics:
+  depth: 6
+  checkpointing: true
+flow:
+  dim: 384
+  depth: 12
+  heads: 6
+  patch: [2, 4, 4]
+  bridge_channels: 24
+  mode: residual_cfm
+  checkpointing: true
+bridge:
+  token_grid: [3, 4, 4]
+  use_response: true
+  use_future: true
+  use_structured: true
+  use_spatial: true
+clinical:
+  response_classes: 3
+  survival_edges: [0, 180, 365, 730, 1095]
+condition_fields:
+  clinical_numeric: [age]
+  clinical_categorical: [sex, er, pr, her2, subtype, stage]
+loss:
+  jepa: 1.0
+  fm: 1.0
+  semantic: 0.1
+  change: 0.02
+  pcr: 0.1
+  response: 0.1
+  survival: 0.01
+  pcr_positive_weight: 1.0
+  condition_dropout: 0.1
+  fm_roi_weight: 2.0
+  semantic_every: 8
+  consistency_mode: endpoint
+  consistency_steps: 4
+train:
+  steps: {B: 40000, C: 20000, D: 60000, E: 10000}
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  joint_semantic_lr_ratio: 0.1
+  batch_size: 1
+  accumulation: 4
+  warmup_steps: 1000
+  teacher_ema_start: 0.996
+  ema_decay: 0.999
+  precision: bf16
+  clip_grad: 1.0
+  cpu_threads: 4
+  require_spatial: true
+  validation_every: 500
+  validation_batches: 16
+  checkpoint_every: 500
+  log_every: 10
+codec:
+  hidden_channels: 16
+  embedding_dim: 8
+  n_codes: 16384
+  bottleneck_blocks: 0
+  num_groups: 32
+  nearest_chunk_size: 2048
+discriminator: {width: 32, levels: 3}
+codec_train:
+  steps: 60000
+  batch_size: 1
+  learning_rate: 0.0001
+  gan_start: 5000
+  gan_weight: 0.01
+  multiscale_weight: 0.1
+  validation_every: 500
+  validation_batches: 12
+  checkpoint_every: 500

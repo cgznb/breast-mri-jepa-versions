@@ -1,0 +1,10 @@
+# Optional official MONAI backend, not executed in the offline CPU environment.
+extends: three_phase.yaml
+flow:
+  backbone: monai_unet3d
+  channels: [128, 256, 384]
+  attention_levels: [false, true, true]
+  num_head_channels: [32, 64, 64]
+  num_res_blocks: 2
+  transformer_num_layers: 2
+  norm_num_groups: 32

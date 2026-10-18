@@ -1,0 +1,83 @@
+# Recovery starting point, NOT empirically optimized on the user's private cohort.
+# Same main tensor architecture as v1: old C/D/E weights can be explicitly warm-started.
+extends: three_phase.yaml
+renderer_only: false
+semantic:
+  init_scheme: ijepa
+flow:
+  time_scale: 1000.0
+  init_scheme: dit
+condition_options:
+  time_scale_days: 1.0
+loss:
+  fm_roi_balance: 0.5
+  jepa_roi_balance: 0.25
+  support_threshold: 0.999
+  condition_dropout: 0.05
+  time_sampling: uniform
+  endpoint: 0.0
+  semantic: 0.0
+  change: 0.0
+  survival: 0.0
+train:
+  steps: {B: 12000, C: 8000, D: 40000, E: 2000}
+  batch_size: 1
+  accumulation: 8
+  learning_rate: 0.0001
+  ema_warmup: true
+  ema_decay: 0.999
+  sampling: patient_uniform
+  selection: generation
+  validation_batches: 8
+  early_stopping_patience: 12
+validation:
+  steps: 32
+  solver: heun
+  samples: 1
+  roi_weight: 0.25
+stage_overrides:
+  B:
+    train:
+      batch_size: 2
+      accumulation: 4
+      learning_rate: 0.00015
+      weight_decay: 0.05
+      warmup_steps: 1000
+      selection: loss
+      early_stopping_patience: 12
+    jepa_pretrain:
+      image_variance_weight: 0.1
+      image_variance_target: 0.2
+      student_noise: 0.01
+    augmentation:
+      flip_axes: [1, 2]
+      intensity_scale: 0.05
+  C:
+    train:
+      learning_rate: 0.0001
+      warmup_steps: 500
+      selection: loss
+  D:
+    train:
+      learning_rate: 0.0001
+      warmup_steps: 1000
+      selection: generation
+  E:
+    train:
+      learning_rate: 0.00002
+      joint_semantic_lr_ratio: 0.05
+      warmup_steps: 100
+      validation_every: 200
+      checkpoint_every: 200
+      early_stopping_patience: 5
+    loss:
+      jepa: 0.2
+      pcr: 0.02
+      response: 0.02
+      survival: 0.0
+      semantic: 0.02
+      change: 0.0
+      semantic_start: 500
+      semantic_ramp: 500
+      semantic_every: 8
+      consistency_mode: endpoint

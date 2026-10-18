@@ -1,0 +1,169 @@
+mask_model_args:
+  spatial_dims: 3
+  in_channels: 1
+  out_channels: 1
+  num_res_blocks: [1, 1, 1, 1]
+  num_channels: [32, 64, 128, 256]
+  attention_levels: [false, false, false, true]
+  norm_num_groups: 8
+  resblock_updown: false
+  num_head_channels: [32, 64, 128, 256]
+  transformer_num_layers: 6
+  use_flash_attention: false
+  with_conditioning: true
+  cross_attention_dim: 512
+  spatial_conditioning: true
+  conditioning_embedding_in_channels: 3
+  conditioning_embedding_num_channels: [32]
+
+deterministic_mask_model_args:
+  spatial_dims: 3
+  in_channels: 3
+  out_channels: 1
+  num_res_blocks: [1, 1, 1, 1]
+  num_channels: [32, 64, 128, 256]
+  attention_levels: [false, false, false, true]
+  norm_num_groups: 8
+  resblock_updown: false
+  num_head_channels: [32, 64, 128, 256]
+  transformer_num_layers: 6
+  use_flash_attention: false
+  with_conditioning: true
+  cross_attention_dim: 512
+  spatial_conditioning: false
+
+transport_model_args:
+  spatial_dims: 3
+  in_channels: 3
+  out_channels: 5
+  num_res_blocks: [1, 1, 1, 1]
+  num_channels: [32, 64, 128, 352]
+  attention_levels: [false, false, false, true]
+  norm_num_groups: 8
+  resblock_updown: false
+  num_head_channels: [32, 64, 128, 352]
+  transformer_num_layers: 6
+  use_flash_attention: false
+  with_conditioning: true
+  cross_attention_dim: 512
+  spatial_conditioning: false
+
+residual_mask_model_args:
+  spatial_dims: 3
+  in_channels: 1
+  out_channels: 1
+  num_res_blocks: [1, 1, 1, 1]
+  num_channels: [32, 64, 128, 352]
+  attention_levels: [false, false, false, true]
+  norm_num_groups: 8
+  resblock_updown: false
+  num_head_channels: [32, 64, 128, 352]
+  transformer_num_layers: 6
+  use_flash_attention: false
+  with_conditioning: true
+  cross_attention_dim: 512
+  spatial_conditioning: true
+  conditioning_embedding_in_channels: 4
+  conditioning_embedding_num_channels: [32]
+
+mri_model_args:
+  spatial_dims: 3
+  in_channels: 1
+  out_channels: 1
+  num_res_blocks: [1, 1, 1, 1]
+  num_channels: [32, 64, 128, 256]
+  attention_levels: [false, false, false, true]
+  norm_num_groups: 8
+  resblock_updown: false
+  num_head_channels: [32, 64, 128, 256]
+  transformer_num_layers: 6
+  use_flash_attention: false
+  with_conditioning: true
+  cross_attention_dim: 512
+  spatial_conditioning: true
+  conditioning_embedding_in_channels: 4
+  conditioning_embedding_num_channels: [32]
+
+data_args:
+  bundle_path: "/root/autodl-tmp/MAM/MOTFM/runs/ispy2_longitudinal_3d/data_bundle/bundle.json"
+  cache_dir: "/root/autodl-tmp/MAM/MOTFM/runs/ispy2_longitudinal_3d/roi_cache"
+  sdf_cache_dir: "runs/tumor_first_3d/sdf_cache"
+  oof_mask_cache_dir: "runs/tumor_first_3d/oof_masks"
+  val_mask_cache_dir: "runs/tumor_first_3d/val_masks"
+  test_mask_cache_dir: "runs/tumor_first_3d/test_masks"
+  uot_teacher_cache_dir: "runs/tumor_first_spatial_uot_v1/uot_teacher"
+  uot_oof_mask_cache_dir: "runs/tumor_first_spatial_uot_v2_100epoch/oof_masks"
+  uot_val_mask_cache_dir: "runs/tumor_first_spatial_uot_v2_100epoch/val_masks"
+  uot_test_mask_cache_dir: "runs/tumor_first_spatial_uot_v2_100epoch/test_masks"
+  split_train: "train"
+  split_val: "val"
+  output_shape_zyx: [128, 128, 128]
+  target_spacing_xyz: [0.7032, 0.7032, 2.0]
+
+spatial_uot_args:
+  schema: "spatial_uot_teacher_v1"
+  solver_backend: "torch_cuda"
+  max_points: 2048
+  entropy_regularization: 0.03
+  reservoir_penalty: 0.5
+  mass_tolerance: 1.0e-6
+  compression_tolerance: 1.0e-12
+  splat_tolerance: 1.0e-5
+  max_displacement_mm: 40.0
+  retention_validity_threshold: 1.0e-6
+  residual_scale_mm: 40.0
+
+conditioning_args:
+  model_id: "google/medgemma-4b-it"
+  model_revision: "290cda5eeccbee130f987c4ad74a59ae6f196408"
+  context_dim: 512
+  text_lora_rank: 8
+
+tumor_first_args:
+  coordinate_frame: "tumor_centered_local_v1"
+  sdf_truncation_mm: 20.0
+  sdf_temperature_mm: 1.0
+  conditioning_dropout: 0.2
+  guidance_scale: 0.3
+  consensus_threshold: 0.5
+  oof_folds: 3
+  num_mask_samples: 8
+  mask_solver_method: "midpoint"
+  mask_solver_steps: 50
+  image_solver_method: "midpoint"
+  image_solver_steps: 50
+  mri_dilation_mm: 5.0
+  mri_mask_condition_mode: "target_oracle"
+  baseline_checkpoint: "/root/autodl-tmp/MAM/MOTFM/runs/ispy2_longitudinal_3d/checkpoints/last.ckpt"
+
+train_args:
+  batch_size: 1
+  gradient_accumulation_steps: 4
+  max_epochs: 100
+  precision: "bf16-mixed"
+  accelerator: "gpu"
+  devices: 1
+  gradient_clip_val: 1.0
+  drop_last: false
+  deterministic: true
+  benchmark: false
+  model_lr: 0.0001
+  text_lr: 0.00002
+  weight_decay: 0.01
+  seed: 2026
+  num_workers: 4
+  prefetch_factor: 2
+  log_every_n_steps: 10
+
+early_stopping_args:
+  enabled: true
+  min_epochs: 30
+  patience: 10
+  mask:
+    monitor: "val/dice_score"
+    mode: "max"
+    min_delta: 0.003
+  mri:
+    monitor: "val/loss"
+    mode: "min"
+    min_delta: 0.001

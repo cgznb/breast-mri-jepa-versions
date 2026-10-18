@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ROI32 | 30 Patient Review</title>
+  <link rel="stylesheet" href="review.css">
+  <script defer src="lucide.js"></script>
+  <script defer src="review-data.js"></script>
+  <script defer src="review.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <button id="menu-button" class="icon-button mobile-only" aria-label="Cases" title="Cases"><i data-lucide="panel-left"></i></button>
+    <i data-lucide="scan-line" class="brand-icon"></i><h1>ROI32</h1>
+    <span class="header-subtitle" data-text="headerSubtitle"></span>
+    <span class="run-tag">DCE0 <span aria-hidden="true">/</span> 32 &times; 128 &times; 128</span>
+    <button id="report-button" class="icon-button" aria-label="Metrics" title="Metrics"><i data-lucide="chart-no-axes-combined"></i></button>
+    <a id="download-metrics" href="diagnostics.json" download class="icon-button" aria-label="Download metrics" title="Download metrics"><i data-lucide="download"></i></a>
+  </header>
+  <button id="scrim" class="scrim" aria-label="Close cases" hidden></button>
+  <div class="workspace">
+    <aside id="sidebar">
+      <div class="sidebar-heading"><h2 data-text="cases"></h2><span id="case-count"></span></div>
+      <label class="search"><i data-lucide="search"></i><input id="search" type="search" aria-label="Patient search" placeholder="Patient ID"></label>
+      <div class="filters">
+        <select id="pair-filter" aria-label="Time pair"><option value="" data-text="allPairs"></option></select>
+        <select id="clip-filter" aria-label="Crop status"><option value="" data-text="allCrops"></option><option value="contained" data-text="contained"></option><option value="clipped" data-text="clipped"></option></select>
+      </div>
+      <nav id="case-list" aria-label="Cases"></nav>
+      <div class="sidebar-footer"><span data-text="validationOnly"></span><span id="checkpoint-meta"></span></div>
+    </aside>
+    <main>
+      <section class="case-heading">
+        <div><div class="eyebrow" id="case-number"></div><h2 id="patient-title"></h2><div class="case-meta"><span id="pair-title"></span><span id="crop-status"></span><span>2.0 &times; 0.7032 &times; 0.7032 mm</span></div></div>
+        <div class="case-navigation"><button id="previous-case" class="icon-button" aria-label="Previous patient" title="Previous patient"><i data-lucide="chevron-left"></i></button><button id="next-case" class="icon-button" aria-label="Next patient" title="Next patient"><i data-lucide="chevron-right"></i></button></div>
+      </section>
+      <section class="controls" aria-label="Review controls">
+        <label class="control-group"><span data-text="checkpoint"></span><select id="checkpoint-select"></select></label>
+        <div class="control-group"><span data-text="steps"></span><div id="step-buttons" class="segments" role="radiogroup" aria-label="Sampling steps"></div></div>
+        <label class="control-group"><span data-text="sample"></span><select id="sample-select"><option value="0">1</option><option value="1">2</option></select></label>
+        <label class="control-group"><span data-text="window"></span><select id="window-select"><option value="joint" data-text="jointWindow"></option><option value="fixed">[-1, 3]</option></select></label>
+        <label class="checkbox"><input id="mask-toggle" type="checkbox" checked><span>T0 mask</span><span class="mask-key"></span></label>
+        <span id="inference-meta" class="control-meta"></span>
+      </section>
+      <section class="slice-control">
+        <label for="slice-range" data-text="referenceSlice"></label>
+        <button id="slice-minus" class="icon-button small" aria-label="Previous slice" title="Previous slice"><i data-lucide="minus"></i></button>
+        <input id="slice-range" type="range" min="0" max="31" value="16">
+        <button id="slice-plus" class="icon-button small" aria-label="Next slice" title="Next slice"><i data-lucide="plus"></i></button>
+        <input id="slice-number" type="number" min="0" max="31" value="16" aria-label="Reference Z">
+        <span class="muted">/ 31</span>
+        <button id="reset-slice" class="icon-button small" aria-label="T0 mask center" title="T0 mask center"><i data-lucide="locate-fixed"></i></button>
+      </section>
+      <section id="references" class="references" aria-label="Reference images"></section>
+      <section class="metrics-strip" id="case-metrics" aria-label="Case metrics"></section>
+      <section class="browse-band">
+        <div id="view-tabs" class="tabs" role="tablist" aria-label="Views"></div>
+        <label class="checkbox" id="center-control"><input type="checkbox" id="center-toggle"><span data-text="includeCenter"></span></label>
+      </section>
+      <div class="grid-heading"><h3 id="grid-title"></h3><span id="grid-status" aria-live="polite"></span></div>
+      <section id="slice-grid" class="slice-grid" aria-label="Slice results"></section>
+      <div class="page-footer"><span data-text="maskNote"></span><span id="window-label"></span></div>
+      <div id="error-message" role="alert" hidden></div>
+    </main>
+  </div>
+  <dialog id="image-dialog">
+    <div class="dialog-heading"><h2 id="image-title"></h2><button class="icon-button" data-close="image-dialog" aria-label="Close" title="Close"><i data-lucide="x"></i></button></div>
+    <canvas id="large-image" width="512" height="512"></canvas>
+    <div class="dialog-navigation"><button id="large-previous" class="icon-button" aria-label="Previous slice" title="Previous slice"><i data-lucide="chevron-left"></i></button><span id="large-position"></span><button id="large-next" class="icon-button" aria-label="Next slice" title="Next slice"><i data-lucide="chevron-right"></i></button></div>
+  </dialog>
+  <dialog id="report-dialog">
+    <div class="dialog-heading"><h2 data-text="reportTitle"></h2><button class="icon-button" data-close="report-dialog" aria-label="Close" title="Close"><i data-lucide="x"></i></button></div>
+    <div id="report-content"></div>
+  </dialog>
+</body>
+</html>

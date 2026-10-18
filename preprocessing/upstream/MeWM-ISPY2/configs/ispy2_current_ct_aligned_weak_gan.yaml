@@ -1,0 +1,43 @@
+data:
+  backend: current
+  bundle_json: /root/autodl-tmp/MAM/MOTFM/runs/ispy2_longitudinal_3d/data_bundle/bundle.json
+  phase_manifest_csv: /root/autodl-tmp/Datasets/manifest-1781750940386/ISPY2/processed_ispy2_world_phase3_scan/manifest/ispy2_breastdcedl_full_manifest.csv
+  cache_dir: /root/autodl-tmp/MAM/MeWM-ISPY2/runs/cache/current_dce0
+  roi_cache_dir: /root/autodl-tmp/MAM/MOTFM/runs/ispy2_longitudinal_3d/roi_cache
+  output_shape_zyx: [128, 128, 128]
+  model_conditions:
+    - source_dce0
+    - source_mask
+    - action_text
+    - clinical_text
+    - delta_days
+    - stage_id
+diffusion:
+  denoiser_architecture: film_unet3d_v1
+  input_channels: 17
+  semantic_channels: 0
+  prediction_type: epsilon
+  samples_per_transition: 8
+  timesteps: 200
+  sampler: ancestral_ddpm
+  latent_contract: continuous_codebook_minmax_v1
+  ema_decay: 0.995
+runtime:
+  smoke: false
+  output_dir: /root/autodl-tmp/MAM/MeWM-ISPY2/runs/current_dce0_ct_aligned_weak_gan
+  seed: 2026
+models:
+  vqgan:
+    image_channels: 1
+    embedding_dim: 8
+    n_codes: 16384
+    downsample_factor: 4
+    ct_source_repo: MrGiovanni/DiffTumor
+    ct_source_revision: 089ba0f3f94a7858603a55106791d7d977d7bc0b
+  medgemma:
+    model_id: google/medgemma-4b-it
+    revision: 290cda5eeccbee130f987c4ad74a59ae6f196408
+    quantization: nf4
+    lora_targets: [q_proj, v_proj]
+  segmenter:
+    architecture: DynUNet

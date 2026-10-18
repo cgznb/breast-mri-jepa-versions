@@ -1,0 +1,6 @@
+# Full validation patient/pair cohort, sequential per case (expensive).
+# Reserve the independent test set for the final report.
+extends: optimized.yaml
+train:
+  validation_batches: 1000000000
+  validation_every: 1000

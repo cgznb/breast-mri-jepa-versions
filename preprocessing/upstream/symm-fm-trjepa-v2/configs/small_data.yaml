@@ -1,0 +1,7 @@
+# Lower capacity ablation; NOT state-dict-compatible with v1 384-dimensional encoders.
+extends: optimized.yaml
+semantic: {dim: 192, depth: 8, heads: 6}
+mask_predictor: {predictor_dim: 192, depth: 4, heads: 6}
+response: {depth: 3, queries: 8}
+dynamics: {depth: 4}
+flow: {dim: 192, depth: 8, heads: 6}

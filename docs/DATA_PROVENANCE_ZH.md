@@ -1,6 +1,6 @@
 # 原实验的数据批次与处理方法
 
-核对日期：2026-10-18。依据原服务器的 manifest、上游 inventory / bundle，以及实际处理源码核对。本次只追溯数据来源；未启动训练，影像迁移已暂停。
+核对日期：2026-10-18。依据原服务器的 manifest、上游 inventory / bundle，以及实际处理源码核对。本机迁移与运行方法见 [LOCAL_RUN_ZH.md](LOCAL_RUN_ZH.md)，本次未启动正式训练。
 
 ## 原实验实际使用哪批数据
 
@@ -84,7 +84,7 @@
 
 要重做完全相同的裁剪，还需要同一版 T0 预测 mask、物理几何 / 相位变换、晚期相位表、临床身份映射和原划分。普通肿瘤标注或 FTV mask 不能直接假定就是原实验的 MAMA-MIA 预测 mask。
 
-原服务器这 866 个 T0 预测 mask 全部存在，压缩后合计约 **10.1 MB**；相位变换约 **0.24 MB**。如果本机影像完整而这些文件缺失，可以只补这些小型资源及几何记录，再在本机生成 NPZ，无需优先搬运整套约 **17.6 GB** 的旧 NPZ。
+原服务器这 866 个 T0 预测 mask 全部存在，压缩后合计约 **10.1 MB**；相位变换约 **0.24 MB**。本次已将原始 867 人的 T0 预测 mask（含被排除的空预测）及配套几何、元数据、固定划分保存到 `data/provenance/rebuild_inputs/`，共约 **135 MB**，便于以后从本机 NIfTI 重建。当前运行直接复用迁移的约 **17.6 GB** 原 NPZ。
 
 ## 已保存的核对材料
 
@@ -93,7 +93,10 @@
 - `metadata/`：官方身份映射表、临床表和相位元数据。
 - `source_preprocessing/`：原处理源码与相关配置。
 - `data_bundle/`：更早数据包的配置、统计及划分策略元信息。
+- `rebuild_inputs/`：原划分、867 个 T0 预测 mask、几何审计、相位变换及元数据；文件来源和校验记录见其中的 `INPUT_MANIFEST.json`。
 
-`data/registered_roi32/manifest.original.json` 是原实验清单；同目录 `manifest.json` 只改了影像路径。此次影像复制已经暂停，`views/` 只有部分文件，不能当作完整数据集使用。
+可纳入 Git 的原处理代码位于 `preprocessing/upstream/`，入口及重建限制见 [PREPROCESSING_SOURCES_ZH.md](PREPROCESSING_SOURCES_ZH.md)。
+
+`data/registered_roi32/manifest.original.json` 是原实验清单；同目录 `manifest.json` 只改了影像路径。影像复制与完整性核对状态记录在同目录 `migration-status.json`；汇总检查报告为 `private_outputs/setup_runtime/runtime_check.json`。
 
 数据、患者清单、原始来源快照和模型权重均在 Git 忽略范围内。本说明只记录汇总和方法。

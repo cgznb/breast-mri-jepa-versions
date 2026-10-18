@@ -1,0 +1,1 @@
+"""Packaged MOTFM configuration resources."""

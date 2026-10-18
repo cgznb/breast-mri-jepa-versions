@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>三相随访预测 · 30 病例</title>
+  <link rel="stylesheet" href="viewer.css">
+  <script defer src="lucide.min.js"></script>
+  <script defer src="manifest.js"></script>
+  <script defer src="viewer.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <button class="icon-button mobile-menu" id="menu" title="病例列表" aria-label="病例列表"><i data-lucide="panel-left"></i></button>
+    <div class="brand"><i data-lucide="scan-line"></i><h1>三相随访预测</h1><span>30 病例</span></div>
+    <div class="header-actions"><span class="cohort">验证集 · ROI 32 × 128 × 128</span><a class="icon-button" href="report.md" title="实验报告" aria-label="实验报告"><i data-lucide="file-text"></i></a><button class="icon-button" id="fullscreen" title="全屏" aria-label="全屏"><i data-lucide="maximize"></i></button></div>
+  </header>
+  <div class="workspace">
+    <aside id="sidebar">
+      <div class="search"><i data-lucide="search"></i><input id="search" type="search" placeholder="病例编号" aria-label="搜索病例"></div>
+      <select id="transition-filter" aria-label="筛选随访间隔"><option value="all">全部随访间隔</option></select>
+      <div id="case-list" role="list" aria-label="病例列表"></div>
+      <div class="case-navigation"><button class="icon-button" id="previous-case" title="上一个病例" aria-label="上一个病例"><i data-lucide="chevron-left"></i></button><span id="case-position"></span><button class="icon-button" id="next-case" title="下一个病例" aria-label="下一个病例"><i data-lucide="chevron-right"></i></button></div>
+    </aside>
+    <main>
+      <div class="case-heading"><div><h2 id="patient-name">正在加载</h2><div class="case-meta" id="case-meta"></div></div><span class="status" id="status" role="status">加载病例</span></div>
+      <nav class="view-tabs" aria-label="视图"><button class="active" data-view="slices" aria-selected="true">切片浏览</button><button data-view="steps" aria-selected="false">步数对照</button><button data-view="metrics" aria-selected="false">评估统计</button></nav>
+      <section class="controls" aria-label="阅片设置">
+        <label class="control"><span>模型权重</span><select id="checkpoint"><option value="best">最优权重</option><option value="final">最终权重</option></select></label>
+        <div class="control"><span class="field-label">采样步数</span><div class="segmented" id="step-control" role="group" aria-label="采样步数"><button data-step="10">10</button><button data-step="20">20</button><button data-step="30">30</button><button data-step="50" class="active" aria-pressed="true">50</button></div></div>
+        <label class="control"><span>相位</span><select id="phase"><option value="0">平扫</option><option value="1" selected>首个增强相</option><option value="2">晚期增强相</option><option value="3">首个增强 − 平扫</option><option value="4">晚期增强 − 平扫</option></select></label>
+        <label class="control"><span>生成样本</span><select id="sample"><option value="sample1">独立样本 1</option><option value="sample2">独立样本 2</option><option value="sample3">独立样本 3</option><option value="sample4">独立样本 4</option><option value="mean">4 次生成均值</option></select></label>
+        <label class="control"><span>原始参考</span><select id="reference"><option value="target">真实随访</option><option value="source">早期输入</option><option value="target_vq">随访 VQ 重建</option><option value="source_vq">输入 VQ 重建</option></select></label>
+        <label class="control"><span>邻域图像</span><select id="neighborhood"><option value="prediction">生成切片</option><option value="target">真实随访切片</option><option value="source">早期输入切片</option></select></label>
+      </section>
+      <section class="window-controls" aria-label="灰度窗和参考层">
+        <label class="slice-control">参考层 <input id="anchor-range" type="range" min="0" max="31" value="16"><input id="anchor-number" type="number" min="0" max="31" value="16" aria-label="参考层编号"></label>
+        <label>窗位 <input id="level" type="range" min="-10" max="30" step="0.01" value="2"><output id="level-value">2.00</output></label>
+        <label>窗宽 <input id="width" type="range" min="0.1" max="50" step="0.01" value="5"><output id="width-value">5.00</output></label>
+        <label class="check-label"><input id="mask-toggle" type="checkbox" checked> T0 轮廓</label>
+        <button class="icon-button" id="reset-window" title="恢复参考层和灰度窗" aria-label="恢复参考层和灰度窗"><i data-lucide="rotate-ccw"></i></button>
+      </section>
+      <div id="error" role="alert" hidden></div>
+      <section id="slices-view" class="view">
+        <div class="focus-strip">
+          <figure class="focus-image"><figcaption><span id="reference-title">真实随访</span><span class="slice-tag" id="reference-z"></span></figcaption><button class="canvas-button" data-enlarge="reference" title="放大原始参考"><canvas id="reference-canvas" width="128" height="128" aria-label="原始参考切片"></canvas></button></figure>
+          <figure class="focus-image"><figcaption><span id="prediction-title">同层预测</span><span class="slice-tag" id="prediction-z"></span></figcaption><button class="canvas-button" data-enlarge="prediction" title="放大所选切片"><canvas id="prediction-canvas" width="128" height="128" aria-label="所选预测切片"></canvas></button></figure>
+          <div class="case-measures"><div class="measure-heading">当前病例 · 全体积</div><dl id="case-measures"></dl><div class="selected-slice-metric"><span>所选层 / 原始参考 MAE</span><strong id="selected-mae">—</strong></div><div class="focus-actions"><button class="icon-button" id="previous-slice" title="前一层" aria-label="前一层"><i data-lucide="chevron-left"></i></button><button class="icon-button" id="center-slice" title="返回同层预测" aria-label="返回同层预测"><i data-lucide="locate-fixed"></i></button><button class="icon-button" id="next-slice" title="后一层" aria-label="后一层"><i data-lucide="chevron-right"></i></button><button class="icon-button" id="download-slice" title="下载对比图" aria-label="下载对比图"><i data-lucide="download"></i></button></div></div>
+        </div>
+        <div class="neighborhood-heading"><h3 id="neighborhood-title">生成切片邻域</h3><span id="neighbor-count">20 层 · 前后各 10 层</span></div>
+        <div class="slice-bands"><section><h4>前 10 层 <span>−20 mm 至 −2 mm</span></h4><div class="slice-grid" id="before-grid"></div></section><section><h4>后 10 层 <span>+2 mm 至 +20 mm</span></h4><div class="slice-grid" id="after-grid"></div></section></div>
+      </section>
+      <section id="steps-view" class="view" hidden><div class="comparison-reference"><figure><figcaption id="step-reference-title">原始参考</figcaption><canvas id="step-reference" width="128" height="128"></canvas></figure><div id="step-context"></div></div><div id="step-grid" class="step-grid"></div></section>
+      <section id="metrics-view" class="view" hidden><div class="metrics-heading"><h3>30 位患者 · 每个间隔 5 例</h3><a href="summary.json" download class="icon-button" title="下载指标" aria-label="下载指标"><i data-lucide="download"></i></a></div><img class="plot" src="step_metrics.png" alt="不同采样步数的固定 T0 区域误差"><img class="plot" src="diversity_metrics.png" alt="不同噪声的生成差异和预测变化量"><div class="table-scroll"><table id="summary-table"><thead><tr><th>相位</th><th>步数</th><th>输入基线 MAE</th><th>单次预测 MAE</th><th>4 次均值 MAE</th><th>噪声间差异</th></tr></thead><tbody></tbody></table></div><div class="cohort-footnote">验证集子集 · 固定 T0 区域 · 每位患者等权</div></section>
+      <footer><span>配准至 T0 · 轴向间距 2 mm</span><span id="footer-sample">Heun · 50 步 · 100 NFE · 独立样本 1</span></footer>
+    </main>
+  </div>
+  <dialog id="zoom-dialog"><div class="dialog-heading"><strong id="zoom-title"></strong><button class="icon-button" id="close-zoom" title="关闭" aria-label="关闭放大图"><i data-lucide="x"></i></button></div><div class="zoom-pair"><figure><figcaption id="zoom-reference-title"></figcaption><canvas id="zoom-reference" width="128" height="128"></canvas></figure><figure><figcaption id="zoom-prediction-title"></figcaption><canvas id="zoom-prediction" width="128" height="128"></canvas></figure></div><div class="zoom-navigation"><button class="icon-button" id="zoom-previous" title="前一层" aria-label="放大图前一层"><i data-lucide="chevron-left"></i></button><span id="zoom-position"></span><button class="icon-button" id="zoom-next" title="后一层" aria-label="放大图后一层"><i data-lucide="chevron-right"></i></button></div></dialog>
+</body>
+</html>

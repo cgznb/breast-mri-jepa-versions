@@ -1,0 +1,9 @@
+# Exercises the repaired training paths with CPU-sized tensors; never use for MRI quality.
+extends: smoke.yaml
+semantic: {init_scheme: ijepa}
+flow: {time_scale: 1000.0, init_scheme: dit}
+condition_options: {time_scale_days: 1.0}
+train: {ema_warmup: true, selection: generation, sampling: patient_uniform}
+validation: {steps: 2, solver: heun, samples: 1, roi_weight: 0.25}
+jepa_pretrain: {image_variance_weight: 0.1, image_variance_target: 0.2, student_noise: 0.01}
+loss: {fm_roi_balance: 0.5, jepa_roi_balance: 0.25, support_threshold: 0.999}

@@ -1,0 +1,62 @@
+model_args:
+  spatial_dims: 3
+  in_channels: 1
+  out_channels: 1
+  num_res_blocks: [1, 1, 1, 1]
+  num_channels: [32, 64, 128, 256]
+  attention_levels: [false, false, false, true]
+  norm_num_groups: 8
+  resblock_updown: false
+  num_head_channels: [32, 64, 128, 256]
+  transformer_num_layers: 6
+  use_flash_attention: false
+  with_conditioning: true
+  cross_attention_dim: 512
+  spatial_conditioning: true
+  conditioning_embedding_in_channels: 2
+  conditioning_embedding_num_channels: [32]
+
+data_args:
+  bundle_path: "runs/registered_strict_a_z96_target_oracle/data_bundle/bundle.json"
+  cache_dir: "runs/registered_strict_a_z96_target_oracle/roi_cache"
+  split_train: "train"
+  split_val: "val"
+  output_shape_zyx: [96, 256, 256]
+  target_spacing_xyz: [0.7032, 0.7032, 2.0]
+
+conditioning_args:
+  model_id: "google/medgemma-4b-it"
+  model_revision: "290cda5eeccbee130f987c4ad74a59ae6f196408"
+  context_dim: 512
+  text_lora_rank: 8
+
+train_args:
+  batch_size: 1
+  gradient_accumulation_steps: 4
+  max_epochs: 106
+  precision: "bf16-mixed"
+  accelerator: "gpu"
+  devices: 1
+  gradient_clip_val: 1.0
+  gradient_clip_algorithm: "norm"
+  drop_last: false
+  deterministic: true
+  benchmark: false
+  model_lr: 0.0001
+  text_lr: 0.00002
+  optimizer: "adamw"
+  use_paged_adamw_8bit: false
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+  eps: 0.00000001
+  warmup_fraction: 0.05
+  activation_checkpoint: false
+  seed: 2026
+  num_workers: 4
+  prefetch_factor: 2
+  checkpoint_dir: "registered_strict_a_z96_baseline_checkpoints"
+
+solver_args:
+  method: "euler"
+  step_size: 0.1
+  time_points: 10

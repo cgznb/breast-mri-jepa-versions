@@ -4,6 +4,10 @@
 
 本仓库包含模型、训练和推理入口、数据准备与检查脚本、实验队列、配置、测试、许可证及已有聚合报告。原实验目录、患者数据和权重保持原状。发布目录迁移说明见 [来源与验证](docs/RELEASE_ZH.md)。
 
+本机副本名为 **VLA-PCRV1**，位于 `/personal_fast_storage/VLA-PCRV1`，使用第 4 组 `v1_evolution`。
+环境激活、迁移数据检查和一条命令运行真实 MRI 推理，见 [本机运行说明](docs/LOCAL_RUN_ZH.md)。
+数据处理源码归档和重建输入，见 [数据生成代码](docs/PREPROCESSING_SOURCES_ZH.md)；本地版本管理见 [Git 工作流](docs/GIT_WORKFLOW_ZH.md)。
+
 ## 从哪里开始
 
 | 组 | 代码与配置 | 主要区别 | 输入输出 |

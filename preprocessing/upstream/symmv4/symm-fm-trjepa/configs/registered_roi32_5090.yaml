@@ -1,0 +1,26 @@
+extends: three_phase.yaml
+seed: 20260920
+decode_checkpointing: true
+semantic: {checkpointing: false}
+mask_predictor: {checkpointing: false}
+response: {checkpointing: false}
+dynamics: {checkpointing: false}
+flow: {checkpointing: false}
+condition_fields:
+  clinical_numeric: [age]
+  clinical_categorical: [hr_status, her2_status, mammaprint, menopausal_status, source_stage]
+loss:
+  response: 0.0
+  survival: 0.0
+train:
+  reference_batch_size: 4
+  stage_batches: {B: 32, C: 32, D: 32, E: 1}
+  batch_size: 1
+  accumulation: 1
+  require_spatial: false
+  patient_balanced_validation: true
+  validation_batches: 102
+  preload: true
+  cpu_threads: 4
+  precision: bf16
+  disk_reserve_gib: 8

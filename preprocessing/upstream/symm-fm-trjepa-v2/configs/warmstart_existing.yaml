@@ -1,0 +1,10 @@
+# For existing v1 C/D/E-shaped weights and UNCHANGED, correct caches only.
+# Keeps learned time features; updates masking, selection and optimization.
+extends: optimized.yaml
+flow: {time_scale: 1.0, init_scheme: legacy}
+condition_options: {time_scale_days: 365.25}
+train:
+  steps: {D: 8000}
+stage_overrides:
+  D:
+    train: {learning_rate: 0.00002, warmup_steps: 200}
