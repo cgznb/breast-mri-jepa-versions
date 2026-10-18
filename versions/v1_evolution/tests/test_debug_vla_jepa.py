@@ -7,7 +7,7 @@ import pytest
 import torch
 import yaml
 
-from mri_vla_jepa.data import make_raw_synthetic
+from mri_vla_jepa.data import RawMRIStore, make_raw_synthetic
 from mri_vla_jepa.encoder import VisitMRIEncoder
 from mri_vla_jepa.model import RawVLAJEPA
 from mri_vla_jepa.model_config import RawVLAJEPAConfig
@@ -58,10 +58,12 @@ def write_config(path, cfg):
 
 
 @pytest.mark.parametrize("mode", ["frozen", "finetune"])
+@pytest.mark.parametrize("encoder_type", ["vq_prequant", "vq_encoder"])
 def test_debug_vq_update_loads_weights_and_uses_production_parameter_groups(
-        tmp_path, tiny_experiment, debug_module, monkeypatch, capsys, mode):
+        tmp_path, tiny_experiment, debug_module, monkeypatch, capsys, mode, encoder_type):
     cfg, manifest, original = tiny_experiment
-    cfg = replace(cfg, encoder_training=mode, encoder_lr=1e-5 if mode == "finetune" else None)
+    cfg = replace(cfg, model=replace(cfg.model, encoder_type=encoder_type),
+                  encoder_training=mode, encoder_lr=1e-5 if mode == "finetune" else None)
     config = write_config(tmp_path / "config.yaml", cfg)
     captured = {}
 
@@ -91,14 +93,61 @@ def test_debug_vq_update_loads_weights_and_uses_production_parameter_groups(
     else:
         assert groups["pretrained_encoder"]["lr"] == 1e-5
         assert any(not torch.equal(original[name], value) for name, value in frontend.items())
-        assert all(parameter.grad is not None for parameter in model.encoder.pretrained_parameters())
+        assert all(parameter.grad is not None
+                   for name, parameter in model.encoder.frontend.named_parameters()
+                   if encoder_type != "vq_encoder" or not name.startswith("pre_quant."))
+        if encoder_type == "vq_encoder":
+            assert all(parameter.grad is None for parameter in model.encoder.frontend.pre_quant.parameters())
     assert not model.teacher_encoder.training
     assert all(parameter.grad is None for parameter in model.teacher_encoder.parameters())
     text = capsys.readouterr().out
     assert "weights: pretrained VQ encoder" in text
-    assert "encoder.frontend.pre_quant:" in text
+    assert "encoder.frontend.encoder:" in text
+    assert ("encoder.frontend.pre_quant:" in text) == (encoder_type == "vq_prequant")
     assert "encoder.projection:" in text
     assert "backward/AdamW/EMA completed" in text
+
+
+def test_debug_forecast_rollout_loss_reads_future_without_jepa(
+        tmp_path, tiny_experiment, debug_module, monkeypatch):
+    cfg, manifest, _ = tiny_experiment
+    cfg = replace(cfg, model=replace(cfg.model, encoder_type="vq_encoder",
+                  fixed_transition_queries=True, pcr_readout="forecast",
+                  history_delta=True, world_residual=True), rollout_weight=.5)
+    config = write_config(tmp_path / "forecast.yaml", cfg)
+    captured = {}
+    original = RawVLAJEPA.compute_loss
+
+    def capture_loss(model, inp, sup, **weights):
+        loss, terms = original(model, inp, sup, **weights)
+        captured.update(weights=weights, future_count=int(sup.future_mask.sum()),
+                        terms={name: float(value.detach()) for name, value in terms.items()})
+        return loss, terms
+
+    monkeypatch.setattr(RawVLAJEPA, "compute_loss", capture_loss)
+    debug_module.main(["--config", str(config), "--manifest", str(manifest), "--mode", "loss"])
+    assert captured["weights"]["rollout_weight"] == .5
+    assert captured["future_count"] == 3
+    terms = captured["terms"]
+    assert terms["jepa"] == 0. and terms["rollout"] > 0.
+    assert terms["rollout_count"] == 3
+    assert terms["loss"] == pytest.approx(terms["task"] + .5 * terms["rollout"])
+
+
+def test_saved_debug_uses_manifest_without_historical_image_cache(
+        tmp_path, tiny_experiment, debug_module, monkeypatch):
+    cfg, manifest, _ = tiny_experiment
+    cfg = replace(cfg, model=replace(cfg.model, encoder_type="vq_encoder"),
+                  image_cache=str(tmp_path / "missing_training_machine_cache"))
+    normalization = RawMRIStore(manifest, cfg.image_shape, allow_synthetic=True).normalization_state()
+    model = RawVLAJEPA(cfg.model)
+    monkeypatch.setattr(debug_module, "load_trained", lambda path, device:
+                        (model, cfg, {"normalization": normalization}))
+    before_files = set(tmp_path.rglob("*"))
+    debug_module.main(["--checkpoint", str(tmp_path / "saved.pt"),
+                       "--manifest", str(manifest), "--mode", "predict"])
+    assert cfg.image_cache == str(tmp_path / "missing_training_machine_cache")
+    assert set(tmp_path.rglob("*")) == before_files
 
 
 def test_debug_warmstart_config_fails_before_random_model_creation(

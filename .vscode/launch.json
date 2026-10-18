@@ -1,0 +1,138 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "[训练] VLA-PCRV1：train.py 单步",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/versions/v1_evolution/train.py",
+      "python": "${workspaceFolder}/versions/v1_evolution/.venv/bin/python",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "stopOnEntry": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/versions/v1_evolution/src",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "args": [
+        "train-vla-jepa",
+        "--manifest",
+        "${workspaceFolder}/data/registered_roi32/manifest.json",
+        "--config",
+        "${workspaceFolder}/versions/v1_evolution/local_configs/encoder64_seed17_train_debug.yaml",
+        "--output",
+        "${workspaceFolder}/private_outputs/training_debug/${input:vlaTrainDebugRun}",
+        "--stop-after",
+        "1"
+      ]
+    },
+    {
+      "name": "[1] VLA-PCRV1：T0 单例推理",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/versions/v1_evolution/scripts/debug_vla_jepa.py",
+      "python": "${workspaceFolder}/versions/v1_evolution/.venv/bin/python",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/versions/v1_evolution/src",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "args": [
+        "--checkpoint",
+        "${workspaceFolder}/data/reference_runs/encoder64_seed17/best.pt",
+        "--manifest",
+        "${workspaceFolder}/data/registered_roi32/manifest.json",
+        "--split",
+        "val",
+        "--landmark",
+        "0",
+        "--batch-size",
+        "1",
+        "--mode",
+        "predict",
+        "--device",
+        "cuda",
+        "--precision",
+        "fp32",
+        "--break"
+      ]
+    },
+    {
+      "name": "[2] VLA-PCRV1：单 batch 损失",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/versions/v1_evolution/scripts/debug_vla_jepa.py",
+      "python": "${workspaceFolder}/versions/v1_evolution/.venv/bin/python",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/versions/v1_evolution/src",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "args": [
+        "--checkpoint",
+        "${workspaceFolder}/data/reference_runs/encoder64_seed17/best.pt",
+        "--manifest",
+        "${workspaceFolder}/data/registered_roi32/manifest.json",
+        "--split",
+        "train",
+        "--landmark",
+        "0",
+        "--batch-size",
+        "1",
+        "--mode",
+        "loss",
+        "--device",
+        "cuda",
+        "--precision",
+        "fp32",
+        "--break"
+      ]
+    },
+    {
+      "name": "[3] VLA-PCRV1：一次 backward / AdamW / EMA",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/versions/v1_evolution/scripts/debug_vla_jepa.py",
+      "python": "${workspaceFolder}/versions/v1_evolution/.venv/bin/python",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/versions/v1_evolution/src",
+        "PYTHONUNBUFFERED": "1"
+      },
+      "args": [
+        "--checkpoint",
+        "${workspaceFolder}/data/reference_runs/encoder64_seed17/best.pt",
+        "--manifest",
+        "${workspaceFolder}/data/registered_roi32/manifest.json",
+        "--split",
+        "train",
+        "--landmark",
+        "0",
+        "--batch-size",
+        "1",
+        "--mode",
+        "train-step",
+        "--device",
+        "cuda",
+        "--precision",
+        "fp32",
+        "--break"
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "vlaTrainDebugRun",
+      "type": "promptString",
+      "description": "本次训练调试的新目录名；每次换一个，例如 run02",
+      "default": "run01"
+    }
+  ]
+}

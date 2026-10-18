@@ -48,10 +48,12 @@ def describe(value):
 
 
 def attach_shape_trace(model):
-    if model.cfg.encoder_type == "vq_prequant":
+    if model.cfg.encoder_type in {"vq_prequant", "vq_encoder"}:
         encoder_names = ("frontend.encoder.input", "frontend.encoder.downsamples.0",
-                         "frontend.encoder.downsamples.1", "frontend.pre_quant",
-                         "frontend", "pool", "projection", "spatial", "norm")
+                         "frontend.encoder.downsamples.1", "frontend.encoder")
+        if model.encoder.frontend.feature_source == "pre_quant":
+            encoder_names += ("frontend.pre_quant",)
+        encoder_names += ("frontend", "pool", "projection", "spatial", "norm")
     else:
         encoder_names = ("stem.0", "stem.3", "stem.6", "spatial", "norm")
     names = (tuple(f"encoder.{name}" for name in encoder_names)
@@ -82,7 +84,7 @@ def load_debug_model(args):
         )
     seed_all(cfg.seed, threads=cfg.threads, deterministic=cfg.deterministic)
     model = RawVLAJEPA(cfg.model).to(args.device)
-    if cfg.model.encoder_type == "vq_prequant":
+    if cfg.model.encoder_type in {"vq_prequant", "vq_encoder"}:
         if not cfg.encoder_checkpoint:
             raise ValueError("Fresh VQ debugging requires encoder_checkpoint")
         metadata = model.initialize_pretrained_encoder(cfg.encoder_checkpoint)
@@ -121,8 +123,12 @@ def main(argv=None):
         raise ValueError("A single debug update requires accumulation=1; this script does not simulate accumulation")
     if args.mode == "train-step":
         print("update: one in-memory demonstration with a fresh AdamW; optimizer/RNG/scheduler are not resumed")
+    # Saved runs may name a cache on the training machine. A checkpoint supplies
+    # its normalization; read the selected manifest's local NPZ files directly.
+    image_cache = None if args.checkpoint else cfg.image_cache
     store = RawMRIStore(args.manifest, cfg.image_shape, cfg.allow_synthetic, normalization,
-                        image_cache=cfg.image_cache)
+                        image_cache=image_cache,
+                        require_lesion_weights=(cfg.model.lesion_world_weighting or cfg.model.lesion_pooling))
     eligible = [index for index in store.by_split[args.split]
                 if args.landmark in store.allowed_landmarks(index)]
     indices = eligible[args.patient_offset:args.patient_offset + args.batch_size]
@@ -137,7 +143,7 @@ def main(argv=None):
     # 2. Data: inp contains legal history; sup contains labels/future MRI only for losses.
     supervised = args.mode != "predict"
     inp, sup = store.batch(tasks, supervised=supervised,
-                           future_supervision=bool(cfg.jepa_weight or cfg.flow_weight))
+                           future_supervision=bool(cfg.jepa_weight or cfg.rollout_weight or cfg.flow_weight))
     inp = inp.to(args.device)
     if sup is not None:
         sup = sup.to(args.device)
@@ -167,7 +173,8 @@ def main(argv=None):
             with autocast(args.device, args.precision):
                 loss, terms = model.compute_loss(
                     inp, sup, task_weight=cfg.task_weight, jepa_weight=cfg.jepa_weight,
-                    flow_weight=cfg.flow_weight, reconstruction_weight=cfg.reconstruction_weight,
+                    rollout_weight=cfg.rollout_weight, flow_weight=cfg.flow_weight,
+                    reconstruction_weight=cfg.reconstruction_weight,
                     variance_weight=cfg.variance_weight, variance_definition=cfg.variance_definition,
                     representation_only=cfg.phase(0) == "representation")
             if not torch.isfinite(loss):

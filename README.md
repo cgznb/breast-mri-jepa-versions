@@ -6,6 +6,7 @@
 
 本机副本名为 **VLA-PCRV1**，位于 `/personal_fast_storage/VLA-PCRV1`，使用第 4 组 `v1_evolution`。
 环境激活、迁移数据检查和一条命令运行真实 MRI 推理，见 [本机运行说明](docs/LOCAL_RUN_ZH.md)。
+从单例推理到损失、反向传播的 VS Code / pdb 操作，见 [逐行调试学习](docs/DEBUG_LEARNING_ZH.md)。
 数据处理源码归档和重建输入，见 [数据生成代码](docs/PREPROCESSING_SOURCES_ZH.md)；本地版本管理见 [Git 工作流](docs/GIT_WORKFLOW_ZH.md)。
 
 ## 从哪里开始
