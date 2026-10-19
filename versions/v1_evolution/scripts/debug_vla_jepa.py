@@ -140,10 +140,11 @@ def main(argv=None):
     if args.pause:
         breakpoint()
 
-    # 2. Data: inp contains legal history; sup contains labels/future MRI only for losses.
+    # 2. Data: inp contains legal history; sup supplies labels and true TF states.
     supervised = args.mode != "predict"
     inp, sup = store.batch(tasks, supervised=supervised,
-                           future_supervision=bool(cfg.jepa_weight or cfg.rollout_weight or cfg.flow_weight))
+                           future_supervision=bool(cfg.jepa_weight or cfg.rollout_weight or cfg.flow_weight
+                                                   or cfg.prediction_training == "teacher_forcing"))
     inp = inp.to(args.device)
     if sup is not None:
         sup = sup.to(args.device)
@@ -176,6 +177,7 @@ def main(argv=None):
                     rollout_weight=cfg.rollout_weight, flow_weight=cfg.flow_weight,
                     reconstruction_weight=cfg.reconstruction_weight,
                     variance_weight=cfg.variance_weight, variance_definition=cfg.variance_definition,
+                    prediction_training=cfg.prediction_training,
                     representation_only=cfg.phase(0) == "representation")
             if not torch.isfinite(loss):
                 raise FloatingPointError("Non-finite debug loss")

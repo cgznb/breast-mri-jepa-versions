@@ -194,7 +194,7 @@ def validate_completed_run(job, manifest):
     partitions, normalization = _patient_partitions(store), store.normalization_state()
     report = read_json(run / "train_report.json")
     if (not report.get("completed") or report.get("landmarks") != cfg.landmarks
-            or report.get("selection_protocol") != _selection_protocol(cfg.landmarks)
+            or report.get("selection_protocol") != _selection_protocol(cfg.landmarks, cfg.selection_metric)
             or report.get("stop_reason") not in {"early_stopping", "max_epochs"}):
         raise ValueError("Completed run report differs from the requested experiment")
     for name in ("best.pt", "last.pt"):
@@ -203,16 +203,23 @@ def validate_completed_run(job, manifest):
                 or state.get("source_snapshot") != sources or state.get("data_signature") != signature
                 or state.get("normalization") != normalization or state.get("patient_partitions") != partitions
                 or state.get("protocol") != _protocol(cfg.landmarks)
-                or state.get("selection_protocol") != _selection_protocol(cfg.landmarks)):
+                or state.get("selection_protocol") != _selection_protocol(cfg.landmarks, cfg.selection_metric)):
             raise ValueError("Completed checkpoint config/data/source identity differs from the requested experiment")
         if cfg.lr_scheduler == "plateau" and state.get("scheduler_state") is None:
             raise ValueError("Completed A1 checkpoint lacks scheduler state")
         if state["best_nll"] != report["best_validation_nll"]:
             raise ValueError("Completed checkpoint/report best NLL differs")
+        if (state.get("best_selection_score", state["best_nll"]) !=
+                report.get("best_selection_score", report["best_validation_nll"])):
+            raise ValueError("Completed checkpoint/report best selection score differs")
+        if (state.get("selection_metric", "nll") != cfg.selection_metric
+                or state.get("f1_threshold", .5) != cfg.f1_threshold):
+            raise ValueError("Completed checkpoint selection metric/threshold differs")
         if name == "last.pt" and (state["completed_steps"] != report["completed_steps"]
                 or state["epoch_state"]["completed_epochs"] != report["completed_epochs"]):
             raise ValueError("Completed checkpoint/report progress differs")
-    if read_json(run / "best_validation.json")["selection_score"] != report["best_validation_nll"]:
+    if (read_json(run / "best_validation.json")["selection_score"] !=
+            report.get("best_selection_score", report["best_validation_nll"])):
         raise ValueError("Completed best validation score differs from the report")
     return report
 

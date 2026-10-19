@@ -42,6 +42,8 @@ PYTHONPATH=src python train.py smoke-vla-jepa --output /tmp/v1-evolution-smoke-n
 
 ## 复现依赖与路径
 
+本机新增 small／medium／large、三相／单相、teacher forcing／hybrid 的48次双种子实验，按患者等权F1选模，并支持双GPU显存与吞吐准入。配置、运行及恢复方法见[容量与相位训练说明](../../docs/CAPACITY_PHASE_TRAINING_ZH.md)。
+
 本仓库不含患者 MRI、临床表格、患者级 manifest、image cache、外部预训练 `codec.pt` 或正式最优训练权重。首次训练需要按原数值契约准备的 ROI32 数据和兼容 codec；已有训练 checkpoint 包含模型权重和训练标准化状态，常规推理无需再次读取 codec 或 image cache。
 
 `configs/` 及打包资源保留原历史路径；运行前**复制配置**，将 `encoder_checkpoint`、`image_cache` 等资源位置改为本机路径，输出放到新的运行目录，不要写入 `historical_runs/`。完整命令见 [输入输出说明](docs/INPUT_OUTPUT_ZH.md)。

@@ -7,7 +7,7 @@ import math
 import yaml
 
 from .io import stable_hash
-from .model_config import RawVLAJEPAConfig
+from .model_config import RawVLAJEPAConfig, resolve_model_config
 
 
 @dataclass
@@ -20,6 +20,9 @@ class RawVLATrainConfig:
     max_epochs: int = 200
     early_stopping_patience: int = 50
     early_stopping_min_delta: float = 0.0
+    selection_metric: str = "nll"
+    f1_threshold: float = 0.5
+    prediction_training: str = "hybrid"
     representation_steps: int = 0
     joint_steps: int = 5000
     freeze_encoder_after_representation: bool = False
@@ -74,6 +77,15 @@ class RawVLATrainConfig:
             raise ValueError("schedule must be one_stage or two_stage")
         if self.training_unit not in {"steps", "epochs"}:
             raise ValueError("training_unit must be steps or epochs")
+        if self.selection_metric not in {"nll", "f1"}:
+            raise ValueError("selection_metric must be nll or f1")
+        if (isinstance(self.f1_threshold, bool) or not isinstance(self.f1_threshold, (int, float))
+                or not math.isfinite(self.f1_threshold) or not 0 <= self.f1_threshold <= 1):
+            raise ValueError("f1_threshold must be finite and between zero and one")
+        if self.prediction_training not in {"teacher_forcing", "hybrid"}:
+            raise ValueError("prediction_training must be teacher_forcing or hybrid")
+        if self.prediction_training == "teacher_forcing" and self.rollout_weight != 0:
+            raise ValueError("teacher_forcing prediction_training requires rollout_weight=0")
         if self.training_unit == "epochs" and (self.schedule != "one_stage" or self.accumulation != 1):
             raise ValueError("Epoch training requires one_stage and accumulation=1")
         if self.landmarks not in {"all_observed", "t0"}:
@@ -190,7 +202,7 @@ def from_dict(value):
     if "model" in data:
         if not isinstance(data["model"], dict):
             raise ValueError("VLA model configuration must be a mapping")
-        model = dict(data["model"])
+        model = resolve_model_config(data["model"])
         unknown = set(model) - {f.name for f in fields(RawVLAJEPAConfig)}
         if unknown:
             raise ValueError(f"Unknown VLA model keys: {sorted(unknown)}")

@@ -7,6 +7,7 @@ from torch import nn
 from torch.nn import functional as F
 
 from .encoder import _groups
+from .phases import selected_phases
 
 
 class _FlowResidual(nn.Module):
@@ -39,18 +40,22 @@ class ConditionalMRIFlow(nn.Module):
         super().__init__()
         self.grid = tuple(cfg.token_grid)
         channels = cfg.fm_channels
+        self.image_channels = len(selected_phases(cfg))
         self.spatial_condition = nn.Conv3d(cfg.dim, channels, 1)
         self.time = nn.Sequential(nn.Linear(4, cfg.dim), nn.SiLU(), nn.Linear(cfg.dim, cfg.dim))
         self.stage = nn.Embedding(4, cfg.dim)
-        self.stem = nn.Conv3d(6 + channels, channels, 3, padding=1)
+        self.stem = nn.Conv3d(2 * self.image_channels + channels, channels, 3, padding=1)
         self.high = _FlowResidual(channels, cfg.dim)
         self.down = nn.Conv3d(channels, 2 * channels, 3, stride=2, padding=1)
         self.low = _FlowResidual(2 * channels, cfg.dim)
         self.up = nn.Conv3d(3 * channels, channels, 3, padding=1)
         self.finish = _FlowResidual(channels, cfg.dim)
-        self.output = nn.Conv3d(channels, 3, 3, padding=1)
+        self.output = nn.Conv3d(channels, self.image_channels, 3, padding=1)
 
     def forward(self, x_tau, tau, source_mri, future_tokens, stage):
+        if (x_tau.ndim != 5 or x_tau.shape[1] != self.image_channels
+                or source_mri.shape != x_tau.shape):
+            raise ValueError("Flow input/source MRI must use the configured phase channels")
         spatial = future_tokens.transpose(1, 2).reshape(len(x_tau), -1, *self.grid)
         spatial = F.interpolate(self.spatial_condition(spatial), size=x_tau.shape[-3:],
                                 mode="trilinear", align_corners=False)

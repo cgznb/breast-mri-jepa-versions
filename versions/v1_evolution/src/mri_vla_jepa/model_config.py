@@ -4,16 +4,49 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
+from .phases import selected_phases
+
+
+MODEL_SIZE_PRESETS = {
+    "small": dict(dim=128, encoder_depth=2, fusion_depth=2, predictor_depth=2,
+                  heads=4, attention_head_dim=None, ffn_dim=512),
+    "medium": dict(dim=768, encoder_depth=8, fusion_depth=8, predictor_depth=8,
+                   heads=16, attention_head_dim=64, ffn_dim=3072),
+    "large": dict(dim=1024, encoder_depth=12, fusion_depth=12, predictor_depth=12,
+                  heads=16, attention_head_dim=64, ffn_dim=4096),
+}
+_LEGACY_STRUCTURE = dict(dim=128, encoder_depth=2, fusion_depth=2,
+                         predictor_depth=2, heads=4)
+
+
+def resolve_model_config(value):
+    """Expand an explicitly named preset before strict training-config parsing."""
+    if not isinstance(value, dict):
+        raise ValueError("VLA model configuration must be a mapping")
+    resolved = dict(value)
+    size = resolved.get("model_size")
+    if size is None:
+        return resolved
+    if not isinstance(size, str) or size not in MODEL_SIZE_PRESETS:
+        raise ValueError("model_size must be small, medium, large or null")
+    for name, expected in MODEL_SIZE_PRESETS[size].items():
+        supplied = resolved.get(name)
+        if supplied is not None and supplied != expected:
+            raise ValueError(f"{name}={supplied!r} conflicts with model_size={size!r} "
+                             f"(expected {expected!r})")
+        resolved[name] = expected
+    return resolved
+
 
 @dataclass
 class RawJEPAConfig:
     clinical_dim: int = 4
-    dim: int = 128
+    dim: int | None = None
     token_grid: tuple[int, int, int] = (2, 4, 4)
-    encoder_depth: int = 2
-    fusion_depth: int = 2
-    predictor_depth: int = 2
-    heads: int = 4
+    encoder_depth: int | None = None
+    fusion_depth: int | None = None
+    predictor_depth: int | None = None
+    heads: int | None = None
     state_queries: int = 8
     pcr_queries: int = 4
     fm_channels: int = 24
@@ -33,6 +66,27 @@ class RawJEPAConfig:
     lesion_world_weighting: bool = False
     lesion_pooling: bool = False
     lesion_weight_strength: float = 4.
+    model_size: str | None = None
+    attention_head_dim: int | None = None
+    ffn_dim: int | None = None
+    mri_phases: str = "all"
+
+    def __post_init__(self):
+        # None distinguishes an omitted structure field from an explicit value.
+        # This supports presets without reinterpreting historical custom models.
+        if self.model_size is not None:
+            if not isinstance(self.model_size, str) or self.model_size not in MODEL_SIZE_PRESETS:
+                raise ValueError("model_size must be small, medium, large or null")
+            for name, expected in MODEL_SIZE_PRESETS[self.model_size].items():
+                value = getattr(self, name)
+                if value is not None and value != expected:
+                    raise ValueError(f"{name}={value!r} conflicts with model_size={self.model_size!r} "
+                                     f"(expected {expected!r})")
+                setattr(self, name, expected)
+        else:
+            for name, default in _LEGACY_STRUCTURE.items():
+                if getattr(self, name) is None:
+                    setattr(self, name, default)
 
     def validate(self):
         for name in ("clinical_dim", "dim", "encoder_depth", "fusion_depth",
@@ -41,8 +95,19 @@ class RawJEPAConfig:
             value = getattr(self, name)
             if isinstance(value, bool) or not isinstance(value, int) or value < 1:
                 raise ValueError(f"{name} must be a positive integer")
-        if self.dim % self.heads:
+        if self.attention_head_dim is None and self.dim % self.heads:
             raise ValueError("dim must be divisible by heads")
+        for name in ("attention_head_dim", "ffn_dim"):
+            value = getattr(self, name)
+            if value is not None and (isinstance(value, bool) or not isinstance(value, int) or value < 1):
+                raise ValueError(f"{name} must be a positive integer or null")
+        if self.model_size is not None:
+            if not isinstance(self.model_size, str) or self.model_size not in MODEL_SIZE_PRESETS:
+                raise ValueError("model_size must be small, medium, large or null")
+            for name, expected in MODEL_SIZE_PRESETS[self.model_size].items():
+                if getattr(self, name) != expected:
+                    raise ValueError(f"{name} disagrees with model_size={self.model_size!r}")
+        selected_phases(self)
         if (len(self.token_grid) != 3 or
                 any(isinstance(v, bool) or not isinstance(v, int) or v < 1
                     for v in self.token_grid)):

@@ -14,6 +14,7 @@ from .metrics import classification_metrics, patient_bootstrap
 from .data import RawMRIStore
 from .data_pipeline import BatchLoader
 from .model import RawVLAJEPA
+from .phases import selected_phases
 from .train_config import RawVLATrainConfig, from_dict, load_config
 
 CHECKPOINT_SCHEMA = "responsewm_raw_vla_jepa_checkpoint_v2"
@@ -86,17 +87,18 @@ def _checkpoint_file_identity(path):
     return {"path": str(checkpoint), "size_bytes": stat.st_size, "mtime_ns": stat.st_mtime_ns}
 
 
-def _score(rows, bootstrap=0, seed=0):
+def _score(rows, bootstrap=0, seed=0, f1_threshold=0.5):
     labelled = [row for row in rows if row["pcr"] is not None]
     if not labelled:
         raise ValueError("Direct pCR evaluation needs at least one labelled patient")
     labels = [r["pcr"] for r in labelled]
     probabilities = [r["pcr_probability"] for r in labelled]
-    result = classification_metrics(labels, probabilities)
+    result = classification_metrics(labels, probabilities, f1_threshold=f1_threshold)
     result["missing_labels"] = len(rows) - len(labelled)
     if bootstrap:
         result["bootstrap"] = patient_bootstrap(labels, probabilities,
-                            [r["patient_key"] for r in labelled], repetitions=bootstrap, seed=seed)
+                            [r["patient_key"] for r in labelled], repetitions=bootstrap, seed=seed,
+                            f1_threshold=f1_threshold)
     return result
 
 
@@ -105,7 +107,8 @@ def _source_snapshot():
     return {name: (root / name).read_text(encoding="utf-8") for name in
             ("model.py", "model_config.py", "encoder.py", "vq_encoder.py", "flow.py", "training.py",
              "train_config.py", "cli.py", "data.py", "contracts.py", "constants.py",
-             "arm.py", "io.py", "metrics.py", "data_pipeline.py", "diagnostics.py")}
+             "arm.py", "io.py", "metrics.py", "data_pipeline.py", "diagnostics.py",
+             "attention.py", "phases.py")}
 
 
 def _patient_partitions(store):
@@ -117,8 +120,12 @@ def _protocol(profile):
     return "direct_pcr_fixed_t0" if profile == "t0" else "direct_pcr_all_observed"
 
 
-def _selection_protocol(profile):
-    return "t0_direct_nll" if profile == "t0" else "patient_equal_prefix_nll"
+def _selection_protocol(profile, selection_metric="nll"):
+    return f"t0_direct_{selection_metric}" if profile == "t0" else f"patient_equal_prefix_{selection_metric}"
+
+
+def _selection_mode(selection_metric):
+    return "max" if selection_metric == "f1" else "min"
 
 
 def _evaluation_profile(cfg, landmark):
@@ -163,8 +170,8 @@ def _rows(model, store, *, split, profile, batch_size=1, device="cpu"):
     return rows
 
 
-def _patient_equal_score(rows, bootstrap=0, seed=0):
-    """Mean prefix NLL within each patient, then mean over patients."""
+def _patient_equal_score(rows, bootstrap=0, seed=0, f1_threshold=0.5):
+    """Give each patient unit weight, split equally over their labelled prefixes."""
     groups = {}
     all_ids = {normalize_patient_key(r["patient_key"]) for r in rows}
     for row in rows:
@@ -172,7 +179,8 @@ def _patient_equal_score(rows, bootstrap=0, seed=0):
             groups.setdefault(normalize_patient_key(row["patient_key"]), []).append(row)
     if not groups:
         raise ValueError("Direct pCR evaluation needs at least one labelled patient")
-    patient_nll, patient_brier = [], []
+    patient_nll, patient_brier, patient_confusion = [], [], []
+    all_labels, all_probabilities, all_weights = [], [], []
     for patient_rows in groups.values():
         labels = np.asarray([r["pcr"] for r in patient_rows], dtype=np.float64)
         probabilities = np.asarray([r["pcr_probability"] for r in patient_rows], dtype=np.float64)
@@ -182,9 +190,18 @@ def _patient_equal_score(rows, bootstrap=0, seed=0):
         clipped = np.clip(probabilities, 1e-12, 1 - 1e-12)
         patient_nll.append(float(-(labels * np.log(clipped) + (1 - labels) * np.log1p(-clipped)).mean()))
         patient_brier.append(float(((probabilities - labels) ** 2).mean()))
-    result = {"n": len(groups), "patients": len(groups), "prefixes": sum(map(len, groups.values())),
+        metric = classification_metrics(labels, probabilities, f1_threshold=f1_threshold,
+                                        sample_weight=np.full(len(labels), 1 / len(labels)))
+        patient_confusion.append([metric["tp"], metric["fp"], metric["fn"]])
+        all_labels.extend(labels)
+        all_probabilities.extend(probabilities)
+        all_weights.extend([1 / len(labels)] * len(labels))
+    result = classification_metrics(all_labels, all_probabilities, f1_threshold=f1_threshold,
+                                    sample_weight=all_weights)
+    result.update({"n": len(groups), "patients": len(groups), "prefixes": sum(map(len, groups.values())),
+              "positives": sum(patient_rows[0]["pcr"] == 1 for patient_rows in groups.values()),
               "missing_label_patients": len(all_ids) - len(groups),
-              "nll": float(np.mean(patient_nll)), "brier": float(np.mean(patient_brier))}
+              "nll": float(np.mean(patient_nll)), "brier": float(np.mean(patient_brier))})
     if bootstrap:
         rng = np.random.default_rng(seed)
         values = {"nll": np.asarray(patient_nll), "brier": np.asarray(patient_brier)}
@@ -193,23 +210,32 @@ def _patient_equal_score(rows, bootstrap=0, seed=0):
             name: {"lower": float(np.quantile(vector[sampled].mean(1), .025)),
                    "upper": float(np.quantile(vector[sampled].mean(1), .975)),
                    "valid_replicates": bootstrap} for name, vector in values.items()}
+        confusion = np.asarray(patient_confusion)[sampled].sum(1)
+        denominator = 2 * confusion[:, 0] + confusion[:, 1] + confusion[:, 2]
+        f1 = np.divide(2 * confusion[:, 0], denominator, out=np.zeros_like(denominator), where=denominator > 0)
+        result["bootstrap"]["f1"] = {"lower": float(np.quantile(f1, .025)),
+            "upper": float(np.quantile(f1, .975)), "valid_replicates": bootstrap}
     return result
 
 
-def _scores(rows, profile, bootstrap=0, seed=0):
+def _scores(rows, profile, bootstrap=0, seed=0, selection_metric="nll", f1_threshold=0.5):
+    if selection_metric not in {"nll", "f1"}:
+        raise ValueError("selection_metric must be nll or f1")
     per_landmark = {}
     for stage in range(4):
         selected = [r for r in rows if r["landmark"] == stage]
         labelled = sum(r["pcr"] is not None for r in selected)
-        per_landmark[f"T{stage}"] = (_score(selected, bootstrap, seed) if labelled else
+        per_landmark[f"T{stage}"] = (_score(selected, bootstrap, seed, f1_threshold) if labelled else
                                       {"n": 0, "missing_labels": len(selected), "nll": None,
-                                       "brier": None, "auroc": None, "auprc": None})
-    patient_equal = _patient_equal_score(rows, bootstrap, seed)
-    metrics = patient_equal if profile == "all_observed" else _score(rows, bootstrap, seed)
-    metric = (_selection_protocol(profile) if isinstance(profile, str) else
-              ("t0_direct_nll" if profile == 0 else f"landmark_T{profile}_direct_nll"))
+                                       "brier": None, "auroc": None, "auprc": None, "f1": None,
+                                       "f1_threshold": f1_threshold})
+    patient_equal = _patient_equal_score(rows, bootstrap, seed, f1_threshold)
+    metrics = patient_equal if profile == "all_observed" else _score(rows, bootstrap, seed, f1_threshold)
+    metric = (_selection_protocol(profile, selection_metric) if isinstance(profile, str) else
+              (f"t0_direct_{selection_metric}" if profile == 0 else f"landmark_T{profile}_direct_{selection_metric}"))
     return {"selection_metric": metric,
-            "selection_score": metrics["nll"], "metrics": metrics,
+            "metric_name": selection_metric, "selection_mode": _selection_mode(selection_metric),
+            "f1_threshold": f1_threshold, "selection_score": metrics[selection_metric], "metrics": metrics,
             "per_landmark": per_landmark, "patient_equal_metrics": patient_equal}
 
 
@@ -227,6 +253,8 @@ def _checkpoint_config_matches(saved, cfg):
                  "diagnostics_batch_size", "diagnostics_seed"):
         normalized.setdefault(name, getattr(defaults, name))
     for name in ("encoder_checkpoint", "encoder_training", "encoder_lr", "initialize_from_checkpoint"):
+        normalized.setdefault(name, getattr(defaults, name))
+    for name in ("prediction_training", "selection_metric", "f1_threshold"):
         normalized.setdefault(name, getattr(defaults, name))
     model_defaults = defaults.to_dict()["model"]
     normalized["model"] = dict(normalized.get("model", {}))
@@ -258,7 +286,7 @@ def _initialize_from_checkpoint(model, cfg, *, data_signature, normalization,
     if state.get("source_snapshot") != source_snapshot:
         raise ValueError("Initialization implementation source differs from the frozen stage")
     if (state.get("protocol") != _protocol(cfg.landmarks) or state.get("landmarks") != cfg.landmarks
-            or state.get("selection_protocol") != _selection_protocol(cfg.landmarks)):
+            or state.get("selection_protocol") != _selection_protocol(cfg.landmarks, cfg.selection_metric)):
         raise ValueError("Initialization population/selection protocol differs from the frozen stage")
     # Only initialization, learning-rate, budget and execution options may change.
     mutable = {"encoder_checkpoint", "encoder_training", "encoder_lr", "initialize_from_checkpoint",
@@ -278,6 +306,8 @@ def _initialize_from_checkpoint(model, cfg, *, data_signature, normalization,
             "source_completed_steps": state["completed_steps"],
             "source_completed_epochs": (state.get("epoch_state") or {}).get("completed_epochs"),
             "source_best_validation_nll": state["best_nll"],
+            "source_selection_metric": saved_cfg.selection_metric,
+            "source_best_selection_score": state.get("best_selection_score", state["best_nll"]),
             "model_weights_loaded": True,
             "optimizer_restored": False, "sampler_restored": False,
             "pretrained_initialization": state.get("initialization")}
@@ -287,7 +317,8 @@ def train(store, cfg, output, *, resume=False, stop_after=None):
     cfg.validate()
     with BatchLoader(store, prefetch_batches=cfg.prefetch_batches, workers=cfg.loader_workers,
                      pin_memory=cfg.pin_memory,
-                     future_supervision=bool(cfg.jepa_weight or cfg.rollout_weight or cfg.flow_weight)) as loader:
+                     future_supervision=bool(cfg.prediction_training == "teacher_forcing"
+                                             or cfg.jepa_weight or cfg.rollout_weight or cfg.flow_weight)) as loader:
         return _train(store, cfg, output, resume=resume, stop_after=stop_after, loader=loader)
 
 
@@ -341,13 +372,16 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
     _configure(model, cfg, cfg.phase(0))
     optimizer = _make_optimizer(model, cfg)
     minimum_rates = [cfg.plateau_min_lr * group["lr"] / cfg.lr for group in optimizer.param_groups]
-    scheduler = (torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min",
+    scheduler = (torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode=_selection_mode(cfg.selection_metric),
                     factor=cfg.plateau_factor, patience=cfg.plateau_patience,
                     min_lr=minimum_rates, threshold=cfg.plateau_threshold,
                     threshold_mode="abs") if cfg.lr_scheduler == "plateau" else None)
     sampler = random.Random(cfg.seed + 1)
-    protocol, selection_protocol = _protocol(cfg.landmarks), _selection_protocol(cfg.landmarks)
+    protocol, selection_protocol = _protocol(cfg.landmarks), _selection_protocol(cfg.landmarks, cfg.selection_metric)
     completed, best_nll, history = 0, float("inf"), []
+    best_score = -float("inf") if cfg.selection_metric == "f1" else float("inf")
+    best_f1 = None
+    best_epoch, best_step = None, None
     epoch_mode = cfg.training_unit == "epochs"
     batches_per_epoch = math.ceil(len(store.by_split["train"]) / cfg.batch_size)
     total_steps = batches_per_epoch * cfg.max_epochs if epoch_mode else cfg.total_steps
@@ -378,6 +412,9 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
         initialization = state.get("initialization")
         optimizer.load_state_dict(state["optimizer"])
         completed, best_nll, history = state["completed_steps"], state["best_nll"], state["history"]
+        best_score = state.get("best_selection_score", best_nll)
+        best_f1 = state.get("best_validation_f1")
+        best_epoch, best_step = state.get("best_epoch"), state.get("best_step")
         if epoch_mode:
             epoch_state, epoch_history = state["epoch_state"], state["epoch_history"]
         if cfg.diagnostics_every_epochs:
@@ -409,6 +446,10 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
                 "model": model.state_dict(), "optimizer": optimizer.state_dict(),
                 "scheduler_state": scheduler.state_dict() if scheduler is not None else None,
                 "completed_steps": completed, "phase": cfg.phase(completed), "best_nll": best_nll,
+                "best_selection_score": best_score, "best_validation_f1": best_f1,
+                "best_epoch": best_epoch, "best_step": best_step,
+                "selection_metric": cfg.selection_metric, "selection_mode": _selection_mode(cfg.selection_metric),
+                "f1_threshold": cfg.f1_threshold, "prediction_training": cfg.prediction_training,
                 "history": history, "rng": _training_rng(cfg.device), "sampler_state": sampler.getstate(),
                 "source_snapshot": source_snapshot, "patient_partitions": partitions,
                 "data_signature": data_signature, "normalization": normalization,
@@ -435,6 +476,11 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
             "lr_scheduler": cfg.lr_scheduler, "current_lr": optimizer.param_groups[0]["lr"],
             "learning_rates": _learning_rates(optimizer), **_encoder_training_state(model, cfg),
             "best_validation_nll": best_nll if math.isfinite(best_nll) else None,
+            "best_selection_score": best_score if math.isfinite(best_score) else None,
+            "best_validation_f1": best_f1, "selection_metric": cfg.selection_metric,
+            "best_epoch": best_epoch, "best_step": best_step,
+            "selection_mode": _selection_mode(cfg.selection_metric), "f1_threshold": cfg.f1_threshold,
+            "prediction_training": cfg.prediction_training,
             "last_epoch": epoch_history[-1] if epoch_history else None,
             "last_step": history[-1] if history else None, "stop_reason": stop_reason,
         })
@@ -479,7 +525,8 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
                 loss, terms = model.compute_loss(inp, sup, task_weight=cfg.task_weight,
                     jepa_weight=cfg.jepa_weight, rollout_weight=cfg.rollout_weight, flow_weight=cfg.flow_weight,
                     reconstruction_weight=cfg.reconstruction_weight, variance_weight=cfg.variance_weight,
-                    representation_only=phase == "representation", variance_definition=cfg.variance_definition)
+                    representation_only=phase == "representation", variance_definition=cfg.variance_definition,
+                    prediction_training=cfg.prediction_training)
             if not torch.isfinite(loss):
                 raise FloatingPointError(f"Non-finite VLA-JEPA loss at step {completed + 1}")
             (loss / cfg.accumulation).backward()
@@ -500,6 +547,7 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
         update_norm = (float(torch.stack([(p.detach().float() - before.float()).square().sum()
                        for p, before in zip(update_parameters, before_update, strict=True)]).sum().sqrt())
                        if sample_update else None)
+        del before_update, update_parameters
         if not frozen:
             model.update_teacher()
         completed += 1
@@ -532,15 +580,22 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
         if validate:
             rows = _rows(model, store, split="val", profile=cfg.landmarks,
                          batch_size=cfg.validation_batch_size, device=cfg.device)
-            scores = _scores(rows, cfg.landmarks)
+            scores = (_scores(rows, cfg.landmarks) if cfg.selection_metric == "nll" and cfg.f1_threshold == .5 else
+                      _scores(rows, cfg.landmarks, selection_metric=cfg.selection_metric, f1_threshold=cfg.f1_threshold))
             entry["validation"] = scores
             if not math.isfinite(scores["selection_score"]):
-                raise FloatingPointError("Non-finite profile-matched validation NLL")
+                raise FloatingPointError("Non-finite profile-matched validation selection score")
             if scheduler is not None:
                 scheduler.step(scores["selection_score"])
             min_delta = cfg.early_stopping_min_delta if epoch_mode else 0.0
-            if scores["selection_score"] < best_nll - min_delta:
-                best_nll, improved = scores["selection_score"], True
+            value = scores["selection_score"]
+            if ((value > best_score + min_delta) if cfg.selection_metric == "f1"
+                    else (value < best_score - min_delta)):
+                best_score, improved = value, True
+                best_nll = scores["metrics"]["nll"]
+                best_f1 = scores["metrics"].get("f1")
+                best_step = completed
+                best_epoch = epoch_state["completed_epochs"] + 1 if epoch_mode else None
         if epoch_finished:
             loader.finish_epoch()
             next_lr = optimizer.param_groups[0]["lr"]
@@ -566,7 +621,11 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
                                   **_encoder_training_state(model, cfg),
                                   "lr_reduced": next_lr < lr_used, "lr_scheduler": cfg.lr_scheduler,
                                   "training": training_terms, "validation": scores,
-                                  "best_validation_nll": best_nll, "improved": improved,
+                                  "best_validation_nll": best_nll, "best_selection_score": best_score,
+                                  "best_validation_f1": best_f1, "selection_metric": cfg.selection_metric,
+                                  "selection_mode": _selection_mode(cfg.selection_metric),
+                                  "f1_threshold": cfg.f1_threshold, "prediction_training": cfg.prediction_training,
+                                  "improved": improved,
                                   "bad_epochs": epoch_state["bad_epochs"]})
             if cfg.diagnostics_every_epochs and epoch_state["completed_epochs"] % cfg.diagnostics_every_epochs == 0:
                 from .diagnostics import run_training_probe
@@ -608,6 +667,11 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
               "landmarks": cfg.landmarks, "selection_protocol": selection_protocol,
               "selection_split": "val", "independent_test": False,
               "best_validation_nll": best_nll if math.isfinite(best_nll) else None,
+              "best_selection_score": best_score if math.isfinite(best_score) else None,
+              "best_validation_f1": best_f1, "selection_metric": cfg.selection_metric,
+              "best_epoch": best_epoch, "best_step": best_step,
+              "selection_mode": _selection_mode(cfg.selection_metric), "f1_threshold": cfg.f1_threshold,
+              "prediction_training": cfg.prediction_training,
               "last_checkpoint": str(last), "best_checkpoint": str(out / "best.pt") if (out / "best.pt").exists() else None,
               "synthetic": bool(store.manifest.get("synthetic", False))}
     write_json(out / "train_report.json", report)
@@ -625,7 +689,7 @@ def load_trained(checkpoint, device="cpu"):
     if state["schema"] == CHECKPOINT_SCHEMA and not _checkpoint_config_matches(state["config"], cfg):
         raise ValueError("Checkpoint configuration snapshot mismatch")
     if (state.get("protocol") != _protocol(cfg.landmarks) or state.get("landmarks") != cfg.landmarks
-            or state.get("selection_protocol") != _selection_protocol(cfg.landmarks)):
+            or state.get("selection_protocol") != _selection_protocol(cfg.landmarks, cfg.selection_metric)):
         raise ValueError("Checkpoint pCR selection protocol mismatch")
     model = RawVLAJEPA(cfg.model).to(device)
     model.load_state_dict(state["model"], strict=True)
@@ -661,7 +725,7 @@ def evaluate(checkpoint, manifest, output, *, split="test", device="cpu", allow_
               "selection_protocol": state["selection_protocol"], "split": split,
               "independent_test": split == "test", "synthetic": bool(store.manifest.get("synthetic", False)),
               "clinical_validation": False if store.manifest.get("synthetic", False) else None,
-              **_scores(rows, profile, bootstrap, cfg.seed), "rows": rows}
+              **_scores(rows, profile, bootstrap, cfg.seed, cfg.selection_metric, cfg.f1_threshold), "rows": rows}
     write_json(output, report)
     Path(output).chmod(0o600)
     return report
@@ -689,6 +753,7 @@ def predict(checkpoint, manifest, patient_key, output, *, landmark=0, device="cp
         probability = float(features["pcr_logit"].float().sigmoid()[0])
     report = {"patient_key": store.patients[matches[0]]["patient_key"], "landmark": landmark,
               "pcr_probability": probability, "protocol": "direct_pcr", "checkpoint_landmarks": cfg.landmarks,
+              "phase_order": list(selected_phases(cfg.model)),
               "observed_stages": inp.observed_mask[0].nonzero().flatten().cpu().tolist(),
               "requested_stages": inp.query_mask[0].nonzero().flatten().cpu().tolist(),
               "arm_semantics": store.patients[matches[0]]["arm"]["semantics"],
@@ -699,7 +764,8 @@ def predict(checkpoint, manifest, patient_key, output, *, landmark=0, device="cp
         state_path = Path(output).with_suffix(".states.npz")
         state_path.parent.mkdir(parents=True, exist_ok=True)
         np.savez_compressed(state_path, state_prediction=forecast["state_prediction"].cpu().numpy(),
-                            query_mask=forecast["query_mask"].cpu().numpy())
+                            query_mask=forecast["query_mask"].cpu().numpy(),
+                            phase_order=np.asarray(report["phase_order"]))
         report["forecast_states"] = str(state_path.resolve())
         report["forecast_shape"] = list(forecast["state_prediction"].shape)
     if generate:
@@ -712,6 +778,7 @@ def predict(checkpoint, manifest, patient_key, output, *, landmark=0, device="cp
         np.savez_compressed(image_path, future_images=generated["future_images"].cpu().numpy(),
                             query_mask=generated["query_mask"].cpu().numpy(),
                             dynamics_features=features["dynamics_features"].cpu().numpy(),
+                            phase_order=np.asarray(report["phase_order"]),
                             normalization=store.normalization_state()["intensity"])
         report["generated_mri"] = str(image_path.resolve())
         report["generated_shape"] = list(generated["future_images"].shape)

@@ -61,30 +61,45 @@ def _groups(names):
 
 
 def weighted_gradient_metrics(model, terms, weights):
-    """autograd.grad leaves existing parameter .grad values untouched."""
+    """Read objective gradients without duplicating full parameter vectors.
+
+    Only the shared task gradients are retained for task/auxiliary cosines.
+    Computing grouped scalar sums keeps this probe practical for large models;
+    autograd.grad leaves existing parameter .grad values untouched.
+    """
     named = [(name, p) for name, p in model.named_parameters() if p.requires_grad]
     names, parameters = zip(*named)
     groups = _groups(names)
-    gradients = {}
-    for key, weight in weights.items():
+    shared = set(groups["shared_encoder_fusion"])
+    task_gradients = {}
+    norms, cosines = {}, {}
+    # Compute the reference first even if a caller supplies a different order.
+    keys = ["task"] + [key for key in weights if key != "task"]
+    for key in keys:
+        weight = weights[key]
         value = weight * terms[key]
-        gradients[key] = (torch.autograd.grad(value, parameters, retain_graph=True, allow_unused=True)
-                          if weight and value.requires_grad else (None,) * len(parameters))
-    vectors = {key: {group: torch.cat([(grads[i].detach().float() if grads[i] is not None
-                    else torch.zeros_like(parameters[i], dtype=torch.float32)).flatten()
-                    for i in indices]) if indices else parameters[0].new_zeros(0)
-                    for group, indices in groups.items()} for key, grads in gradients.items()}
-    norms = {key: {group: float(torch.linalg.vector_norm(vector))
-                  for group, vector in values.items()} for key, values in vectors.items()}
-    cosines = {}
-    for key in weights:
+        gradients = (torch.autograd.grad(value, parameters, retain_graph=True, allow_unused=True)
+                     if weight and value.requires_grad else (None,) * len(parameters))
+        squared = {index: gradient.detach().float().square().sum()
+                   for index, gradient in enumerate(gradients) if gradient is not None}
+        norms[key] = {}
+        for group, indices in groups.items():
+            values = [squared[index] for index in indices if index in squared]
+            norms[key][group] = float(torch.stack(values).sum().sqrt()) if values else 0.
         if key == "task":
+            task_gradients = {index: gradients[index].detach()
+                              for index in shared if gradients[index] is not None}
             continue
         cosines[key] = {}
+        dots = {index: (gradient.detach().float() * task_gradients[index].float()).sum()
+                for index, gradient in enumerate(gradients)
+                if gradient is not None and index in task_gradients}
         for group in ("encoder", "fusion", "shared_encoder_fusion"):
             denominator = norms["task"][group] * norms[key][group]
-            cosines[key][group] = (float(torch.dot(vectors["task"][group], vectors[key][group]))
-                                  / denominator if denominator else None)
+            values = [dots[index] for index in groups[group] if index in dots]
+            numerator = float(torch.stack(values).sum()) if values else 0.
+            cosines[key][group] = numerator / denominator if denominator else None
+        del gradients
     finite = all(math.isfinite(value) for values in norms.values() for value in values.values())
     if not finite:
         raise ValueError("Non-finite fixed-probe gradients")
@@ -267,6 +282,11 @@ def _teacher_drift(states, mask, previous):
             "adjacent_copy_change_l1": float(delta[counts > 0].mean()) if bool((counts > 0).any()) else None}
 
 
+def _world_head_trained(cfg):
+    return bool(cfg.jepa_weight or cfg.rollout_weight or cfg.flow_weight or
+                (cfg.task_weight and cfg.model.pcr_readout == "forecast"))
+
+
 def run_training_probe(model, store, cfg, epoch, tasks, previous=None):
     """Return a public aggregate and small private CPU teacher state for resume."""
     tasks = tuple((int(index), int(stage)) for index, stage in tasks)
@@ -279,7 +299,10 @@ def run_training_probe(model, store, cfg, epoch, tasks, previous=None):
     weights = {key: getattr(cfg, key + "_weight") for key in ("task", "jepa", "reconstruction", "variance", "flow")}
     if cfg.rollout_weight:
         weights["rollout"] = cfg.rollout_weight
-    world_enabled = bool(cfg.jepa_weight or cfg.rollout_weight or cfg.flow_weight)
+    world_enabled = _world_head_trained(cfg)
+    future_supervision = world_enabled or bool(
+        cfg.prediction_training == "teacher_forcing" and cfg.task_weight and
+        model.cfg.pcr_readout in {"forecast", "forecast_detach"})
     gradients, nll, online, teachers, masks, observed_masks, landmarks, world_rows = [], [], [], [], [], [], [], []
     with preserve_training_state(model):
         if cfg.flow_weight:
@@ -288,10 +311,11 @@ def run_training_probe(model, store, cfg, epoch, tasks, previous=None):
                 torch.cuda.manual_seed_all(cfg.diagnostics_seed)
         for offset in range(0, len(tasks), cfg.diagnostics_batch_size):
             chunk = tasks[offset:offset + cfg.diagnostics_batch_size]
-            inp, sup = store.batch(chunk, future_supervision=world_enabled)
+            inp, sup = store.batch(chunk, future_supervision=future_supervision)
             inp, sup = inp.to(cfg.device), sup.to(cfg.device)
             with torch.enable_grad(), autocast(cfg.device, cfg.precision):
                 loss, terms = model.compute_loss(inp, sup, variance_definition=cfg.variance_definition,
+                    prediction_training=cfg.prediction_training,
                     **{key + "_weight": value for key, value in weights.items()})
                 gradients.append({"patients": len(chunk), **weighted_gradient_metrics(model, terms, weights)})
             del loss, terms
@@ -322,7 +346,7 @@ def run_training_probe(model, store, cfg, epoch, tasks, previous=None):
         "teacher_drift": _teacher_drift(states, known, previous),
         "world": aggregate_world_errors(world_rows) if world_enabled else
                  {"status": "unavailable", "world_head_trained": False,
-                  "reason": "JEPA and flow disabled; world predictor is untrained"},
+                  "reason": "No world objective or differentiable forecast classifier is enabled"},
         "world_head_trained": world_enabled,
         "teacher_frozen": all(not p.requires_grad and p.grad is None for p in model.teacher_encoder.parameters()),
         "rng_and_module_modes_preserved": True}
@@ -336,9 +360,9 @@ def evaluate_world(model, store, cfg, *, split="val", batch_size=16):
         raise ValueError("World evaluation requires a nonempty valid split")
     if type(batch_size) is not int or batch_size < 1:
         raise ValueError("World evaluation batch size must be positive")
-    if not (cfg.jepa_weight or cfg.rollout_weight or cfg.flow_weight):
+    if not _world_head_trained(cfg):
         return {"status": "unavailable", "world_head_trained": False,
-                "reason": "JEPA and flow disabled; world predictor is untrained",
+                "reason": "No world objective or differentiable forecast classifier is enabled",
                 "split": split, "patients": len(store.by_split[split])}
     tasks = [(i, stage) for i in store.by_split[split]
              for stage in ([0] if cfg.landmarks == "t0" else store.allowed_landmarks(i))]

@@ -339,5 +339,5 @@ def test_packaged_default_smoke_from_external_directory(tmp_path):
         'model.py', 'model_config.py', 'encoder.py', 'flow.py', 'training.py',
         'train_config.py', 'cli.py', 'data.py', 'contracts.py', 'constants.py',
         'arm.py', 'io.py', 'metrics.py', 'data_pipeline.py', 'diagnostics.py',
-        'vq_encoder.py',
+        'vq_encoder.py', 'attention.py', 'phases.py',
     }

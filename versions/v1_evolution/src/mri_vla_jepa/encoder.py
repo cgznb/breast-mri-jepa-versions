@@ -9,6 +9,8 @@ from torch.nn import functional as F
 from torch.utils.checkpoint import checkpoint
 
 from .vq_encoder import VQContinuousFrontend
+from .attention import build_transformer
+from .phases import phase_indices, select_phases
 
 
 def _groups(channels):
@@ -75,26 +77,24 @@ class VisitMRIEncoder(nn.Module):
     def __init__(self, cfg):
         super().__init__()
         self.grid = tuple(cfg.token_grid)
+        self.mri_phases = cfg.mri_phases
+        self.phase_indices = phase_indices(cfg)
         hidden = max(8, cfg.dim // 2)
         self.stem = nn.Sequential(
-            nn.Conv3d(3, hidden, 3, stride=2, padding=1),
+            nn.Conv3d(len(self.phase_indices), hidden, 3, stride=2, padding=1),
             nn.GroupNorm(_groups(hidden), hidden), nn.GELU(),
             nn.Conv3d(hidden, cfg.dim, 3, stride=2, padding=1),
             nn.GroupNorm(_groups(cfg.dim), cfg.dim), nn.GELU(),
             _SpatialGridPool(self.grid),
         )
         self.position = nn.Parameter(torch.randn(1, math.prod(self.grid), cfg.dim) * .02)
-        layer = nn.TransformerEncoderLayer(
-            cfg.dim, cfg.heads, cfg.dim * 4, cfg.dropout,
-            activation="gelu", batch_first=True, norm_first=True,
-        )
-        self.spatial = nn.TransformerEncoder(layer, cfg.encoder_depth,
-                                             enable_nested_tensor=False)
+        self.spatial = build_transformer(cfg, cfg.encoder_depth)
         self.norm = nn.LayerNorm(cfg.dim)
 
     def forward(self, images, lesion_weights=None):
         if images.ndim != 5 or images.shape[1] != 3:
             raise ValueError("Visit encoder expects [visits,3,D,H,W]")
+        images = select_phases(images, self.mri_phases)
         if lesion_weights is None:
             features = self.stem(images)
         else:
@@ -118,17 +118,14 @@ class VQVisitMRIEncoder(nn.Module):
     def __init__(self, cfg):
         super().__init__()
         self.grid = tuple(cfg.token_grid)
+        self.mri_phases = cfg.mri_phases
+        self.phase_indices = phase_indices(cfg)
         self.frontend = VQContinuousFrontend(cfg)
         self.activation_checkpointing = cfg.vq_activation_checkpointing
         self.pool = _SpatialGridPool(self.grid)
-        self.projection = nn.Conv3d(3 * self.frontend.output_channels, cfg.dim, 1)
+        self.projection = nn.Conv3d(len(self.phase_indices) * self.frontend.output_channels, cfg.dim, 1)
         self.position = nn.Parameter(torch.randn(1, math.prod(self.grid), cfg.dim) * .02)
-        layer = nn.TransformerEncoderLayer(
-            cfg.dim, cfg.heads, cfg.dim * 4, cfg.dropout,
-            activation="gelu", batch_first=True, norm_first=True,
-        )
-        self.spatial = nn.TransformerEncoder(layer, cfg.encoder_depth,
-                                             enable_nested_tensor=False)
+        self.spatial = build_transformer(cfg, cfg.encoder_depth)
         self.norm = nn.LayerNorm(cfg.dim)
         self.set_pretrained_trainable(False)
 
@@ -161,6 +158,7 @@ class VQVisitMRIEncoder(nn.Module):
     def forward(self, images, lesion_weights=None):
         if images.ndim != 5 or images.shape[1] != 3:
             raise ValueError("Visit encoder expects [visits,3,D,H,W]")
+        images = select_phases(images, self.mri_phases)
         # Each phase uses the same one-channel pretrained convolution weights.
         # Frozen features keep no autograd graph; adapters still receive grads.
         context = nullcontext() if self.pretrained_trainable else torch.no_grad()

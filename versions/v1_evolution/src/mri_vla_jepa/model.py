@@ -1,8 +1,7 @@
-"""Prefix-only VLA JEPA, with optional autonomous-state pCR readouts.
+"""VLA JEPA with explicit training prediction policy and prefix-only inference.
 
-Legacy defaults retain the direct classifier. Evolution experiments separate
-output requests from transition slots, and classify autonomous predictions in
-the EMA teacher's coordinates. Teacher-forced targets never enter a classifier.
+Teacher forcing can share parallel predictions between JEPA and pCR during
+training. Public prediction APIs always use observed history and free rollout.
 """
 from __future__ import annotations
 
@@ -18,6 +17,8 @@ from .contracts import RawMRIInput, RawMRISupervision
 from .model_config import RawJEPAConfig, RawVLAJEPAConfig
 from .encoder import build_visit_encoder
 from .flow import ConditionalMRIFlow
+from .attention import build_transformer
+from .phases import selected_phases, select_phases
 
 
 
@@ -48,10 +49,7 @@ class TimeCausalWorldPredictor(nn.Module):
         self.query_position = nn.Parameter(torch.randn(1, self.queries, cfg.dim) * .02)
         self.time = nn.Embedding(3, cfg.dim)
         self.root = nn.Parameter(torch.randn(1, 1, cfg.dim) * .02)
-        layer = nn.TransformerEncoderLayer(cfg.dim, cfg.heads, cfg.dim * 4, cfg.dropout,
-                                           activation="gelu", batch_first=True, norm_first=True)
-        self.blocks = nn.TransformerEncoder(layer, cfg.predictor_depth,
-                                             enable_nested_tensor=False)
+        self.blocks = build_transformer(cfg, cfg.predictor_depth)
         self.output = nn.Sequential(nn.LayerNorm(cfg.dim), nn.Linear(cfg.dim, cfg.dim))
         if self.residual:
             nn.init.zeros_(self.output[-1].weight)
@@ -115,15 +113,12 @@ class RawVLAJEPA(nn.Module):
         # Slot 0 is unused; slot t conditions the transition (t-1) -> t.
         self.dynamics_queries = nn.Parameter(torch.randn(4, cfg.state_queries, cfg.dim) * .02)
         self.pcr_queries = nn.Parameter(torch.randn(cfg.pcr_queries, cfg.dim) * .02)
-        layer = nn.TransformerEncoderLayer(cfg.dim, cfg.heads, cfg.dim * 4, cfg.dropout,
-                                           activation="gelu", batch_first=True, norm_first=True)
-        self.fusion = nn.TransformerEncoder(layer, cfg.fusion_depth,
-                                             enable_nested_tensor=False)
+        self.fusion = build_transformer(cfg, cfg.fusion_depth)
         self.fusion_norm = nn.LayerNorm(cfg.dim)
         readout_dim = cfg.dim if cfg.pcr_readout == "direct" else 3 * cfg.dim
         self.pcr_head = nn.Sequential(nn.LayerNorm(readout_dim), nn.Linear(readout_dim, 1))
         self.world_predictor = TimeCausalWorldPredictor(cfg)
-        self.reconstruction = nn.Conv3d(cfg.dim, 3, 1)
+        self.reconstruction = nn.Conv3d(cfg.dim, len(selected_phases(cfg)), 1)
         self.flow = ConditionalMRIFlow(cfg) if cfg.enable_flow else None
 
     def train(self, mode=True):
@@ -258,31 +253,79 @@ class RawVLAJEPA(nn.Module):
 
         For landmark k only transitions j>=k and requested j+1 are active.
         Missing target or source removes that pair; no invented adjacent visit.
-        The teacher-forced predictions never condition the pCR branch.
+        This explicit diagnostic API computes the JEPA objective only. Training
+        may additionally share its predictions with the pCR head.
         """
         inp.validate()
         sup.validate(inp)
         return self._teacher_forcing_loss(inp, sup, dynamics, return_details)
 
     def _teacher_forcing_loss(self, inp, sup, dynamics, return_details=False):
+        details = self._teacher_forcing_predictions(inp, sup, dynamics)
+        loss = self._teacher_forcing_objective(inp, dynamics, details)
+        return (loss, details) if return_details else loss
+
+    def _teacher_forcing_predictions(self, inp, sup, dynamics, *, teacher=None):
+        """Encode true states once and predict all valid source blocks together."""
         expected = (len(inp.images), 4, self.cfg.state_queries, self.cfg.dim)
         if dynamics.shape != expected:
             raise ValueError("Dynamics must have shape [B,4,K,dim]")
-        states, known = self._teacher_states(inp, sup)
+        states, known = self._teacher_states(inp, sup) if teacher is None else teacher
         stage = torch.arange(3, device=inp.images.device)[None]
         source_mask = known[:, :-1] & (stage >= inp.landmark[:, None]) & inp.query_mask[:, 1:]
         pair_mask = source_mask & known[:, 1:]
-        prediction = self._predict_world(states, dynamics, source_mask, known)
-        pair_losses = self._state_l1(prediction, states[:, 1:], inp)
+        # Terminal prefixes and empty requests need no world-model forward.
+        prediction = (self._predict_world(states, dynamics, source_mask, known)
+                      if bool(source_mask.any()) else states[:, 1:] * 0 + dynamics.sum() * 0)
+        return {"prediction": prediction, "pair_mask": pair_mask,
+                "source_mask": source_mask, "teacher_states": states,
+                "source_states": states[:, :-1], "targets": states[:, 1:],
+                "known_mask": known}
+
+    def _teacher_forcing_objective(self, inp, dynamics, details):
+        pair_mask = details["pair_mask"]
+        pair_losses = self._state_l1(details["prediction"], details["targets"], inp)
+        details["pair_losses"] = pair_losses
         pair_counts = pair_mask.sum(1)
         patient_loss = pair_losses.masked_fill(~pair_mask, 0).sum(1) / pair_counts.clamp_min(1)
-        loss = patient_loss[pair_counts > 0].mean() if (pair_counts > 0).any() else dynamics.sum() * 0
-        if return_details:
-            return loss, {"prediction": prediction, "pair_mask": pair_mask,
-                          "source_mask": source_mask, "teacher_states": states,
-                          "source_states": states[:, :-1], "targets": states[:, 1:],
-                          "pair_losses": pair_losses, "known_mask": known}
-        return loss
+        return patient_loss[pair_counts > 0].mean() if (pair_counts > 0).any() else dynamics.sum() * 0
+
+    def _teacher_forced_readout(self, inp, output, teacher, details=None):
+        """Classify shared TF predictions, falling back only to observed states.
+
+        A valid source can produce a pCR prediction even without a true target;
+        pair validity is exclusively a JEPA supervision constraint.
+        """
+        pcr_features = output["pcr_features"].mean(1)
+        if self.cfg.pcr_readout == "direct":
+            output["pcr_logit"] = self.pcr_head(pcr_features).squeeze(-1)
+            return output
+        states, _ = teacher
+        latest = self._latest_stage(inp)
+        rows = torch.arange(len(inp.images), device=inp.images.device)
+        current = states[rows, latest]
+        terminal, read_stage = current, latest
+        fallback = torch.ones_like(latest, dtype=torch.bool)
+        if self.cfg.pcr_readout != "copy":
+            if details is None:
+                raise ValueError("Forecast training readout requires teacher-forced predictions")
+            candidates = torch.arange(1, 4, device=inp.images.device)[None]
+            predicted_stage = candidates.expand_as(details["source_mask"]).masked_fill(
+                ~details["source_mask"], -1).max(1).values
+            fallback = predicted_stage < 0
+            # A masked gather would still read a prediction for fallback rows;
+            # keep the observed terminal state explicit instead.
+            terminal = current.clone()
+            active = ~fallback
+            terminal[active] = details["prediction"][
+                rows[active], predicted_stage[active] - 1].to(terminal.dtype)
+            read_stage = torch.where(fallback, latest, predicted_stage)
+            if self.cfg.pcr_readout == "forecast_detach":
+                terminal = terminal.detach()
+        features = torch.cat((pcr_features, terminal.mean(1), (terminal - current).mean(1)), -1)
+        output.update(pcr_logit=self.pcr_head(features).squeeze(-1), pcr_state_features=features,
+                      pcr_read_stage=read_stage, pcr_observation_fallback=fallback)
+        return output
 
     @staticmethod
     def _source_history(states, known):
@@ -433,7 +476,8 @@ class RawVLAJEPA(nn.Module):
     def compute_loss(self, inp: RawMRIInput, sup: RawMRISupervision, *,
                      task_weight=1., jepa_weight=1., flow_weight=.1,
                      reconstruction_weight=.1, variance_weight=.01,
-                     representation_only=False, variance_definition="legacy", rollout_weight=0.):
+                     representation_only=False, variance_definition="legacy", rollout_weight=0.,
+                     prediction_training="hybrid"):
         inp.validate()
         weights = (task_weight, jepa_weight, flow_weight, reconstruction_weight, variance_weight,
                    rollout_weight)
@@ -443,19 +487,43 @@ class RawVLAJEPA(nn.Module):
             raise ValueError("Unsupported variance_definition")
         if variance_definition == "off" and variance_weight:
             raise ValueError("variance_definition=off requires variance_weight=0")
+        if prediction_training not in {"hybrid", "teacher_forcing"}:
+            raise ValueError("prediction_training must be teacher_forcing or hybrid")
+        teacher_forcing = prediction_training == "teacher_forcing"
+        if teacher_forcing and rollout_weight:
+            raise ValueError("teacher_forcing requires rollout_weight=0; autonomous training is hybrid")
+        classify = not representation_only and bool(task_weight) and bool(sup.label_mask.any())
+        tf_forecast = (teacher_forcing and classify and
+                       self.cfg.pcr_readout in {"forecast", "forecast_detach"})
         sup.validate(inp, future_values=bool(jepa_weight or rollout_weight or
+                     tf_forecast or
                      (self.flow is not None and flow_weight and not representation_only)))
-        output, observed = self._backbone(inp, validated=True)
+        output, observed = self._backbone(inp, validated=True, classify=not teacher_forcing)
         zero = observed.sum() * 0
         task = world = rollout = flow = reconstruction = variance = zero
         pair_count = zero.detach()
         rollout_count = zero.detach()
+        details = None
+        if teacher_forcing:
+            flow_enabled = bool(self.flow is not None and flow_weight and not representation_only)
+            needs_prediction = bool(jepa_weight or tf_forecast or flow_enabled)
+            needs_teacher = needs_prediction or (classify and self.cfg.pcr_readout != "direct")
+            teacher = (self._teacher_states(inp, sup) if needs_prediction else
+                       self._observed_teacher_states(inp) if needs_teacher else None)
+            if needs_prediction:
+                details = self._teacher_forcing_predictions(
+                    inp, sup, output["dynamics_features"], teacher=teacher)
+            if classify:
+                self._teacher_forced_readout(inp, output, teacher, details)
         if not representation_only and task_weight and sup.label_mask.any():
             task = F.binary_cross_entropy_with_logits(output["pcr_logit"][sup.label_mask],
                                                       sup.label[sup.label_mask].to(observed.dtype))
         if jepa_weight:
-            world, details = self._teacher_forcing_loss(inp, sup, output["dynamics_features"],
-                                                       return_details=True)
+            if teacher_forcing:
+                world = self._teacher_forcing_objective(inp, output["dynamics_features"], details)
+            else:
+                world, details = self._teacher_forcing_loss(inp, sup, output["dynamics_features"],
+                                                           return_details=True)
             pair_count = details["pair_mask"].sum().to(observed.dtype)
         if rollout_weight:
             rollout, details = self.autonomous_rollout_loss(
@@ -466,30 +534,47 @@ class RawVLAJEPA(nn.Module):
             spatial = observed.transpose(1, 2).reshape(len(observed), self.cfg.dim, *self.cfg.token_grid)
             reconstructed = F.interpolate(self.reconstruction(spatial), size=inp.images.shape[-3:],
                                             mode="trilinear", align_corners=False)
-            reconstruction = F.mse_loss(reconstructed, inp.images[inp.observed_mask].detach())
+            reconstruction = F.mse_loss(
+                reconstructed, select_phases(inp.images[inp.observed_mask], self.cfg).detach())
         if variance_weight:
             variance = self.variance_penalty(observed, inp.observed_mask, variance_definition)
         if not representation_only and self.flow is not None and flow_weight and sup.future_mask.any():
-            # Never feed teacher-forced future predictions to FM conditions.
-            forecast = self._rollout(inp, output["dynamics_features"])
-            selected = sup.future_mask
-            x1 = sup.future[selected].detach()
-            x0 = torch.randn_like(x1)
-            tau = torch.rand(len(x1), device=x1.device, dtype=x1.dtype)
-            t = tau[:, None, None, None, None]
-            x_tau = (1 - t) * x0 + t * x1
-            source = self._latest_mri(inp)[:, None].expand(-1, 4, -1, -1, -1, -1)[selected]
-            stage = torch.arange(4, device=x1.device)[None].expand(len(inp.images), -1)[selected]
-            velocity = self.flow(x_tau, tau, source, forecast[selected], stage)
-            flow = F.mse_loss(velocity, x1 - x0)
+            selected = sup.future_mask.clone()
+            if teacher_forcing:
+                selected[:, 0] = False
+                selected[:, 1:] &= details["pair_mask"]
+                forecast = details["prediction"]
+            else:
+                forecast = self._rollout(inp, output["dynamics_features"])
+            if bool(selected.any()):
+                x1 = select_phases(sup.future[selected], self.cfg).detach()
+                x0 = torch.randn_like(x1)
+                tau = torch.rand(len(x1), device=x1.device, dtype=x1.dtype)
+                t = tau[:, None, None, None, None]
+                x_tau = (1 - t) * x0 + t * x1
+                source = select_phases(self._latest_mri(inp), self.cfg)
+                source = source[:, None].expand(-1, 4, -1, -1, -1, -1)[selected]
+                stage = torch.arange(4, device=x1.device)[None].expand(len(inp.images), -1)[selected]
+                latent = forecast[selected[:, 1:]] if teacher_forcing else forecast[selected]
+                velocity = self.flow(x_tau, tau, source, latent, stage)
+                flow = F.mse_loss(velocity, x1 - x0)
         loss = (task_weight * task + jepa_weight * world + rollout_weight * rollout + flow_weight * flow
                 + reconstruction_weight * reconstruction + variance_weight * variance)
-        return loss, {"loss": loss, "task": task, "jepa": world, "world_model": world,
+        terms = {"loss": loss, "task": task, "jepa": world, "world_model": world,
                       "rollout": rollout,
                       "flow": flow, "reconstruction": reconstruction, "variance": variance,
                       "label_count": sup.label_mask.sum().to(observed.dtype),
                       "future_count": sup.future_mask.sum().to(observed.dtype),
                       "pair_count": pair_count, "rollout_count": rollout_count}
+        if teacher_forcing:
+            stage = output.get("pcr_read_stage")
+            for index in range(4):
+                terms[f"pcr_stage_T{index}_count"] = (
+                    (stage == index).sum().to(observed.dtype) if stage is not None else zero.detach())
+            fallback = output.get("pcr_observation_fallback")
+            terms["pcr_observation_fallback_count"] = (
+                fallback.sum().to(observed.dtype) if fallback is not None else zero.detach())
+        return loss, terms
 
     @staticmethod
     def variance_penalty(observed, observed_mask, definition="legacy"):
@@ -539,13 +624,14 @@ class RawVLAJEPA(nn.Module):
         try:
             output = self.forecast(inp)
             selected = inp.query_mask
-            images = torch.zeros_like(inp.images)
+            images = torch.zeros_like(select_phases(inp.images, self.cfg))
             if selected.any():
                 noise_device = "cpu" if inp.images.device.type == "mps" else inp.images.device
                 generator = torch.Generator(device=noise_device).manual_seed(seed)
-                value = torch.randn(inp.images[selected].shape, dtype=inp.images.dtype,
+                value = torch.randn(images[selected].shape, dtype=inp.images.dtype,
                                     device=noise_device, generator=generator).to(inp.images.device)
-                source = self._latest_mri(inp)[:, None].expand(-1, 4, -1, -1, -1, -1)[selected]
+                source = select_phases(self._latest_mri(inp), self.cfg)
+                source = source[:, None].expand(-1, 4, -1, -1, -1, -1)[selected]
                 future = output["state_prediction"][selected]
                 stage = torch.arange(4, device=inp.images.device)[None].expand(len(inp.images), -1)[selected]
                 dt = 1 / steps
@@ -558,6 +644,6 @@ class RawVLAJEPA(nn.Module):
                     value = value + dt * velocity
                 images[selected] = value
             return {"future_images": images, "pcr_probability": output["pcr_logit"].sigmoid(),
-                    "query_mask": inp.query_mask.clone()}
+                    "query_mask": inp.query_mask.clone(), "phase_order": list(selected_phases(self.cfg))}
         finally:
             self.train(training)
