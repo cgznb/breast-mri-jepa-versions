@@ -104,26 +104,44 @@ class RawVLAJEPA(nn.Module):
         super().__init__()
         self.cfg = cfg.validate()
         self.encoder = build_visit_encoder(cfg)
-        self.teacher_encoder = copy.deepcopy(self.encoder).requires_grad_(False)
-        self.teacher_encoder.eval()
+        self.teacher_encoder = (copy.deepcopy(self.encoder).requires_grad_(False)
+                                if cfg.enable_world_model else None)
+        if self.teacher_encoder is not None:
+            self.teacher_encoder.eval()
         self.stage = nn.Embedding(4, cfg.dim)
         self.clinical = nn.Linear(2 * cfg.clinical_dim, cfg.dim)
         self.arm = nn.Embedding(14, cfg.dim)
         self.arm_known_at = nn.Embedding(4, cfg.dim)
         # Slot 0 is unused; slot t conditions the transition (t-1) -> t.
-        self.dynamics_queries = nn.Parameter(torch.randn(4, cfg.state_queries, cfg.dim) * .02)
+        if cfg.enable_world_model:
+            self.dynamics_queries = nn.Parameter(torch.randn(4, cfg.state_queries, cfg.dim) * .02)
+        else:
+            # Preserve shared pCR-query/fusion initialization in paired ablations
+            # without retaining any world-model parameter or module.
+            torch.randn(4, cfg.state_queries, cfg.dim)
+            self.dynamics_queries = None
         self.pcr_queries = nn.Parameter(torch.randn(cfg.pcr_queries, cfg.dim) * .02)
         self.fusion = build_transformer(cfg, cfg.fusion_depth)
         self.fusion_norm = nn.LayerNorm(cfg.dim)
         readout_dim = cfg.dim if cfg.pcr_readout == "direct" else 3 * cfg.dim
         self.pcr_head = nn.Sequential(nn.LayerNorm(readout_dim), nn.Linear(readout_dim, 1))
-        self.world_predictor = TimeCausalWorldPredictor(cfg)
-        self.reconstruction = nn.Conv3d(cfg.dim, len(selected_phases(cfg)), 1)
+        self.world_predictor = TimeCausalWorldPredictor(cfg) if cfg.enable_world_model else None
+        self.reconstruction = (nn.Conv3d(cfg.dim, len(selected_phases(cfg)), 1)
+                               if cfg.enable_world_model else None)
         self.flow = ConditionalMRIFlow(cfg) if cfg.enable_flow else None
+        self.pcr_spatial_scorer = None
+        if cfg.enable_world_model and cfg.spatial_readout == "attention":
+            # Keep both shared weights and subsequent training RNG identical
+            # across paired mean/attention ablations at initialization.
+            with torch.random.fork_rng(devices=[]):
+                self.pcr_spatial_scorer = nn.Sequential(
+                    nn.LayerNorm(cfg.dim), nn.Linear(cfg.dim, 1, bias=False))
+                nn.init.zeros_(self.pcr_spatial_scorer[-1].weight)
 
     def train(self, mode=True):
         super().train(mode)
-        self.teacher_encoder.eval()
+        if self.teacher_encoder is not None:
+            self.teacher_encoder.eval()
         return self
 
     def initialize_pretrained_encoder(self, path):
@@ -135,8 +153,9 @@ class RawVLAJEPA(nn.Module):
         if self.cfg.encoder_type not in {"vq_prequant", "vq_encoder"}:
             raise ValueError("Pretrained VQ initialization requires a VQ encoder_type")
         metadata = self.encoder.initialize_pretrained(path)
-        self.teacher_encoder.load_state_dict(self.encoder.state_dict(), strict=True)
-        self.teacher_encoder.requires_grad_(False).eval()
+        if self.teacher_encoder is not None:
+            self.teacher_encoder.load_state_dict(self.encoder.state_dict(), strict=True)
+            self.teacher_encoder.requires_grad_(False).eval()
         return metadata
 
     def _backbone(self, inp, *, validated=False, classify=True):
@@ -156,33 +175,43 @@ class RawVLAJEPA(nn.Module):
         context_padding = torch.cat((~inp.observed_mask[:, :, None]
                                      .expand(-1, -1, tokens_per_visit).flatten(1),
                                      torch.zeros(batch, 2, dtype=torch.bool, device=observed.device)), 1)
-        dynamic = self.dynamics_queries[None] + self.stage.weight[None, :, None]
-        dynamic = dynamic.expand(batch, -1, -1, -1)
         pcr = self.pcr_queries[None].expand(batch, -1, -1) + self.stage(inp.landmark)[:, None]
-        packed = torch.cat((context, dynamic.flatten(1, 2), pcr), 1)
-        dynamic_mask = self._internal_query_mask(inp)
-        padding = torch.cat((context_padding,
-                             ~dynamic_mask[:, :, None].expand(-1, -1, self.cfg.state_queries).flatten(1),
-                             torch.zeros(batch, self.cfg.pcr_queries, dtype=torch.bool,
-                                         device=observed.device)), 1)
+        pcr_padding = torch.zeros(batch, self.cfg.pcr_queries, dtype=torch.bool, device=observed.device)
+        if self.cfg.enable_world_model:
+            dynamic = self.dynamics_queries[None] + self.stage.weight[None, :, None]
+            dynamic = dynamic.expand(batch, -1, -1, -1)
+            packed = torch.cat((context, dynamic.flatten(1, 2), pcr), 1)
+            dynamic_mask = self._internal_query_mask(inp)
+            padding = torch.cat((context_padding,
+                                 ~dynamic_mask[:, :, None].expand(-1, -1, self.cfg.state_queries).flatten(1),
+                                 pcr_padding), 1)
+        else:
+            packed = torch.cat((context, pcr), 1)
+            padding = torch.cat((context_padding, pcr_padding), 1)
         length, context_length = packed.shape[1], context.shape[1]
         causal = torch.ones(length, length, dtype=torch.bool, device=observed.device).triu(1)
         causal[:context_length, :context_length] = False
         hidden = self.fusion_norm(self.fusion(packed, mask=causal, src_key_padding_mask=padding))
-        dynamics = hidden[:, context_length:context_length + 4 * self.cfg.state_queries]
-        dynamics = dynamics.reshape(batch, 4, self.cfg.state_queries, self.cfg.dim)
-        dynamics = dynamics.masked_fill(~dynamic_mask[:, :, None, None], 0)
         pcr_features = hidden[:, -self.cfg.pcr_queries:]
-        output = {"dynamics_features": dynamics, "pcr_features": pcr_features}
+        output = {"pcr_features": pcr_features}
+        if self.cfg.enable_world_model:
+            dynamics = hidden[:, context_length:context_length + 4 * self.cfg.state_queries]
+            dynamics = dynamics.reshape(batch, 4, self.cfg.state_queries, self.cfg.dim)
+            dynamics = dynamics.masked_fill(~dynamic_mask[:, :, None, None], 0)
+            output["dynamics_features"] = dynamics
         if not classify:
             return output, observed
         if self.cfg.pcr_readout == "direct":
             features = pcr_features.mean(1)
+        elif self.cfg.pcr_readout == "zero_state":
+            features = self._zero_state_readout(pcr_features)
+            output["pcr_state_features"] = features
         else:
             states, known = self._observed_teacher_states(inp)
             latest = self._latest_stage(inp)
             rows = torch.arange(batch, device=inp.images.device)
             current = states[rows, latest]
+            baseline = states[:, 0]
             if self.cfg.pcr_readout == "copy":
                 terminal = current
             else:
@@ -192,11 +221,48 @@ class RawVLAJEPA(nn.Module):
                 terminal = states[:, 3]
                 if self.cfg.pcr_readout == "forecast_detach":
                     terminal = terminal.detach()
-            features = torch.cat((pcr_features.mean(1), terminal.mean(1),
-                                  (terminal - current).mean(1)), -1)
+            features, diagnostics = self._pcr_state_readout(
+                inp, pcr_features, terminal, current, baseline)
             output["pcr_state_features"] = features
+            output.update(diagnostics)
         output["pcr_logit"] = self.pcr_head(features).squeeze(-1)
         return output, observed
+
+    @staticmethod
+    def _zero_state_readout(pcr_features):
+        """Keep the forecast classifier width while ablating both state inputs."""
+        query = pcr_features.mean(1)
+        return torch.cat((query, torch.zeros_like(query), torch.zeros_like(query)), -1)
+
+    def _pcr_state_readout(self, inp, pcr_features, terminal, current, baseline):
+        """Shared TF/inference readout in the EMA teacher's spatial coordinates.
+
+        The terminal weights also pool the change, so both state branches
+        describe the same spatial regions. Attention summarizes token readout;
+        it does not establish anatomical localization after Transformer mixing.
+        """
+        if self.cfg.pcr_delta_reference == "t0":
+            if not bool(inp.observed_mask[:, 0].all()):
+                raise ValueError("pcr_delta_reference=t0 requires an observed T0 MRI for every patient")
+            reference = baseline
+        else:
+            reference = current
+        change = terminal - reference
+        diagnostics = {}
+        if self.pcr_spatial_scorer is None:
+            terminal_features = terminal.mean(1)
+            change_features = change.mean(1)
+        else:
+            weights = self.pcr_spatial_scorer(terminal).squeeze(-1).float().softmax(1)
+            spatial_weights = weights.to(terminal.dtype).unsqueeze(-1)
+            terminal_features = (terminal * spatial_weights).sum(1)
+            change_features = (change * spatial_weights).sum(1)
+            detached = weights.detach()
+            entropy = -(detached * detached.clamp_min(torch.finfo(detached.dtype).tiny).log()).sum(1)
+            diagnostics = {"pcr_spatial_attention": detached,
+                           "pcr_spatial_attention_entropy": entropy,
+                           "pcr_spatial_effective_tokens": entropy.exp()}
+        return torch.cat((pcr_features.mean(1), terminal_features, change_features), -1), diagnostics
 
     def _internal_query_mask(self, inp):
         if not self.cfg.fixed_transition_queries:
@@ -221,6 +287,7 @@ class RawVLAJEPA(nn.Module):
 
     @torch.no_grad()
     def _observed_teacher_states(self, inp):
+        self._require_world_model()
         states = inp.images.new_zeros(len(inp.images), 4, math.prod(self.cfg.token_grid), self.cfg.dim)
         states[inp.observed_mask] = self._encode_selected(
             self.teacher_encoder, inp, inp.images, inp.observed_mask).to(states.dtype)
@@ -239,6 +306,7 @@ class RawVLAJEPA(nn.Module):
 
     @torch.no_grad()
     def _teacher_states(self, inp, sup):
+        self._require_world_model()
         known = inp.observed_mask | sup.future_mask
         scans = torch.zeros_like(inp.images)
         scans[inp.observed_mask] = inp.images[inp.observed_mask]
@@ -296,14 +364,19 @@ class RawVLAJEPA(nn.Module):
         A valid source can produce a pCR prediction even without a true target;
         pair validity is exclusively a JEPA supervision constraint.
         """
-        pcr_features = output["pcr_features"].mean(1)
-        if self.cfg.pcr_readout == "direct":
-            output["pcr_logit"] = self.pcr_head(pcr_features).squeeze(-1)
+        pcr_features = output["pcr_features"]
+        if self.cfg.pcr_readout in {"direct", "zero_state"}:
+            features = (self._zero_state_readout(pcr_features) if self.cfg.pcr_readout == "zero_state"
+                        else pcr_features.mean(1))
+            if self.cfg.pcr_readout == "zero_state":
+                output["pcr_state_features"] = features
+            output["pcr_logit"] = self.pcr_head(features).squeeze(-1)
             return output
         states, _ = teacher
         latest = self._latest_stage(inp)
         rows = torch.arange(len(inp.images), device=inp.images.device)
         current = states[rows, latest]
+        baseline = states[:, 0]
         terminal, read_stage = current, latest
         fallback = torch.ones_like(latest, dtype=torch.bool)
         if self.cfg.pcr_readout != "copy":
@@ -322,9 +395,11 @@ class RawVLAJEPA(nn.Module):
             read_stage = torch.where(fallback, latest, predicted_stage)
             if self.cfg.pcr_readout == "forecast_detach":
                 terminal = terminal.detach()
-        features = torch.cat((pcr_features, terminal.mean(1), (terminal - current).mean(1)), -1)
+        features, diagnostics = self._pcr_state_readout(
+            inp, pcr_features, terminal, current, baseline)
         output.update(pcr_logit=self.pcr_head(features).squeeze(-1), pcr_state_features=features,
                       pcr_read_stage=read_stage, pcr_observation_fallback=fallback)
+        output.update(diagnostics)
         return output
 
     @staticmethod
@@ -413,6 +488,7 @@ class RawVLAJEPA(nn.Module):
 
     def _rollout(self, inp, dynamics=None):
         """Free rollout from real S_k; no access to supervision or future MRI."""
+        self._require_world_model()
         inp.validate()
         batch, count = len(inp.images), math.prod(self.cfg.token_grid)
         needs_future = inp.query_mask.any(1)
@@ -458,6 +534,7 @@ class RawVLAJEPA(nn.Module):
 
     @torch.no_grad()
     def forecast(self, inp: RawMRIInput):
+        self._require_world_model()
         output = self._backbone(inp)[0]
         prediction = output.pop("autonomous_states", None)
         if prediction is None:
@@ -483,6 +560,8 @@ class RawVLAJEPA(nn.Module):
                    rollout_weight)
         if any(not math.isfinite(w) or w < 0 for w in weights):
             raise ValueError("Loss weights must be finite and nonnegative")
+        if not self.cfg.enable_world_model and (representation_only or any(weights[1:])):
+            raise ValueError("Disabled world model supports BCE-only training with all auxiliary weights zero")
         if variance_definition not in {"legacy", "off", "patient_axis_stage_token_fp32"}:
             raise ValueError("Unsupported variance_definition")
         if variance_definition == "off" and variance_weight:
@@ -507,7 +586,7 @@ class RawVLAJEPA(nn.Module):
         if teacher_forcing:
             flow_enabled = bool(self.flow is not None and flow_weight and not representation_only)
             needs_prediction = bool(jepa_weight or tf_forecast or flow_enabled)
-            needs_teacher = needs_prediction or (classify and self.cfg.pcr_readout != "direct")
+            needs_teacher = needs_prediction or (classify and self.cfg.pcr_readout not in {"direct", "zero_state"})
             teacher = (self._teacher_states(inp, sup) if needs_prediction else
                        self._observed_teacher_states(inp) if needs_teacher else None)
             if needs_prediction:
@@ -598,6 +677,8 @@ class RawVLAJEPA(nn.Module):
 
     @torch.no_grad()
     def update_teacher(self):
+        if self.teacher_encoder is None:
+            return
         frozen_frontend = (self.cfg.encoder_type in {"vq_prequant", "vq_encoder"} and
                            not self.encoder.pretrained_trainable)
         for (_, teacher), (name, student) in zip(self.teacher_encoder.named_parameters(),
@@ -609,6 +690,10 @@ class RawVLAJEPA(nn.Module):
                 teacher.lerp_(student, 1 - self.cfg.ema_decay)
         for teacher, student in zip(self.teacher_encoder.buffers(), self.encoder.buffers(), strict=True):
             teacher.copy_(student)
+
+    def _require_world_model(self):
+        if not self.cfg.enable_world_model:
+            raise ValueError("World prediction is disabled in this direct pCR model")
 
     @torch.no_grad()
     def generate(self, inp: RawMRIInput, steps=4, seed=0, method="heun"):

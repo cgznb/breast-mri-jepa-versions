@@ -1,0 +1,167 @@
+# Existing personal data/codec/venv stay mounted. All new artifacts go to output_root.
+schema: t0_cv5_suite_v1
+suite_name: t0_cv5_combined_v1
+paths:
+  source_manifest: /personal_fast_storage/VLA-PCRV1/data/registered_roi32/manifest.json
+  reference_split_manifest: /personal_fast_storage/VLA-PCRV1/private_outputs/large_all_tf_unfrozen_t0_dynamic_20261019/splits/seed17/manifest.json
+  reference_split_audit: /personal_fast_storage/VLA-PCRV1/private_outputs/large_all_tf_unfrozen_t0_dynamic_20261019/splits/seed17/split_audit.json
+  codec: /personal_fast_storage/VLA-PCRV1/data/pretrained/codec.pt
+  output_root: /projects/xts0030/public/cxx
+input_sha256:
+  source_manifest: 02b8540029794bd221dcb43e8e5820d96abbf587d390434bf60b90503699ef61
+  reference_split_manifest: d52072cc81c88f57b5d5b7d4bfacac1e6fb9707235fb9fe9959c50d0b62d562f
+  reference_split_audit: 5e062234931472b9064316bb7bc3fbfadbe103a67837e5e640a56532f723924e
+  codec: 0957a168dc407e602fcadb789f54775838dd568a8f6f2c110f860c222865daae
+cv:
+  n_splits: 5
+  split_seed: 20261020
+  train_seed: 17
+  holdout_seed: 17
+  expected_patients: 866
+  test_size: 173
+  expected_test_positives: 55
+  expected_development_positives: 221
+  expected_fold_counts:
+  - train: 554
+    train_positive: 177
+    val: 139
+    val_positive: 44
+  - train: 554
+    train_positive: 176
+    val: 139
+    val_positive: 45
+  - train: 554
+    train_positive: 176
+    val: 139
+    val_positive: 45
+  - train: 555
+    train_positive: 178
+    val: 138
+    val_positive: 43
+  - train: 555
+    train_positive: 177
+    val: 138
+    val_positive: 44
+resources:
+  expected_gpus: 8
+  memory_fraction: 0.9
+  reservation_margin_mib: 768
+  poll_seconds: 10
+  threads_per_task: 4
+  loader_workers: 2
+  host_memory_fraction: 0.85
+  storage_margin_factor: 1.25
+report:
+  bootstrap: 2000
+  bootstrap_seed: 20261020
+training:
+  schema: responsewm_raw_vla_jepa_train_v1
+  model:
+    clinical_dim: 4
+    dim: 1024
+    token_grid:
+    - 2
+    - 4
+    - 4
+    encoder_depth: 12
+    fusion_depth: 12
+    predictor_depth: 12
+    heads: 16
+    state_queries: 8
+    pcr_queries: 4
+    fm_channels: 24
+    ema_decay: 0.999
+    dropout: 0.3
+    enable_flow: false
+    enable_world_model: true
+    encoder_type: vq_encoder
+    vq_hidden_channels: 16
+    vq_embedding_dim: 8
+    vq_bottleneck_blocks: 1
+    vq_num_groups: 32
+    vq_activation_checkpointing: true
+    fixed_transition_queries: true
+    pcr_readout: forecast
+    spatial_readout: attention
+    pcr_delta_reference: current
+    world_residual: true
+    history_delta: true
+    lesion_world_weighting: false
+    lesion_pooling: false
+    lesion_weight_strength: 4.0
+    model_size: large
+    attention_head_dim: 64
+    ffn_dim: 4096
+    mri_phases: all
+  image_shape:
+  - 32
+  - 128
+  - 128
+  schedule: one_stage
+  training_unit: epochs
+  max_epochs: 200
+  early_stopping_patience: 50
+  early_stopping_min_delta: 0.0
+  selection_metric: f1
+  f1_threshold: 0.5
+  prediction_training: teacher_forcing
+  representation_steps: 0
+  joint_steps: 5000
+  freeze_encoder_after_representation: false
+  landmarks: t0
+  task_weight: 1.0
+  jepa_weight: 0.5
+  rollout_weight: 0.0
+  flow_weight: 0.0
+  reconstruction_weight: 0.0
+  variance_weight: 0.0
+  variance_definition: 'off'
+  diagnostics_every_epochs: 5
+  diagnostics_patients: 32
+  diagnostics_batch_size: 16
+  diagnostics_seed: 20261004
+  batch_size: 16
+  accumulation: 1
+  lr: 0.0001
+  encoder_checkpoint: /personal_fast_storage/VLA-PCRV1/data/pretrained/codec.pt
+  encoder_training: finetune
+  encoder_lr: 0.0001
+  initialize_from_checkpoint: null
+  lr_scheduler: warmup_cosine
+  warmup_epochs: 10
+  warmup_start_factor: 0.1
+  cosine_end_epoch: 100
+  cosine_min_lr: 1.0e-06
+  plateau_factor: 0.5
+  plateau_patience: 5
+  plateau_min_lr: 1.0e-06
+  plateau_threshold: 0.0
+  image_cache: null
+  prefetch_batches: 2
+  loader_workers: 2
+  pin_memory: true
+  non_blocking_transfer: true
+  weight_decay: 0.05
+  grad_clip: 1.0
+  validation_every: 1
+  checkpoint_every: 38
+  validation_batch_size: 16
+  device: cuda:0
+  precision: bf16
+  seed: 17
+  threads: 4
+  deterministic: false
+  allow_synthetic: false
+variants:
+- name: t0_forecast
+  pcr_readout: forecast
+  jepa_weight: 0.5
+  spatial_readout: attention
+- name: t0_direct_no_jepa
+  pcr_readout: direct
+  jepa_weight: 0.0
+  spatial_readout: mean
+- name: t0_direct_readout
+  pcr_readout: direct
+  jepa_weight: 0.5
+  spatial_readout: mean

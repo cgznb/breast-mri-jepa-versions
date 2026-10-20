@@ -283,8 +283,13 @@ def _teacher_drift(states, mask, previous):
 
 
 def _world_head_trained(cfg):
-    return bool(cfg.jepa_weight or cfg.rollout_weight or cfg.flow_weight or
-                (cfg.task_weight and cfg.model.pcr_readout == "forecast"))
+    return bool(cfg.model.enable_world_model and (cfg.jepa_weight or cfg.rollout_weight or cfg.flow_weight or
+                (cfg.task_weight and cfg.model.pcr_readout == "forecast")))
+
+
+def _disabled_world_report():
+    return {"status": "not_applicable", "applicable": False, "world_head_trained": False,
+            "reason": "The direct pCR architecture has no world model or EMA teacher"}
 
 
 def run_training_probe(model, store, cfg, epoch, tasks, previous=None):
@@ -300,6 +305,7 @@ def run_training_probe(model, store, cfg, epoch, tasks, previous=None):
     if cfg.rollout_weight:
         weights["rollout"] = cfg.rollout_weight
     world_enabled = _world_head_trained(cfg)
+    teacher_present = model.teacher_encoder is not None
     future_supervision = world_enabled or bool(
         cfg.prediction_training == "teacher_forcing" and cfg.task_weight and
         model.cfg.pcr_readout in {"forecast", "forecast_detach"})
@@ -329,12 +335,15 @@ def run_training_probe(model, store, cfg, epoch, tasks, previous=None):
                 if world_enabled:
                     rows, states, known = world_error_rows(model, inp, sup, [i for i, _ in chunk])
                     world_rows.extend(rows)
-                else:
+                elif teacher_present:
                     states, known = model._teacher_states(inp, sup)
                     states, known = states.float().cpu(), known.cpu()
-                online.append(values.cpu()); teachers.append(states); masks.append(known)
+                online.append(values.cpu())
+                if teacher_present:
+                    teachers.append(states); masks.append(known)
                 observed_masks.append(inp.observed_mask.cpu()); landmarks.append(inp.landmark.cpu())
-    states, known, anchors = torch.cat(teachers), torch.cat(masks), torch.cat(landmarks)
+    anchors = torch.cat(landmarks)
+    states, known = ((torch.cat(teachers), torch.cat(masks)) if teacher_present else (None, None))
     report = {"epoch": epoch, "scope": "fixed training probe; not full validation or checkpoint selection",
         "patients": len(tasks), "labelled_patients": len(nll), "prefixes": len(tasks),
         "landmark_counts": {f"T{s}": sum(stage == s for _, stage in tasks) for s in range(4)},
@@ -342,13 +351,18 @@ def run_training_probe(model, store, cfg, epoch, tasks, previous=None):
         "gradient_semantics": "separate weighted objectives in eval mode; preclip module L2 norms; no optimizer update",
         "gradient_batches": gradients,
         "observed_representation": representation_metrics(torch.cat(online), torch.cat(observed_masks), anchors),
-        "teacher_representation": representation_metrics(states, known, anchors),
-        "teacher_drift": _teacher_drift(states, known, previous),
+        "teacher_representation": (representation_metrics(states, known, anchors) if teacher_present else
+                                   {"status": "not_applicable", "reason": "No EMA teacher in the direct pCR architecture"}),
+        "teacher_drift": (_teacher_drift(states, known, previous) if teacher_present else
+                          {"status": "not_applicable", "reason": "No EMA teacher in the direct pCR architecture"}),
         "world": aggregate_world_errors(world_rows) if world_enabled else
+                 _disabled_world_report() if not model.cfg.enable_world_model else
                  {"status": "unavailable", "world_head_trained": False,
                   "reason": "No world objective or differentiable forecast classifier is enabled"},
         "world_head_trained": world_enabled,
-        "teacher_frozen": all(not p.requires_grad and p.grad is None for p in model.teacher_encoder.parameters()),
+        "teacher_present": teacher_present,
+        "teacher_frozen": (all(not p.requires_grad and p.grad is None for p in model.teacher_encoder.parameters())
+                           if teacher_present else None),
         "rng_and_module_modes_preserved": True}
     private = {"epoch": epoch, "tasks": tasks, "teacher_states": states, "known_mask": known}
     return report, private
@@ -360,6 +374,9 @@ def evaluate_world(model, store, cfg, *, split="val", batch_size=16):
         raise ValueError("World evaluation requires a nonempty valid split")
     if type(batch_size) is not int or batch_size < 1:
         raise ValueError("World evaluation batch size must be positive")
+    if not cfg.model.enable_world_model:
+        return {**_disabled_world_report(), "split": split, "patients": len(store.by_split[split]),
+                "landmarks": cfg.landmarks, "legal_prefixes": 0}
     if not _world_head_trained(cfg):
         return {"status": "unavailable", "world_head_trained": False,
                 "reason": "No world objective or differentiable forecast classifier is enabled",

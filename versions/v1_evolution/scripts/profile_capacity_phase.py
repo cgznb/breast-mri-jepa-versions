@@ -24,21 +24,42 @@ def loss_arguments(cfg):
         "prediction_training": cfg.prediction_training}
 
 
+def profile_stages(cfg):
+    """Profile only the observation prefixes that this run actually trains."""
+    return (0,) if cfg.landmarks == "t0" else (0, 1, 2, 3)
+
+
+def needs_future_supervision(cfg):
+    return bool(cfg.jepa_weight or cfg.rollout_weight or cfg.flow_weight or
+                (cfg.prediction_training == "teacher_forcing" and cfg.task_weight and
+                 cfg.model.pcr_readout in {"forecast", "forecast_detach"}))
+
+
+def profile_patients(store, cfg):
+    # Forecast workloads include real future targets; pure direct T0 needs no
+    # follow-up scans and can profile patients with only a baseline visit.
+    required = range(4) if needs_future_supervision(cfg) or cfg.landmarks != "t0" else (0,)
+    return [i for i in store.by_split["train"]
+            if all(store.patients[i]["visits"][stage] is not None for stage in required)]
+
+
 def profile(config, manifest, output, *, benchmark_seconds=0, ready=None, start=None):
     cfg = load_config(config)
     seed_all(cfg.seed, threads=cfg.threads, deterministic=cfg.deterministic)
     store = RawMRIStore(manifest, cfg.image_shape, cfg.allow_synthetic, image_cache=cfg.image_cache)
-    # Full sequences cover the largest observation and supervised sequence sizes.
-    complete = [i for i in store.by_split["train"]
-                if all(visit is not None for visit in store.patients[i]["visits"])]
-    if len(complete) < max(cfg.batch_size, cfg.diagnostics_patients):
-        raise ValueError("Preflight needs enough real complete patient sequences")
+    stages = profile_stages(cfg)
+    complete = profile_patients(store, cfg)
+    needed = max(cfg.batch_size, cfg.validation_batch_size,
+                 cfg.diagnostics_patients if cfg.diagnostics_every_epochs else 0)
+    if len(complete) < needed:
+        raise ValueError("Preflight needs enough real patients with all scans required by this configuration")
     model = RawVLAJEPA(cfg.model).to(cfg.device)
     model.initialize_pretrained_encoder(cfg.encoder_checkpoint)
     _configure(model, cfg, "joint")
     optimizer = _make_optimizer(model, cfg)
     torch.cuda.reset_peak_memory_stats()
-    inp, sup = store.batch([(i, 0) for i in complete[:cfg.batch_size]])
+    inp, sup = store.batch([(i, 0) for i in complete[:cfg.batch_size]],
+                           future_supervision=needs_future_supervision(cfg))
     inp, sup = inp.to(cfg.device), sup.to(cfg.device)
 
     def update(*, sample_update=False):
@@ -59,7 +80,8 @@ def profile(config, manifest, output, *, benchmark_seconds=0, ready=None, start=
             torch.stack([(p.detach().float() - old.float()).square().sum()
                          for p, old in zip(parameters, before, strict=True)]).sum().sqrt()
         del before, parameters
-        model.update_teacher()
+        if model.teacher_encoder is not None:
+            model.update_teacher()
         return float(loss.detach())
 
     update()  # Include allocated AdamW moments and real backward buffers.
@@ -77,7 +99,8 @@ def profile(config, manifest, output, *, benchmark_seconds=0, ready=None, start=
     while True:
         if benchmark_seconds:
             # Include real NPZ assembly/transfers and all landmark workloads.
-            inp, sup = store.batch([(i, iterations % 4) for i in complete[:cfg.batch_size]])
+            inp, sup = store.batch([(i, stages[iterations % len(stages)]) for i in complete[:cfg.batch_size]],
+                                   future_supervision=needs_future_supervision(cfg))
             inp, sup = inp.to(cfg.device), sup.to(cfg.device)
         last_loss = update()
         iterations += 1
@@ -89,8 +112,9 @@ def profile(config, manifest, output, *, benchmark_seconds=0, ready=None, start=
     inference_peak, diagnostic_peak = None, None
     if not benchmark_seconds:
         # Intermediate landmarks combine several online visits and prediction.
-        for stage in range(4):
-            inp, sup = store.batch([(i, stage) for i in complete[:cfg.batch_size]])
+        for stage in stages:
+            inp, sup = store.batch([(i, stage) for i in complete[:cfg.batch_size]],
+                                   future_supervision=needs_future_supervision(cfg))
             inp, sup = inp.to(cfg.device), sup.to(cfg.device)
             update(sample_update=bool(cfg.diagnostics_every_epochs))
         torch.cuda.synchronize()
@@ -98,19 +122,21 @@ def profile(config, manifest, output, *, benchmark_seconds=0, ready=None, start=
         # Match validation: public inference with no supervision and FP32.
         model.eval()
         with torch.no_grad():
-            for stage in range(4):
+            for stage in stages:
                 vi, _ = store.batch([(i, stage) for i in complete[:cfg.validation_batch_size]], supervised=False)
                 model(vi.to(cfg.device))
         torch.cuda.synchronize()
         inference_peak = torch.cuda.max_memory_reserved() / 2**20
         if cfg.diagnostics_every_epochs:
-            for stage in range(4):
+            for stage in stages:
                 tasks = tuple((i, stage) for i in complete[:cfg.diagnostics_batch_size])
                 run_training_probe(model, store, cfg, cfg.diagnostics_every_epochs, tasks)
             torch.cuda.synchronize()
             diagnostic_peak = torch.cuda.max_memory_reserved() / 2**20
     result = {"status": "passed", "config": str(Path(config).resolve()),
               "gpu_name": torch.cuda.get_device_name(), "batch_size": cfg.batch_size,
+              "landmarks": cfg.landmarks, "profile_stages": list(stages),
+              "future_supervision": needs_future_supervision(cfg),
               "trainable_parameters": sum(p.numel() for p in model.parameters() if p.requires_grad),
               "total_parameters": sum(p.numel() for p in model.parameters()),
               "training_peak_reserved_mib": train_peak,

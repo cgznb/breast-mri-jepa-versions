@@ -53,6 +53,7 @@ class RawJEPAConfig:
     ema_decay: float = .99
     dropout: float = 0.
     enable_flow: bool = True
+    enable_world_model: bool = True
     encoder_type: str = "raw"
     vq_hidden_channels: int = 16
     vq_embedding_dim: int = 8
@@ -61,6 +62,8 @@ class RawJEPAConfig:
     vq_activation_checkpointing: bool = False
     fixed_transition_queries: bool = False
     pcr_readout: str = "direct"
+    spatial_readout: str = "mean"
+    pcr_delta_reference: str = "current"
     world_residual: bool = False
     history_delta: bool = False
     lesion_world_weighting: bool = False
@@ -118,15 +121,26 @@ class RawJEPAConfig:
             raise ValueError("dropout must lie in [0,1)")
         if not isinstance(self.enable_flow, bool):
             raise ValueError("enable_flow must be boolean")
+        if not isinstance(self.enable_world_model, bool):
+            raise ValueError("enable_world_model must be boolean")
         if not isinstance(self.encoder_type, str) or self.encoder_type not in {"raw", "vq_prequant", "vq_encoder"}:
             raise ValueError("encoder_type must be raw, vq_prequant or vq_encoder")
         for name in ("fixed_transition_queries", "world_residual", "history_delta",
                      "lesion_world_weighting", "lesion_pooling"):
             if not isinstance(getattr(self, name), bool):
                 raise ValueError(f"{name} must be boolean")
-        if self.pcr_readout not in {"direct", "copy", "forecast_detach", "forecast"}:
+        if self.pcr_readout not in {"direct", "zero_state", "copy", "forecast_detach", "forecast"}:
             raise ValueError("Unsupported pcr_readout")
-        if self.pcr_readout != "direct" and not self.fixed_transition_queries:
+        if not self.enable_world_model and (self.pcr_readout not in {"direct", "zero_state"} or self.enable_flow):
+            raise ValueError("Disabled world model requires direct pCR readout and enable_flow=false")
+        if self.pcr_readout == "zero_state" and self.enable_world_model:
+            raise ValueError("zero_state pCR readout requires enable_world_model=false")
+        if not isinstance(self.spatial_readout, str) or self.spatial_readout not in {"mean", "attention"}:
+            raise ValueError("spatial_readout must be mean or attention")
+        if (not isinstance(self.pcr_delta_reference, str) or
+                self.pcr_delta_reference not in {"current", "t0"}):
+            raise ValueError("pcr_delta_reference must be current or t0")
+        if self.pcr_readout not in {"direct", "zero_state"} and not self.fixed_transition_queries:
             raise ValueError("State pCR readouts require fixed_transition_queries")
         if (isinstance(self.lesion_weight_strength, bool) or
                 not math.isfinite(self.lesion_weight_strength) or self.lesion_weight_strength < 0):

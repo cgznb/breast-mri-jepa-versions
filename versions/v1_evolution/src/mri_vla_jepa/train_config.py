@@ -46,6 +46,10 @@ class RawVLATrainConfig:
     encoder_lr: float | None = None
     initialize_from_checkpoint: str | None = None
     lr_scheduler: str = "none"
+    warmup_epochs: int = 10
+    warmup_start_factor: float = 0.1
+    cosine_end_epoch: int = 100
+    cosine_min_lr: float = 1e-6
     plateau_factor: float = 0.5
     plateau_patience: int = 5
     plateau_min_lr: float = 1e-6
@@ -103,8 +107,13 @@ class RawVLATrainConfig:
                 raise ValueError(f"{name} must be a positive integer")
         if type(self.diagnostics_seed) is not int or self.diagnostics_seed < 0:
             raise ValueError("diagnostics_seed must be a nonnegative integer")
-        if self.lr_scheduler not in {"none", "plateau"}:
-            raise ValueError("lr_scheduler must be none or plateau")
+        if self.lr_scheduler not in {"none", "plateau", "warmup_cosine"}:
+            raise ValueError("lr_scheduler must be none, plateau or warmup_cosine")
+        for name in ("warmup_epochs", "cosine_end_epoch"):
+            if type(getattr(self, name)) is not int or getattr(self, name) < 1:
+                raise ValueError(f"{name} must be a positive integer")
+        if self.cosine_end_epoch <= self.warmup_epochs:
+            raise ValueError("cosine_end_epoch must be greater than warmup_epochs")
         if self.encoder_training not in {"frozen", "finetune"}:
             raise ValueError("encoder_training must be frozen or finetune")
         for name in ("encoder_checkpoint", "initialize_from_checkpoint"):
@@ -123,8 +132,8 @@ class RawVLATrainConfig:
             raise ValueError("Pretrained encoder options require a VQ encoder_type")
         if self.initialize_from_checkpoint and self.encoder_training != "finetune":
             raise ValueError("initialize_from_checkpoint requires encoder_training=finetune")
-        if self.lr_scheduler == "plateau" and self.training_unit != "epochs":
-            raise ValueError("plateau lr_scheduler requires epoch training")
+        if self.lr_scheduler in {"plateau", "warmup_cosine"} and self.training_unit != "epochs":
+            raise ValueError(f"{self.lr_scheduler} lr_scheduler requires epoch training")
         if type(self.plateau_patience) is not int or self.plateau_patience < 0:
             raise ValueError("plateau_patience must be a nonnegative integer")
         if self.image_cache is not None and (not isinstance(self.image_cache, str) or not self.image_cache.strip()):
@@ -150,7 +159,7 @@ class RawVLATrainConfig:
             raise ValueError("image_shape must be D,H,W integers >=4")
         if self.model.encoder_type in {"vq_prequant", "vq_encoder"} and any(v % 4 for v in self.image_shape):
             raise ValueError("VQ image_shape dimensions must be divisible by four")
-        for name in ("task_weight", "jepa_weight", "rollout_weight", "flow_weight", "reconstruction_weight", "variance_weight", "lr", "weight_decay", "grad_clip", "early_stopping_min_delta", "plateau_factor", "plateau_min_lr", "plateau_threshold"):
+        for name in ("task_weight", "jepa_weight", "rollout_weight", "flow_weight", "reconstruction_weight", "variance_weight", "lr", "weight_decay", "grad_clip", "early_stopping_min_delta", "plateau_factor", "plateau_min_lr", "plateau_threshold", "warmup_start_factor", "cosine_min_lr"):
             val = getattr(self, name)
             if isinstance(val, bool) or not isinstance(val, (int, float)) or not math.isfinite(val) or val < 0:
                 raise ValueError(f"Invalid {name}")
@@ -160,9 +169,17 @@ class RawVLATrainConfig:
             raise ValueError("plateau_factor must be strictly between zero and one")
         if self.plateau_min_lr <= 0 or (self.lr_scheduler == "plateau" and self.plateau_min_lr > self.lr):
             raise ValueError("plateau_min_lr must be positive and no greater than the initial plateau lr")
+        if not 0 < self.warmup_start_factor <= 1:
+            raise ValueError("warmup_start_factor must be in (0,1]")
+        if self.cosine_min_lr <= 0 or (self.lr_scheduler == "warmup_cosine" and self.cosine_min_lr > self.lr):
+            raise ValueError("cosine_min_lr must be positive and no greater than the initial cosine lr")
         if self.schedule == "two_stage" and not any((self.jepa_weight, self.rollout_weight, self.reconstruction_weight,
                                                      self.variance_weight)):
             raise ValueError("Representation-only training requires an active auxiliary loss")
+        if not self.model.enable_world_model and (self.schedule != "one_stage" or any((
+                self.jepa_weight, self.rollout_weight, self.flow_weight,
+                self.reconstruction_weight, self.variance_weight))):
+            raise ValueError("Disabled world model requires one_stage BCE-only training with all auxiliary weights zero")
         if self.flow_weight > 0 and not self.model.enable_flow:
             raise ValueError("Positive flow loss requires enable_flow=true")
         if self.precision not in {"fp32", "bf16"}:

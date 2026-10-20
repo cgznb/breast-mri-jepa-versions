@@ -39,7 +39,8 @@ def _configure(model, cfg, phase):
     model.encoder.requires_grad_(not frozen)
     if cfg.model.encoder_type in {"vq_prequant", "vq_encoder"}:
         model.encoder.set_pretrained_trainable(cfg.encoder_training == "finetune" and not frozen)
-    model.teacher_encoder.requires_grad_(False)
+    if model.teacher_encoder is not None:
+        model.teacher_encoder.requires_grad_(False)
     model.train()
     if frozen:
         model.encoder.eval()
@@ -66,6 +67,33 @@ def _make_optimizer(model, cfg):
 
 def _learning_rates(optimizer):
     return {group.get("name", "network"): group["lr"] for group in optimizer.param_groups}
+
+
+def _warmup_cosine_factor(cfg, batches_per_epoch, completed_steps):
+    """LR for the next update; epoch endpoints refer to the last used update."""
+    warmup_steps = cfg.warmup_epochs * batches_per_epoch
+    end_steps = cfg.cosine_end_epoch * batches_per_epoch
+    if warmup_steps < 2:
+        raise ValueError("warmup_cosine requires at least two warmup optimizer updates")
+    if completed_steps < warmup_steps:
+        return (cfg.warmup_start_factor + (1 - cfg.warmup_start_factor)
+                * completed_steps / (warmup_steps - 1))
+    minimum = cfg.cosine_min_lr / cfg.lr
+    fraction = min(1., (completed_steps - (warmup_steps - 1)) / (end_steps - warmup_steps))
+    return minimum + (1 - minimum) * (1 + math.cos(math.pi * fraction)) / 2
+
+
+def _make_scheduler(optimizer, cfg, batches_per_epoch):
+    if cfg.lr_scheduler == "warmup_cosine":
+        return torch.optim.lr_scheduler.LambdaLR(
+            optimizer, lambda completed: _warmup_cosine_factor(cfg, batches_per_epoch, completed))
+    if cfg.lr_scheduler == "plateau":
+        minimum_rates = [cfg.plateau_min_lr * group["lr"] / cfg.lr for group in optimizer.param_groups]
+        return torch.optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer, mode=_selection_mode(cfg.selection_metric), factor=cfg.plateau_factor,
+            patience=cfg.plateau_patience, min_lr=minimum_rates, threshold=cfg.plateau_threshold,
+            threshold_mode="abs")
+    return None
 
 
 def _encoder_training_state(model, cfg):
@@ -159,14 +187,17 @@ def _rows(model, store, *, split, profile, batch_size=1, device="cpu"):
             inp, _ = store.batch(chunk, supervised=False)
             output = model(inp.to(device))
             probabilities = output["pcr_logit"].float().sigmoid().cpu().tolist()
-            for (i, stage), probability in zip(chunk, probabilities):
+            diagnostics = {name: output[name].float().cpu().tolist() for name in
+                           ("pcr_spatial_attention_entropy", "pcr_spatial_effective_tokens") if name in output}
+            for position, ((i, stage), probability) in enumerate(zip(chunk, probabilities)):
                 patient = store.patients[i]
                 label = patient.get("target", {}).get("pcr")
                 if label is not None and (type(label) not in {int, float} or label not in (0, 1)):
                     raise ValueError("Evaluation pCR label must be binary or missing")
                 rows.append({"patient_key": patient["patient_key"], "landmark": stage,
                              "pcr_probability": probability, "pcr": label,
-                             "arm_semantics": patient["arm"]["semantics"]})
+                             "arm_semantics": patient["arm"]["semantics"],
+                             **{name: values[position] for name, values in diagnostics.items()}})
     return rows
 
 
@@ -245,7 +276,8 @@ def _checkpoint_config_matches(saved, cfg):
     defaults = RawVLATrainConfig()
     normalized.setdefault("rollout_weight", defaults.rollout_weight)
     for name in ("training_unit", "max_epochs", "early_stopping_patience", "early_stopping_min_delta",
-                 "lr_scheduler", "plateau_factor", "plateau_patience", "plateau_min_lr", "plateau_threshold"):
+                 "lr_scheduler", "plateau_factor", "plateau_patience", "plateau_min_lr", "plateau_threshold",
+                 "warmup_epochs", "warmup_start_factor", "cosine_end_epoch", "cosine_min_lr"):
         normalized.setdefault(name, getattr(defaults, name))
     for name in ("image_cache", "prefetch_batches", "loader_workers", "pin_memory", "non_blocking_transfer"):
         normalized.setdefault(name, getattr(defaults, name))
@@ -291,6 +323,7 @@ def _initialize_from_checkpoint(model, cfg, *, data_signature, normalization,
     # Only initialization, learning-rate, budget and execution options may change.
     mutable = {"encoder_checkpoint", "encoder_training", "encoder_lr", "initialize_from_checkpoint",
                "lr", "lr_scheduler", "plateau_factor", "plateau_patience", "plateau_min_lr",
+               "warmup_epochs", "warmup_start_factor", "cosine_end_epoch", "cosine_min_lr",
                "plateau_threshold", "max_epochs", "joint_steps", "early_stopping_patience",
                "early_stopping_min_delta", "seed", "device", "precision", "threads", "deterministic",
                "validation_every", "checkpoint_every", "validation_batch_size", "image_cache",
@@ -317,8 +350,9 @@ def train(store, cfg, output, *, resume=False, stop_after=None):
     cfg.validate()
     with BatchLoader(store, prefetch_batches=cfg.prefetch_batches, workers=cfg.loader_workers,
                      pin_memory=cfg.pin_memory,
-                     future_supervision=bool(cfg.prediction_training == "teacher_forcing"
-                                             or cfg.jepa_weight or cfg.rollout_weight or cfg.flow_weight)) as loader:
+                     future_supervision=bool(cfg.jepa_weight or cfg.rollout_weight or cfg.flow_weight or
+                         (cfg.prediction_training == "teacher_forcing" and cfg.task_weight and
+                          cfg.model.pcr_readout in {"forecast", "forecast_detach"}))) as loader:
         return _train(store, cfg, output, resume=resume, stop_after=stop_after, loader=loader)
 
 
@@ -371,11 +405,9 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
                               "model_weights_loaded": True, "encoder_metadata": metadata}
     _configure(model, cfg, cfg.phase(0))
     optimizer = _make_optimizer(model, cfg)
-    minimum_rates = [cfg.plateau_min_lr * group["lr"] / cfg.lr for group in optimizer.param_groups]
-    scheduler = (torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode=_selection_mode(cfg.selection_metric),
-                    factor=cfg.plateau_factor, patience=cfg.plateau_patience,
-                    min_lr=minimum_rates, threshold=cfg.plateau_threshold,
-                    threshold_mode="abs") if cfg.lr_scheduler == "plateau" else None)
+    batches_per_epoch = math.ceil(len(store.by_split["train"]) / cfg.batch_size)
+    scheduler = _make_scheduler(optimizer, cfg, batches_per_epoch)
+    initial_scheduler_rates = list(scheduler.base_lrs) if cfg.lr_scheduler == "warmup_cosine" else None
     sampler = random.Random(cfg.seed + 1)
     protocol, selection_protocol = _protocol(cfg.landmarks), _selection_protocol(cfg.landmarks, cfg.selection_metric)
     completed, best_nll, history = 0, float("inf"), []
@@ -383,7 +415,6 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
     best_f1 = None
     best_epoch, best_step = None, None
     epoch_mode = cfg.training_unit == "epochs"
-    batches_per_epoch = math.ceil(len(store.by_split["train"]) / cfg.batch_size)
     total_steps = batches_per_epoch * cfg.max_epochs if epoch_mode else cfg.total_steps
     epoch_history = []
     epoch_state = {"completed_epochs": 0, "indices": [], "position": 0,
@@ -426,11 +457,21 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
         saved_scheduler = state.get("scheduler_state")
         if scheduler is not None:
             if saved_scheduler is None:
-                raise ValueError("Resume requires the saved plateau scheduler state")
+                raise ValueError(f"Resume requires the saved {cfg.lr_scheduler} scheduler state")
             scheduler.load_state_dict(saved_scheduler)
+            expected_progress = completed if cfg.lr_scheduler == "warmup_cosine" else epoch_state["completed_epochs"]
             if (scheduler.get_last_lr() != [group["lr"] for group in optimizer.param_groups]
-                    or scheduler.last_epoch != epoch_state["completed_epochs"]):
+                    or scheduler.last_epoch != expected_progress):
                 raise ValueError("Resume scheduler state disagrees with optimizer/epoch progress")
+            if cfg.lr_scheduler == "warmup_cosine":
+                factor = _warmup_cosine_factor(cfg, batches_per_epoch, completed)
+                expected_rates = [rate * factor for rate in initial_scheduler_rates]
+                if (scheduler.base_lrs != initial_scheduler_rates or scheduler.get_last_lr() != expected_rates
+                        or scheduler._step_count != completed + 1
+                        or completed != (epoch_state["completed_epochs"] * batches_per_epoch
+                                         + epoch_state["batches_completed"])
+                        or saved_scheduler.get("lr_lambdas") != [None] * len(initial_scheduler_rates)):
+                    raise ValueError("Resume warmup_cosine state disagrees with the configured update schedule")
         elif saved_scheduler is not None:
             raise ValueError("Resume contains scheduler state but lr_scheduler is none")
         sampler.setstate(state["sampler_state"])
@@ -548,9 +589,11 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
                        for p, before in zip(update_parameters, before_update, strict=True)]).sum().sqrt())
                        if sample_update else None)
         del before_update, update_parameters
-        if not frozen:
+        if not frozen and model.teacher_encoder is not None:
             model.update_teacher()
         completed += 1
+        if cfg.lr_scheduler == "warmup_cosine":
+            scheduler.step()
         entry = {"step": completed, "phase": phase, **averages, "gradient_norm": float(gradient_norm),
                  "lr": lr_used, "learning_rates": learning_rates_used,
                  **_encoder_training_state(model, cfg)}
@@ -585,7 +628,7 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
             entry["validation"] = scores
             if not math.isfinite(scores["selection_score"]):
                 raise FloatingPointError("Non-finite profile-matched validation selection score")
-            if scheduler is not None:
+            if cfg.lr_scheduler == "plateau":
                 scheduler.step(scores["selection_score"])
             min_delta = cfg.early_stopping_min_delta if epoch_mode else 0.0
             value = scores["selection_score"]
@@ -719,11 +762,14 @@ def evaluate(checkpoint, manifest, output, *, split="test", device="cpu", allow_
         raise ValueError("Independent test patients overlap checkpoint selection patients")
     rows = _rows(model, store, split=split, profile=profile,
                  batch_size=cfg.validation_batch_size, device=device)
+    independence_scope = store.manifest.get("provenance", {}).get("independence_scope", "unspecified")
     report = {"protocol": _protocol(profile) if isinstance(profile, str) else
                          ("direct_pcr_fixed_t0" if profile == 0 else "direct_pcr_observed_landmark"),
               "landmarks": profile, "checkpoint_landmarks": cfg.landmarks,
               "selection_protocol": state["selection_protocol"], "split": split,
-              "independent_test": split == "test", "synthetic": bool(store.manifest.get("synthetic", False)),
+              "independent_test": split == "test" and independence_scope == "full_pipeline",
+              "downstream_holdout": split == "test", "independence_scope": independence_scope,
+              "synthetic": bool(store.manifest.get("synthetic", False)),
               "clinical_validation": False if store.manifest.get("synthetic", False) else None,
               **_scores(rows, profile, bootstrap, cfg.seed, cfg.selection_metric, cfg.f1_threshold), "rows": rows}
     write_json(output, report)

@@ -13,7 +13,8 @@ from mri_vla_jepa.train_config import from_dict, load_config
 
 ROOT = Path(__file__).resolve().parents[1]
 EPOCH_FIELDS = ("training_unit", "max_epochs", "early_stopping_patience", "early_stopping_min_delta")
-SCHEDULER_FIELDS = ("lr_scheduler", "plateau_factor", "plateau_patience", "plateau_min_lr", "plateau_threshold")
+SCHEDULER_FIELDS = ("lr_scheduler", "plateau_factor", "plateau_patience", "plateau_min_lr", "plateau_threshold",
+                    "warmup_epochs", "warmup_start_factor", "cosine_end_epoch", "cosine_min_lr")
 PIPELINE_FIELDS = ("image_cache", "prefetch_batches", "loader_workers", "pin_memory", "non_blocking_transfer")
 
 
