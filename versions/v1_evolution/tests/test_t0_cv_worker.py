@@ -156,6 +156,63 @@ def suite_job(tmp_path, model_cfg):
     return suite, state, job, cfg
 
 
+def test_matrix_seed_must_match_loaded_configuration(suite_job):
+    suite, state, job, cfg = suite_job
+    job["seed"] = 43
+    write_json(suite / "matrix.json", state)
+    with pytest.raises(ValueError, match="configuration digest/seed"):
+        worker.run_job(suite, job["name"], "train")
+    assert not Path(job["output"]).exists()
+
+
+def test_existing_training_seed_cannot_be_replaced_in_place(suite_job):
+    suite, state, job, cfg = suite_job
+    worker.run_job(suite, job["name"], "train")
+    run = Path(job["output"])
+    checkpoints = {name: digest(run / name) for name in ("best.pt", "last.pt")}
+    changed = replace(cfg, seed=43)
+    Path(job["config"]).write_text(yaml.safe_dump(changed.to_dict()))
+    job.update(seed=43, config_digest=changed.digest)
+    write_json(suite / "matrix.json", state)
+    with pytest.raises(ValueError, match="identity changed"):
+        worker.run_job(suite, job["name"], "train")
+    assert {name: digest(run / name) for name in checkpoints} == checkpoints
+    assert read_json(run / "config.json")["seed"] == 17
+
+
+def test_two_training_seeds_keep_weights_predictions_and_cleanup_separate(suite_job):
+    suite, state, job17, cfg17 = suite_job
+    cfg43 = replace(cfg17, seed=43)
+    config43 = suite / "config_seed43.yaml"
+    config43.write_text(yaml.safe_dump(cfg43.to_dict()))
+    job43 = {**job17, "name": "direct0_seed43_fold0", "seed": 43,
+        "config": str(config43), "config_digest": cfg43.digest,
+        "output": str(suite / "runs" / "direct0_seed43_fold0")}
+    state["jobs"].append(job43)
+    write_json(suite / "matrix.json", state)
+    for job in (job17, job43):
+        worker.run_job(suite, job["name"], "train")
+    runs = {job["seed"]: Path(job["output"]) for job in (job17, job43)}
+    best_hashes = {seed: digest(run / "best.pt") for seed, run in runs.items()}
+    snapshots = {seed: load_checkpoint(run / "best.pt") for seed, run in runs.items()}
+    assert {seed: saved["config"]["seed"] for seed, saved in snapshots.items()} == {17: 17, 43: 43}
+    assert not torch.equal(snapshots[17]["model"]["pcr_head.1.weight"],
+                           snapshots[43]["model"]["pcr_head.1.weight"])
+    worker.run_job(suite, job17["name"], "evaluate")
+    assert not (runs[17] / "best.pt").exists() and not (runs[17] / "last.pt").exists()
+    assert digest(runs[43] / "best.pt") == best_hashes[43]
+    assert (runs[43] / "last.pt").is_file()
+    worker.run_job(suite, job43["name"], "evaluate")
+    predictions = {}
+    for seed, run in runs.items():
+        report = read_json(run / "evaluation_best_test.json")
+        assert report["checkpoint_sha256"] == best_hashes[seed]
+        predictions[seed] = {row["patient_key"]: row["pcr_probability"] for row in report["rows"]}
+        assert not (run / "best.pt").exists() and not (run / "last.pt").exists()
+    assert predictions[17].keys() == predictions[43].keys()
+    assert predictions[17] != predictions[43]
+
+
 def test_missing_test_prediction_prevents_receipt_and_cleanup(suite_job, monkeypatch):
     suite, state, job, cfg = suite_job
     worker.run_job(suite, job["name"], "train")

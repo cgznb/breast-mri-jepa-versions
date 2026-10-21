@@ -62,6 +62,19 @@ def _positive_integer(value, name):
         raise ValueError(f"{name} must be a positive integer")
 
 
+def train_seeds(cv):
+    """Training randomness only; holdout and CV assignments do not use these."""
+    seeds = cv.get("train_seeds", [cv["train_seed"]])
+    if (not isinstance(seeds, list) or not seeds or
+            any(type(seed) is not int or seed < 0 for seed in seeds) or len(set(seeds)) != len(seeds)):
+        raise ValueError("cv.train_seeds must be a nonempty list of unique nonnegative integers")
+    return list(seeds)
+
+
+def _job_name(variant, seed, fold, seeds):
+    return f"{variant}_seed{seed}_fold{fold}" if len(seeds) > 1 else f"{variant}_fold{fold}"
+
+
 def _validate_spec(spec):
     if not isinstance(spec, dict) or spec.get("schema") != SCHEMA:
         raise ValueError("Unsupported T0 CV suite schema")
@@ -80,8 +93,9 @@ def _validate_spec(spec):
     for key in ("split_seed", "train_seed", "holdout_seed"):
         if type(cv[key]) is not int or cv[key] < 0:
             raise ValueError(f"{key} must be a nonnegative integer")
-    if (cv["train_seed"], cv["holdout_seed"], cv["split_seed"]) != (17, 17, 20261020):
-        raise ValueError("Holdout/train seeds are 17 and CV split seed is 20261020")
+    train_seeds(cv)
+    if (cv["holdout_seed"], cv["split_seed"]) != (17, 20261020):
+        raise ValueError("Holdout seed is 17 and CV split seed is 20261020")
     if not isinstance(cv.get("expected_fold_counts"), list) or len(cv["expected_fold_counts"]) != 5:
         raise ValueError("Explicit expected counts for each of five folds are required")
     resources = spec["resources"]
@@ -102,8 +116,8 @@ def _validate_spec(spec):
     training = deepcopy(spec["training"])
     training["encoder_checkpoint"] = spec["paths"]["codec"]
     cfg = from_dict(training)
-    if cfg.seed != 17 or cfg.landmarks != "t0" or cfg.selection_metric != "f1" or cfg.f1_threshold != .5:
-        raise ValueError("Suite requires train seed17, T0 and fixed F1 threshold 0.5")
+    if cfg.seed != cv["train_seed"] or cfg.landmarks != "t0" or cfg.selection_metric != "f1" or cfg.f1_threshold != .5:
+        raise ValueError("Suite requires matching template train seed, T0 and fixed F1 threshold 0.5")
     if not cfg.model.enable_world_model:
         raise ValueError("All three tasks preserve the common enabled world structure")
     synthetic = cfg.allow_synthetic
@@ -214,7 +228,7 @@ def _asset_inventory(patients):
 
 
 def prepare_suite(spec, output):
-    """Freeze five manifests and fifteen configs; leave matrix ownership to runner."""
+    """Freeze five shared manifests and per-seed configs; runner owns matrix."""
     cfg = _validate_spec(spec)
     output = Path(output).resolve()
     paths = spec["paths"]
@@ -230,6 +244,7 @@ def prepare_suite(spec, output):
     reference = read_json(paths["reference_split_manifest"])
     audit = read_json(paths["reference_split_audit"])
     cv = spec["cv"]
+    seeds = train_seeds(cv)
     if bool(source.get("synthetic", False)) != cfg.allow_synthetic:
         raise ValueError("Synthetic permission must match the declared cohort")
     patients = sorted([_canonical_patient(p, paths["source_manifest"]) for p in source["patients"]],
@@ -292,6 +307,9 @@ def prepare_suite(spec, output):
             "image_standardization": "historical_preprocessed_arrays_unchanged_not_refit",
             "codec_pretraining": "historical_original_codec_population_not_redefined",
             "test_interpretation": "Historical holdout reused; independence only for this downstream round"})
+        if "train_seeds" in cv:
+            manifest["provenance"].update(train_seeds=seeds,
+                training_seed_scope="model_randomness_only; all_training_seeds_share_this_fold")
         folder = output / "splits" / f"fold{fold_id}"
         manifest_path = folder / "manifest.json"
         _immutable_json(manifest_path, manifest)
@@ -314,29 +332,30 @@ def prepare_suite(spec, output):
             "normalization": str(norm_path), "normalization_sha256": digest(norm_path),
             "data_signature": stable_hash(store.signature()), "counts": fold_audit["counts"]}
         folds[str(fold_id)] = fold
-        for variant in spec["variants"]:
-            value = cfg.to_dict()
-            value.update(seed=cv["train_seed"], encoder_checkpoint=paths["codec"], jepa_weight=variant["jepa_weight"])
-            value["threads"] = spec["resources"]["threads_per_task"]
-            value["loader_workers"] = spec["resources"]["loader_workers"]
-            value["model"].update(pcr_readout=variant["pcr_readout"], spatial_readout=variant["spatial_readout"])
-            run_cfg = from_dict(value)
-            name = f"{variant['name']}_fold{fold_id}"
-            config_path = output / "input_configs" / f"{name}.yaml"
-            if config_path.exists():
-                if load_config(config_path).digest != run_cfg.digest:
-                    raise ValueError(f"Existing frozen config differs: {config_path}")
-            else:
-                config_path.parent.mkdir(parents=True, exist_ok=True)
-                config_path.write_text(yaml.safe_dump(json.loads(json.dumps(run_cfg.to_dict())), sort_keys=False), encoding="utf-8")
-                config_path.chmod(0o600)
-            jobs.append({"name": name, "variant": variant["name"], "fold_id": fold_id,
-                "seed": cv["train_seed"], "train_seed": cv["train_seed"], "cv_split_seed": cv["split_seed"],
-                "config": str(config_path), "config_digest": run_cfg.digest, "config_sha256": digest(config_path),
-                "manifest": str(manifest_path), "manifest_sha256": fold["manifest_sha256"],
-                "data_signature": fold["data_signature"], "output": str(output / "runs" / name),
-                "status": "queued", "retries": 0, "landmarks": "t0", "selection_cohort": "t0",
-                "world_applicable": variant["jepa_weight"] > 0})
+        for train_seed in seeds:
+            for variant in spec["variants"]:
+                value = cfg.to_dict()
+                value.update(seed=train_seed, encoder_checkpoint=paths["codec"], jepa_weight=variant["jepa_weight"])
+                value["threads"] = spec["resources"]["threads_per_task"]
+                value["loader_workers"] = spec["resources"]["loader_workers"]
+                value["model"].update(pcr_readout=variant["pcr_readout"], spatial_readout=variant["spatial_readout"])
+                run_cfg = from_dict(value)
+                name = _job_name(variant["name"], train_seed, fold_id, seeds)
+                config_path = output / "input_configs" / f"{name}.yaml"
+                if config_path.exists():
+                    if load_config(config_path).digest != run_cfg.digest:
+                        raise ValueError(f"Existing frozen config differs: {config_path}")
+                else:
+                    config_path.parent.mkdir(parents=True, exist_ok=True)
+                    config_path.write_text(yaml.safe_dump(json.loads(json.dumps(run_cfg.to_dict())), sort_keys=False), encoding="utf-8")
+                    config_path.chmod(0o600)
+                jobs.append({"name": name, "variant": variant["name"], "fold_id": fold_id,
+                    "seed": train_seed, "train_seed": train_seed, "cv_split_seed": cv["split_seed"],
+                    "config": str(config_path), "config_digest": run_cfg.digest, "config_sha256": digest(config_path),
+                    "manifest": str(manifest_path), "manifest_sha256": fold["manifest_sha256"],
+                    "data_signature": fold["data_signature"], "output": str(output / "runs" / name),
+                    "status": "queued", "retries": 0, "landmarks": "t0", "selection_cohort": "t0",
+                    "world_applicable": variant["jepa_weight"] > 0})
     if validation_ids != {_key(p) for p in dev}:
         raise ValueError("OOF validation sets do not partition development patients")
     protocol = {"schema": SCHEMA, "suite_name": spec["suite_name"], "spec_digest": stable_hash(spec), "cv": cv,
@@ -344,10 +363,16 @@ def prepare_suite(spec, output):
         "selection": "per_fold_validation_patient_equal_F1_at_threshold_0.5",
         "ranking": "validation_fold_F1_arithmetic_mean_descending",
         "test_prediction": "arithmetic_mean_of_five_fold_probabilities_per_patient",
-        "test_visibility": "withheld_until_all_15_jobs_completed", "final_refit": False,
+        "test_visibility": f"withheld_until_all_{len(jobs)}_jobs_completed", "final_refit": False,
         "independence_scope": "downstream_only", "report": spec["report"],
-        "initialization": "original_codec_each_run; paired_common_modules_train_seed17",
+        "initialization": ("original_codec_each_run; paired_common_modules_train_seed17" if seeds == [17]
+                           else "original_codec_each_run; paired_common_modules_within_each_train_seed"),
         "retention": "delete_generated_checkpoints_only_after_verified_evaluations"}
+    if "train_seeds" in cv:
+        protocol.update(train_seeds=seeds, training_runs=len(jobs),
+                        training_seed_scope="model_randomness_only; identical_holdout_and_five_folds",
+                        ranking="validation_mean_of_per_seed_five_fold_F1_means_descending",
+                        test_prediction="within_each_seed_arithmetic_mean_of_five_fold_probabilities_per_patient")
     protocol_path = output / "suite_protocol.json"
     _immutable_json(protocol_path, protocol)
     state = {"schema": STATE_SCHEMA, "output_dir": str(output), "suite_name": spec["suite_name"],
@@ -355,6 +380,8 @@ def prepare_suite(spec, output):
         "data_identity": str(data_path), "data_identity_sha256": digest(data_path),
         "protocol": protocol, "protocol_path": str(protocol_path), "protocol_sha256": digest(protocol_path),
         "folds": folds, "jobs": jobs}
+    if "train_seeds" in cv:
+        state.update(train_seeds=seeds, training_runs=len(jobs))
     validate_inputs(state)
     return state
 
@@ -391,10 +418,16 @@ def validate_inputs(state):
         stat = Path(asset["path"]).stat()
         if stat.st_size != asset["size"] or stat.st_mtime_ns != asset["mtime_ns"]:
             raise ValueError(f"MRI data identity changed: {asset['path']}")
-    expected = {(v["name"], fold) for v in state["spec"]["variants"] for fold in range(1, 6)}
+    seeds = train_seeds(state["spec"]["cv"])
+    if state.get("train_seeds", seeds) != seeds or state.get("training_runs", 15 * len(seeds)) != 15 * len(seeds):
+        raise ValueError("Registered training seeds or run count changed")
+    if (state["protocol"].get("train_seeds", seeds) != seeds or
+            state["protocol"].get("training_runs", 15 * len(seeds)) != 15 * len(seeds)):
+        raise ValueError("Protocol training seeds or run count changed")
+    expected = {(v["name"], seed, fold) for v in state["spec"]["variants"] for seed in seeds for fold in range(1, 6)}
     jobs = state["jobs"]
-    if len(jobs) != len(expected) or {(j["variant"], j["fold_id"]) for j in jobs} != expected:
-        raise ValueError("Job identities must cover all three variants and five folds exactly")
+    if len(jobs) != len(expected) or {(j["variant"], j["train_seed"], j["fold_id"]) for j in jobs} != expected:
+        raise ValueError("Job identities must cover all registered variants, training seeds and five folds exactly")
     checked_folds = {}
     for job in jobs:
         fold = state["folds"][str(job["fold_id"])]
@@ -404,16 +437,16 @@ def validate_inputs(state):
         config = load_config(job["config"])
         if digest(job["config"]) != job["config_sha256"] or config.digest != job["config_digest"]:
             raise ValueError("Frozen job config changed")
-        if job["seed"] != 17 or config.seed != 17 or config.encoder_checkpoint != state["codec"]:
+        if job["seed"] != job["train_seed"] or config.seed != job["train_seed"] or config.encoder_checkpoint != state["codec"]:
             raise ValueError("Job initialization or training seed differs")
         variant = next(v for v in state["spec"]["variants"] if v["name"] == job["variant"])
         expected_config = deepcopy(state["spec"]["training"])
-        expected_config.update(seed=17, encoder_checkpoint=state["codec"], jepa_weight=variant["jepa_weight"],
+        expected_config.update(seed=job["train_seed"], encoder_checkpoint=state["codec"], jepa_weight=variant["jepa_weight"],
             threads=state["spec"]["resources"]["threads_per_task"], loader_workers=state["spec"]["resources"]["loader_workers"])
         expected_config["model"].update(pcr_readout=variant["pcr_readout"], spatial_readout=variant["spatial_readout"])
         if config.digest != from_dict(expected_config).digest:
             raise ValueError("Job config belongs to a different variant")
-        expected_name = f"{job['variant']}_fold{job['fold_id']}"
+        expected_name = _job_name(job["variant"], job["train_seed"], job["fold_id"], seeds)
         root = Path(state["output_dir"]).resolve()
         if (job["name"] != expected_name or Path(job["config"]).resolve() != root / "input_configs" / (expected_name + ".yaml")
                 or Path(job["output"]).resolve() != root / "runs" / expected_name):
@@ -481,7 +514,7 @@ def _prediction_rows(report, job):
     for row in report["rows"]:
         if row["pcr"] not in (0, 1) or not math.isfinite(row["pcr_probability"]) or not 0 <= row["pcr_probability"] <= 1:
             raise ValueError("Invalid T0 labelled probability")
-        rows.append({**row, "variant": job["variant"], "fold_id": job["fold_id"], "train_seed": 17,
+        rows.append({**row, "variant": job["variant"], "fold_id": job["fold_id"], "train_seed": job["train_seed"],
             "checkpoint": "best", "checkpoint_epoch": report.get("checkpoint_epoch", job.get("best_epoch")),
             "checkpoint_sha256": _checkpoint_sha(report), "evaluation": str(Path(job["output"]) / f"evaluation_best_{report['split']}.json")})
     return sorted(rows, key=_key)
@@ -494,7 +527,8 @@ def _checkpoint_sha(report):
 
 def _validate_report_owner(report, job, checkpoint):
     for field, expected in (("variant", job["variant"]), ("fold_id", job["fold_id"]),
-                            ("train_seed", 17), ("checkpoint_kind", checkpoint)):
+                            ("train_seed", job["train_seed"]), ("config_digest", job["config_digest"]),
+                            ("checkpoint_kind", checkpoint)):
         if field in report and report[field] != expected:
             raise ValueError(f"Evaluation {field} belongs to another run/checkpoint")
 
@@ -507,12 +541,111 @@ def write_reports(output, state, bootstrap=None):
     with (reports / ".report.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         validate_inputs(state)
+        if len(train_seeds(state["spec"]["cv"])) > 1:
+            return _write_multiseed_reports(reports, state, bootstrap)
         return _write_reports(reports, state, bootstrap)
 
 
-def _write_reports(output, state, bootstrap):
+def _write_multiseed_reports(output, state, bootstrap):
+    """Keep five-model ensembles and bootstrap draws inside each seed."""
+    seeds = train_seeds(state["spec"]["cv"])
+    complete = all(job["status"] == "completed" for job in state["jobs"])
+    variants = [variant["name"] for variant in state["spec"]["variants"]]
+    per_seed = {}
+    for training_seed in seeds:
+        seed_state = dict(state, jobs=[job for job in state["jobs"] if job["train_seed"] == training_seed])
+        seed_state["protocol"] = dict(state["protocol"], ranking="validation_fold_F1_arithmetic_mean_descending")
+        per_seed[training_seed] = _write_reports(output / f"seed{training_seed}", seed_state, bootstrap,
+                                               complete_override=complete)
+    fold_rows = [row for seed in seeds for row in per_seed[seed]["fold_metrics"]]
+    fold_summary = [row for seed in seeds for row in per_seed[seed]["fold_summary"]]
+    aggregate_metrics = [row for seed in seeds for row in per_seed[seed]["aggregate_metrics"]]
+    last_rows = [row for seed in seeds for row in per_seed[seed]["supplementary_last_val"]]
+    seed_metrics = []
+    for row in fold_summary:
+        if row["split"] == "val":
+            seed_metrics.append({"variant": row["variant"], "train_seed": row["train_seed"],
+                "population": "validation_fold_mean", "status": "evaluated" if row["completed_folds"] == 5 else "pending",
+                **{metric: row[metric + "_mean"] for metric in REPORT_METRICS}})
+    seed_metrics.extend(aggregate_metrics)
+    seed_summary = []
+    for name in variants:
+        for population in ("validation_fold_mean", "oof", "test_ensemble"):
+            selected = [row for row in seed_metrics if row["variant"] == name and row["population"] == population
+                        and row["status"] == "evaluated"]
+            result = {"variant": name, "population": population, "expected_seeds": len(seeds),
+                      "completed_seeds": len(selected), "sd_scope": "sample_sd_across_training_seed_results"}
+            for metric in REPORT_METRICS:
+                values = [row[metric] for row in selected if row[metric] is not None]
+                result[metric + "_mean"] = statistics.mean(values) if len(values) == len(seeds) else None
+                result[metric + "_std"] = statistics.stdev(values) if len(values) == len(seeds) else None
+            seed_summary.append(result)
+    validation = {row["variant"]: row["f1_mean"] for row in seed_summary if row["population"] == "validation_fold_mean"}
+    ranking = sorted(variants, key=lambda name: (validation[name] is None, -(validation[name] or 0), variants.index(name)))
+    rank = {name: i for i, name in enumerate(ranking)}
+    seed_rank = {seed: i for i, seed in enumerate(seeds)}
+    fold_rows.sort(key=lambda row: (rank[row["variant"]], seed_rank[row["train_seed"]], row["split"] != "val", row["fold_id"]))
+    fold_summary.sort(key=lambda row: (rank[row["variant"]], seed_rank[row["train_seed"]], row["split"] != "val"))
+    aggregate_metrics.sort(key=lambda row: (rank[row["variant"]], seed_rank[row["train_seed"]], row["population"] != "oof"))
+    seed_summary.sort(key=lambda row: (rank[row["variant"]], ("validation_fold_mean", "oof", "test_ensemble").index(row["population"])))
+    value = {"schema": "t0_cv5_multiseed_report_v1", "test_visible": complete, "suite_complete": complete,
+        "train_seeds": seeds, "training_runs": len(state["jobs"]), "ranking": ranking,
+        "ranking_rule": state["protocol"]["ranking"], "fold_metrics": fold_rows, "fold_summary": fold_summary,
+        "aggregate_metrics": aggregate_metrics, "seed_summary": seed_summary, "supplementary_last_val": last_rows,
+        "oof_rows": sum(report["oof_rows"] for report in per_seed.values()),
+        "test_ensemble_rows": sum(report["test_ensemble_rows"] for report in per_seed.values()),
+        "per_seed_reports": {str(seed): f"seed{seed}/report.json" for seed in seeds},
+        "notes": ["Training seeds change model randomness only; the historical holdout and five CV folds are identical.",
+                  "Each seed produces a separate five-fold probability ensemble; no cross-seed ensemble is used.",
+                  "Ranking first averages five validation F1 scores inside each seed, then averages the seed means.",
+                  "Fold-summary SD uses five folds inside one seed. Seed-summary SD uses the independent training-seed results.",
+                  "Test-summary mean and sample SD are computed across per-seed five-model ensemble metrics, not individual fold scores.",
+                  "Bootstrap intervals are computed separately for each seed's probability ensemble and condition on its trained models.",
+                  "Seeds share the same historical test patients; training-seed SD is not independent-test uncertainty.",
+                  "Historical test has already been examined; independence is limited to this downstream training round.",
+                  "Test scores and predictions are withheld until every registered job in the whole suite completes."]}
+    write_json(output / "report.json", value)
+    for filename, rows in (("fold_metrics", fold_rows), ("fold_summary", fold_summary),
+                           ("seed_summary", seed_summary), ("supplementary_last_val", last_rows)):
+        _table_csv(output / f"{filename}.csv", rows)
+    _table_csv(output / "aggregate_metrics.csv", [{key: item for key, item in row.items() if key not in {"bootstrap", "reliability_bins"}}
+        | {f"{metric}_ci_{edge}": row["bootstrap"]["intervals"].get(metric, {}).get(edge)
+           for metric in REPORT_METRICS for edge in ("lower", "upper")} for row in aggregate_metrics])
+    for population, filename in (("oof", "oof_predictions"), ("fold_test", "fold_test_predictions"),
+                                  ("test_ensemble", "test_ensemble_predictions")):
+        rows = [row for seed in seeds for row in read_json(output / f"seed{seed}" / f"{filename}.json")["rows"]]
+        rows.sort(key=lambda row: (rank[row["variant"]], seed_rank[row["train_seed"]], row.get("fold_id", 0), _key(row)))
+        write_json(output / f"{filename}.json", {"schema": "t0_cv_predictions_v1", "population": population,
+            "status": "withheld" if population != "oof" and not complete else "available", "rows": rows})
+        _table_csv(output / f"{filename}.csv", [dict(row, **({"fold_probabilities": json.dumps(row["fold_probabilities"])}
+                    if "fold_probabilities" in row else {})) for row in rows])
+    def table(rows, columns):
+        return "<table><thead><tr>" + "".join(f"<th>{html.escape(column)}</th>" for column in columns) + "</tr></thead><tbody>" + "".join(
+            "<tr>" + "".join("<td>" + html.escape(str(row.get(column, ""))) + "</td>" for column in columns) + "</tr>" for row in rows) + "</tbody></table>"
+    document = "<!doctype html><html lang='zh'><meta charset='utf-8'><title>T0五折多种子比较</title>" \
+        "<style>body{font:14px system-ui;margin:24px}table{border-collapse:collapse;margin:16px 0}th,td{border:1px solid #ddd;padding:6px}</style>" \
+        f"<h1>3个T0配置 × {len(seeds)}个训练种子 × 5折，共{len(state['jobs'])}次训练</h1>" \
+        "<p>各seed独立汇总五折测试概率；跨seed表报告指标均值和样本标准差，不合并不同seed模型的预测。</p>" \
+        + "".join("<p>" + html.escape(note) + "</p>" for note in value["notes"]) \
+        + "<h2>跨训练种子均值与样本标准差</h2>" + table(seed_summary, ["variant", "population", "completed_seeds", "expected_seeds"] + [f"{metric}_{part}" for metric in REPORT_METRICS for part in ("mean", "std")]) \
+        + "<h2>逐种子OOF及五折测试集成</h2>" + table(aggregate_metrics, ["variant", "train_seed", "population", *REPORT_METRICS, *COUNTS]) \
+        + "<h2>逐种子逐折</h2>" + table(fold_rows, ["variant", "train_seed", "fold_id", "split", "status", "epoch", *REPORT_METRICS, *COUNTS]) \
+        + "<h2>每个种子的完整报告和置信区间</h2><ul>" + "".join(f'<li><a href="seed{seed}/report.html">seed {seed}</a></li>' for seed in seeds) + "</ul></html>"
+    (output / "report.html").write_text(document, encoding="utf-8")
+    for path in output.iterdir():
+        if path.is_file():
+            path.chmod(0o600)
+    return value
+
+
+def _write_reports(output, state, bootstrap, complete_override=None):
+    output.mkdir(parents=True, exist_ok=True)
     jobs = state["jobs"]
-    complete = all(j["status"] == "completed" for j in jobs)
+    complete = all(j["status"] == "completed" for j in jobs) if complete_override is None else complete_override
+    training_seeds = {job["train_seed"] for job in jobs}
+    if len(training_seeds) != 1:
+        raise ValueError("A five-fold report must contain exactly one training seed")
+    training_seed = training_seeds.pop()
     repetitions = state["spec"]["report"]["bootstrap"] if bootstrap is None else bootstrap
     if type(repetitions) is not int or repetitions < 0:
         raise ValueError("Bootstrap count must be a nonnegative integer")
@@ -537,7 +670,7 @@ def _write_reports(output, state, bootstrap):
                 predictions[split][job["variant"]][job["fold_id"]] = _prediction_rows(report, job)
             elif not withheld and job["status"] == "completed":
                 raise ValueError(f"Completed fold lacks required evaluation: {path}")
-            fold_rows.append({"variant": job["variant"], "fold_id": job["fold_id"], "train_seed": 17,
+            fold_rows.append({"variant": job["variant"], "fold_id": job["fold_id"], "train_seed": job["train_seed"],
                 "split": split, "timepoint": "T0", "status": "withheld" if withheld else "evaluated" if report else "pending",
                 "checkpoint": "best", "epoch": report.get("checkpoint_epoch", job.get("best_epoch")) if report else None,
                 "checkpoint_sha256": _checkpoint_sha(report) if report else None,
@@ -546,7 +679,7 @@ def _write_reports(output, state, bootstrap):
         if last_path.is_file():
             last = validate_classification_report(last_path, manifest=job["manifest"], split="val", profile="t0")
             _validate_report_owner(last, job, "last")
-            last_rows.append({"variant": job["variant"], "fold_id": job["fold_id"], "train_seed": 17,
+            last_rows.append({"variant": job["variant"], "fold_id": job["fold_id"], "train_seed": job["train_seed"],
                 "split": "val", "checkpoint": "last", "epoch": last.get("checkpoint_epoch"),
                 **{key: _with_positive_fraction(last["metrics"]).get(key) for key in REPORT_METRICS + COUNTS}})
         elif job["status"] == "completed":
@@ -555,7 +688,7 @@ def _write_reports(output, state, bootstrap):
     for name in variants:
         for split in ("val", "test"):
             selected = [r for r in fold_rows if r["variant"] == name and r["split"] == split and r["status"] == "evaluated"]
-            result = {"variant": name, "split": split, "completed_folds": len(selected)}
+            result = {"variant": name, "train_seed": training_seed, "split": split, "completed_folds": len(selected)}
             for metric in REPORT_METRICS:
                 values = [r[metric] for r in selected if r[metric] is not None]
                 result[metric + "_mean"] = statistics.mean(values) if len(values) == 5 else None
@@ -586,7 +719,7 @@ def _write_reports(output, state, bootstrap):
                 parts = [m[key] for m in maps]
                 if any(r["pcr"] != expected[key] for r in parts):
                     raise ValueError("Test ensemble labels differ across folds")
-                rows.append({"variant": name, "patient_key": parts[0]["patient_key"], "landmark": 0,
+                rows.append({"variant": name, "train_seed": training_seed, "patient_key": parts[0]["patient_key"], "landmark": 0,
                     "pcr": expected[key], "pcr_probability": math.fsum(r["pcr_probability"] for r in parts) / 5,
                     "fold_probabilities": [r["pcr_probability"] for r in parts], "fold_count": 5,
                     "aggregation": "arithmetic_probability_mean"})
@@ -604,7 +737,7 @@ def _write_reports(output, state, bootstrap):
         paired_intervals[kind] = paired
         for name, rows in by_variant.items():
             metrics = _with_positive_fraction(classification_metrics([r["pcr"] for r in rows], [r["pcr_probability"] for r in rows], f1_threshold=.5))
-            aggregate_metrics.append({"variant": name, "population": kind, "status": "evaluated", **metrics,
+            aggregate_metrics.append({"variant": name, "train_seed": training_seed, "population": kind, "status": "evaluated", **metrics,
                 "bootstrap": {"method": "paired_label_stratified_patient_percentile_95", "repetitions": repetitions,
                               "seed": seed, "intervals": intervals.get(name, {})}})
     write_json(cache_path, cache)
@@ -613,6 +746,7 @@ def _write_reports(output, state, bootstrap):
     fold_summary.sort(key=lambda r: (rank[r["variant"]], r["split"] != "val"))
     aggregate_metrics.sort(key=lambda r: (rank[r["variant"]], r["population"] != "oof"))
     value = {"schema": "t0_cv5_report_v1", "test_visible": complete, "suite_complete": complete,
+        "train_seed": training_seed,
         "ranking": ranking, "ranking_rule": state["protocol"]["ranking"],
         "fold_metrics": fold_rows, "fold_summary": fold_summary, "aggregate_metrics": aggregate_metrics,
         "supplementary_last_val": last_rows, "paired_bootstrap_differences": paired_intervals,
@@ -624,7 +758,7 @@ def _write_reports(output, state, bootstrap):
                   "Historical test has been examined previously; independence is limited to this downstream training round.",
                   "Image preprocessing and codec pretraining retain historical provenance; clinical scaling is fitted per fold.",
                   "Bootstrap intervals condition on these trained models and do not include training uncertainty.",
-                  "No final all-development refit; all training seeds are 17, separate from CV split seed 20261020."]}
+                  f"No final all-development refit; training seed {training_seed}, separate from CV split seed 20261020."]}
     write_json(output / "report.json", value)
     _table_csv(output / "fold_metrics.csv", fold_rows)
     _table_csv(output / "fold_summary.csv", fold_summary)
@@ -657,7 +791,7 @@ def _write_reports(output, state, bootstrap):
                 links.append(f'<li><a href="{html.escape(os.path.relpath(path, output), quote=True)}">{html.escape(job["name"] + "/" + filename)}</a></li>')
     document = "<!doctype html><html lang='zh'><meta charset='utf-8'><title>T0五折比较</title>" \
         "<style>body{font:14px system-ui;margin:24px}table{border-collapse:collapse;margin:16px 0}th,td{border:1px solid #ddd;padding:6px}</style>" \
-        "<h1>3个T0配置 × 5折</h1><p>主排序：五折验证F1均值；测试为五折逐患者概率均值。测试仅在15个任务全部完成后公布。</p>" \
+        f"<h1>3个T0配置 × 5折；训练seed {training_seed}</h1><p>主排序：五折验证F1均值；测试为本种子五折逐患者概率均值。测试仅在整个suite全部任务完成后公布。</p>" \
         + "".join("<p>" + html.escape(note) + "</p>" for note in value["notes"]) \
         + "<h2>五折均值与样本标准差</h2>" + table(fold_summary, ["variant", "split", "completed_folds"] + [f"{m}_{s}" for m in REPORT_METRICS for s in ("mean", "std")]) \
         + "<h2>OOF与测试概率集成及95%置信区间</h2>" + table(aggregate_display,

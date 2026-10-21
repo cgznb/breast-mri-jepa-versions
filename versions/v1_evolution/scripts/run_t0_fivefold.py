@@ -536,6 +536,9 @@ def profile_all(state, output, stopped):
                     raise ValueError("Preflight lacks memory or checkpoint-size measurements")
                 result.update(variant=variant, measured_gpu=gpu, nvml_peak_mib=peak,
                               config_digest=job["config_digest"], manifest_sha256=job["manifest_sha256"],
+                              measured_train_seed=job["seed"],
+                              shared_across_train_seeds=list(dict.fromkeys(j["seed"] for j in state["jobs"])),
+                              sharing_scope="same_hardware_variant_shapes_and_batch_size",
                               runtime_identity=stable_hash(state["runtime_hashes"]),
                               reservation_mib=math.ceil(max(peak, *peaks) + resources["reservation_margin_mib"]))
                 if result["reservation_mib"] > gpu["total_mib"] * resources["memory_fraction"]:

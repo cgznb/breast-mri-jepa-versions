@@ -1,5 +1,8 @@
 # T0 三任务五折：单机八卡交付与运行
 
+本文对应原 seed17 单种子方案。新增六个训练种子的配置与提交命令见
+[多种子运行说明](T0_FIVEFOLD_MULTISEED_ZH.md)，它使用独立 suite，不覆盖本文目录。
+
 运行入口为 `versions/v1_evolution/scripts/run_t0_fivefold.py`，正式配置为
 `versions/v1_evolution/configs/t0_fivefold_8gpu.yaml`。平台选择 **custom、自定义启动命令、1 台机器、8 张完整 GPU**。
 只启动一个 controller；它把独立训练进程绑定到平台分配的 GPU UUID，每个进程内部使用 `cuda:0`。

@@ -478,7 +478,9 @@ def evaluate_job(suite, state, job, cfg):
                 result["selection_score"], report["best_selection_score"], rel_tol=0, abs_tol=1e-7):
             raise ValueError("Recomputed best validation score differs from selected checkpoint")
         result.update(checkpoint_kind=kind, checkpoint_epoch=epochs[kind],
-                      checkpoint_sha256=checkpoint_hashes[kind])
+                      checkpoint_sha256=checkpoint_hashes[kind],
+                      variant=job["variant"], fold_id=job["fold_id"],
+                      train_seed=cfg.seed, config_digest=cfg.digest)
         durable_json(target, result)
         required[f"{kind}_{split}"] = {"path": str(target), "kind": "classification", "split": split}
         _release(cfg.device)
@@ -504,6 +506,8 @@ def evaluate_job(suite, state, job, cfg):
             del model, saved, store
         result.update(checkpoint_kind=kind, checkpoint_epoch=epochs[kind],
                       checkpoint_sha256=checkpoint_hashes[kind],
+                      variant=job["variant"], fold_id=job["fold_id"],
+                      train_seed=cfg.seed, config_digest=cfg.digest,
                       independence_scope="downstream_only", independent_test=False)
         durable_json(target, result)
         required[f"world_{kind}_{split}"] = {"path": str(target), "kind": "world",

@@ -61,7 +61,7 @@ def _prepare(spec):
     return suite.prepare_suite(spec, spec["output_dir"])
 
 
-def _write_evaluations(state, *, complete=False):
+def _write_evaluations(state, *, complete=False, perfect_seeds=()):
     for job in state["jobs"]:
         manifest = read_json(job["manifest"])
         for split in ("val", "test"):
@@ -72,7 +72,7 @@ def _write_evaluations(state, *, complete=False):
                 label = patient["target"]["pcr"]
                 # Two good folds and three reversed folds: mean probability
                 # predicts everyone wrong, while mean fold F1 is 0.4.
-                correct = job["fold_id"] in (1, 2)
+                correct = job["fold_id"] in (1, 2) or job["train_seed"] in perfect_seeds
                 probability = (.9 if label else .1) if correct else (.1 if label else .9)
                 rows.append({"patient_key": patient["patient_key"], "landmark": 0,
                     "pcr": label, "pcr_probability": probability})
@@ -280,3 +280,109 @@ def test_same_best_checkpoint_required_for_val_and_test(spec):
     write_json(path, report)
     with pytest.raises(ValueError, match="same best checkpoint"):
         suite.write_reports(spec["output_dir"], state, bootstrap=0)
+
+
+def _multiseed_spec(spec, seeds):
+    value = deepcopy(spec)
+    value["cv"]["train_seeds"] = seeds
+    value["suite_name"] += "_multi"
+    value["output_dir"] += "_multi"
+    return value
+
+
+def test_six_training_seeds_share_folds_and_use_actual_initialization_seed(spec):
+    original = _prepare(spec)
+    seeds = [43, 44, 809, 203, 30, 21]
+    multi_spec = _multiseed_spec(spec, seeds)
+    multi_spec["cv"]["train_seed"] = multi_spec["training"]["seed"] = 43
+    state = _prepare(multi_spec)
+    assert state == _prepare(multi_spec)
+    assert len(state["jobs"]) == state["training_runs"] == 90
+    assert state["train_seeds"] == seeds
+    assert state["protocol"]["test_visibility"] == "withheld_until_all_90_jobs_completed"
+    assert {job["seed"] for job in state["jobs"]} == set(seeds)
+    for fold in range(1, 6):
+        jobs = [job for job in state["jobs"] if job["fold_id"] == fold]
+        assert len(jobs) == 18
+        assert len({job["manifest"] for job in jobs}) == 1
+        old_manifest = read_json(original["folds"][str(fold)]["manifest"])
+        manifest = read_json(jobs[0]["manifest"])
+        assert manifest["patients"] == old_manifest["patients"]
+        assert read_json(state["folds"][str(fold)]["normalization"]) == read_json(original["folds"][str(fold)]["normalization"])
+    for job in state["jobs"]:
+        assert job["name"] == f"{job['variant']}_seed{job['train_seed']}_fold{job['fold_id']}"
+        assert load_config(job["config"]).seed == job["train_seed"] == job["seed"]
+    state["jobs"][-1] = deepcopy(state["jobs"][0])
+    with pytest.raises(ValueError, match="Job identities"):
+        suite.validate_inputs(state)
+
+
+@pytest.mark.parametrize("seeds", [[], [43, 43], [43, True], [43, -1], [43, 1.5], "43", None])
+def test_invalid_training_seed_lists_rejected(spec, seeds):
+    with pytest.raises(ValueError, match="train_seeds"):
+        suite._validate_spec(_multiseed_spec(spec, seeds))
+
+
+def test_multiseed_oof_ensemble_and_sample_sd_are_separate(spec):
+    state = _prepare(_multiseed_spec(spec, [17, 43]))
+    _write_evaluations(state, complete=True, perfect_seeds=(43,))
+    report = suite.write_reports(state["output_dir"], state, bootstrap=0)
+    assert report["test_visible"]
+    assert report["oof_rows"] == 3 * 2 * 40
+    assert report["test_ensemble_rows"] == 3 * 2 * 10
+    public = Path(state["output_dir"]) / "reports"
+    oof = read_json(public / "oof_predictions.json")["rows"]
+    ensemble = read_json(public / "test_ensemble_predictions.json")["rows"]
+    assert len(read_json(public / "fold_test_predictions.json")["rows"]) == 3 * 2 * 5 * 10
+    for name in [variant["name"] for variant in suite.VARIANTS]:
+        for seed in (17, 43):
+            selected = [row for row in oof if row["variant"] == name and row["train_seed"] == seed]
+            assert len(selected) == len({row["patient_key"] for row in selected}) == 40
+            selected = [row for row in ensemble if row["variant"] == name and row["train_seed"] == seed]
+            assert len(selected) == 10
+            assert all(row["fold_count"] == len(row["fold_probabilities"]) == 5 for row in selected)
+            assert all(row["pcr_probability"] == pytest.approx(sum(row["fold_probabilities"]) / 5) for row in selected)
+        aggregate = {row["train_seed"]: row for row in report["aggregate_metrics"] if row["variant"] == name and row["population"] == "test_ensemble"}
+        assert aggregate[17]["f1"] == 0
+        assert aggregate[43]["f1"] == 1
+        summary = next(row for row in report["seed_summary"] if row["variant"] == name and row["population"] == "test_ensemble")
+        assert summary["completed_seeds"] == 2
+        assert summary["f1_mean"] == .5
+        assert summary["f1_std"] == pytest.approx(2 ** -.5)
+        validation = next(row for row in report["seed_summary"] if row["variant"] == name and row["population"] == "validation_fold_mean")
+        assert validation["f1_mean"] == pytest.approx(.7)
+        assert validation["f1_std"] == pytest.approx((.18) ** .5)
+    assert {row["train_seed"] for row in report["fold_metrics"]} == {17, 43}
+    child = read_json(public / "seed43" / "report.json")
+    assert child["train_seed"] == 43
+    assert child["ranking_rule"] == "validation_fold_F1_arithmetic_mean_descending"
+    assert suite.write_reports(state["output_dir"], state, bootstrap=0) == report
+
+
+def test_multiseed_test_hidden_globally_even_when_one_seed_is_complete(spec, monkeypatch):
+    state = _prepare(_multiseed_spec(spec, [17, 43]))
+    _write_evaluations(state, complete=True)
+    next(job for job in state["jobs"] if job["train_seed"] == 43)["status"] = "queued"
+    original = suite.validate_classification_report
+    def forbid_test(path, **kwargs):
+        assert kwargs["split"] != "test", "Another seed remains incomplete"
+        return original(path, **kwargs)
+    monkeypatch.setattr(suite, "validate_classification_report", forbid_test)
+    report = suite.write_reports(state["output_dir"], state, bootstrap=0)
+    assert report["test_visible"] is False
+    public = Path(state["output_dir"]) / "reports"
+    for directory in (public, public / "seed17", public / "seed43"):
+        assert read_json(directory / "report.json")["test_visible"] is False
+        assert read_json(directory / "test_ensemble_predictions.json")["rows"] == []
+        assert read_json(directory / "fold_test_predictions.json")["rows"] == []
+    assert all(row["f1_mean"] is None for row in report["seed_summary"] if row["population"] == "test_ensemble")
+
+
+def test_formal_multiseed_configuration_has_six_new_seeds_only():
+    path = Path(__file__).parents[1] / "configs/t0_fivefold_8gpu_multiseed.yaml"
+    spec = suite.load_suite_config(path)
+    assert spec["cv"]["train_seeds"] == [43, 44, 809, 203, 30, 21]
+    assert spec["training"]["seed"] == spec["cv"]["train_seed"] == 43
+    assert spec["cv"]["holdout_seed"] == 17
+    assert spec["cv"]["split_seed"] == 20261020
+    assert spec["output_dir"] == "/projects/xts0030/public/cxx/t0_cv5_combined_multiseed_v1"
