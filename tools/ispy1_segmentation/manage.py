@@ -52,8 +52,28 @@ def validate_receipt(receipt, case, contract, contract_error):
         raise ValueError("Receipt differs from current run_contract.json")
     if receipt.get("case_id") != case["case_id"]:
         raise ValueError("Receipt case ID differs from inventory")
-    selected = case["first_post"]
+    mode = case.get("selection_mode", "verified_first_post")
+    if mode not in ("verified_first_post", "ordered_original"):
+        raise ValueError("Unsupported inventory selection mode: " + str(mode))
+    if mode == "ordered_original":
+        if "first_post" in case or not isinstance(case.get("selected_volume"), dict):
+            raise ValueError("Ordered original case requires selected_volume and no first_post")
+        if receipt.get("selection_mode") != mode or contract.get("selection_mode") != mode:
+            raise ValueError("Ordered original receipt/contract selection mode differs")
+        if not case.get("parent_case_id") or receipt.get("parent_case_id") != case["parent_case_id"]:
+            raise ValueError("Ordered original receipt parent examination differs")
+        if receipt.get("source_role") != "ordered_original_acquisition":
+            raise ValueError("Ordered original receipt has an incorrect source role")
+    elif "selected_volume" in case or receipt.get("selection_mode", mode) != mode:
+        raise ValueError("First-post case mixes selection modes")
+    selected = case.get("selected_volume", case.get("first_post"))
+    if not isinstance(selected, dict):
+        raise ValueError("Inventory has no selected source volume")
     phase = receipt.get("source_phase", {})
+    if phase != selected:
+        raise ValueError("Receipt source selection/provenance differs from inventory")
+    if mode == "verified_first_post" and phase.get("phase_index_zero_based") != 1:
+        raise ValueError("First-post receipt does not identify acquisition 1")
     expected_files = selected["files"]
     source_files = receipt.get("source_files", [])
     phase_files = phase.get("files", [])
@@ -143,6 +163,11 @@ def summarize(inventory, output):
         reasons = case.get("qc", {}).get("reasons", [])
         rows.append({
             "case_id": case["case_id"], "patient_id": case["patient_id"], "study_uid": case["study_uid"],
+            "parent_case_id": case.get("parent_case_id", case["case_id"]),
+            "selection_mode": case.get("selection_mode", "verified_first_post"),
+            "source_role": receipt.get("source_role", "verified_first_post") if receipt else "",
+            "order_label": case.get("selected_volume", case.get("first_post", {})).get("order_label", ""),
+            "contrast_state": case.get("selected_volume", case.get("first_post", {})).get("contrast_state", ""),
             "normalized_visit": visit, "original_visit": case.get("original_visit"),
             "inventory_status": source_status, "result_status": result,
             "inference_stage": case_status.get("stage", ""),
@@ -158,11 +183,19 @@ def summarize(inventory, output):
             "native_mask": paths.get("native_mask", ""), "overlay": paths.get("overlay", ""),
             "receipt": str(receipt_path) if has_receipt else "",
         })
+    parent_results = defaultdict(list)
+    for row in rows:
+        parent_results[row["parent_case_id"]].append(row["result_status"])
     summary = {
         "schema": "ispy1_mamamia_queue_summary_v1", "updated_at": now(),
         "inventory": str(inventory), "output": str(output),
         "run_contract_error": contract_error,
-        "patients": len({c["patient_id"] for c in cases}), "studies": len(cases),
+        "patients": len({c["patient_id"] for c in cases}),
+        "studies": len({c.get("parent_case_id", c["case_id"]) for c in cases}),
+        "volumes": len(cases),
+        "result_count_unit": "selected_source_volumes",
+        "studies_with_complete_volume": sum("complete" in results for results in parent_results.values()),
+        "studies_all_volumes_complete": sum(all(result == "complete" for result in results) for results in parent_results.values()),
         "inventory_counts": dict(inventory_counts), "result_counts": dict(result_counts),
         "by_visit": {v: dict(count) for v, count in sorted(by_visit.items())},
         "ready_cases_complete": result_counts["complete"] == inventory_counts["ready"],

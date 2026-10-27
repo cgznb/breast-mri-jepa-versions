@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""MAMA-MIA five-fold inference on audited I-SPY1 first-post DICOM volumes.
+"""MAMA-MIA five-fold inference on audited I-SPY1 original DICOM volumes.
 
 The source DICOM files remain immutable. Orientation is a reversible axis
 permutation/flip (including preservation of obliquity), and masks are returned
-to the exact native first-post grid. A completed receipt is committed last.
+to the exact selected native grid. A completed receipt is committed last.
 """
 from __future__ import annotations
 
@@ -28,6 +28,7 @@ import torch
 from scipy import ndimage
 
 SCHEMA = "ispy1_mamamia_native_segmentation_v1"
+ORDERED_SCHEMA = "ispy1_mamamia_ordered_original_segmentation_v1"
 REPO = Path(__file__).resolve().parents[2]
 DEFAULT_MODEL = Path("/public_fast_storage/cxx26/autodl/MAM/mamamia_segmentation_runtime_20260913/model")
 DEFAULT_NNUNET = REPO / "preprocessing/upstream/nnUNet-MAMA-MIA"
@@ -108,20 +109,54 @@ def write_image(path: Path, image: sitk.Image) -> None:
     temporary.replace(path)
 
 
+def selected_volume(case: dict[str, Any]) -> dict[str, Any]:
+    """Keep the verified first-POST and order-only input contracts distinct."""
+    mode = case.get("selection_mode", "verified_first_post")
+    if mode == "ordered_original":
+        if "first_post" in case:
+            raise ValueError("Order-only acquisition must not be labeled first_post")
+        selected = case["selected_volume"]
+        if selected.get("contrast_state") not in ("unknown", "known_later_post", "verified_post", "verified_pre"):
+            raise ValueError("Order-only acquisition requires explicit contrast provenance")
+        order = selected.get("acquisition_order_zero_based")
+        if type(order) is not int or order < 0 or selected.get("order_label") != f"P{order:02d}":
+            raise ValueError("Order-only acquisition requires a consistent P00-based order label")
+        if not case.get("parent_case_id"):
+            raise ValueError("Order-only acquisition requires its parent examination ID")
+        if not selected.get("sop_instance_uids"):
+            raise ValueError("Order-only acquisition requires audited source SOP identities")
+        return selected
+    if mode != "verified_first_post" or "selected_volume" in case:
+        raise ValueError("Unknown or mixed acquisition selection contract")
+    selected = case["first_post"]
+    if selected.get("phase_index_zero_based") != 1:
+        raise ValueError("Inventory does not identify acquisition 1 as first postcontrast")
+    return selected
+
+
+def acquisition_provenance(case: dict[str, Any]) -> dict[str, Any]:
+    if case.get("selection_mode") != "ordered_original":
+        return {}
+    return {"selection_mode": "ordered_original", "parent_case_id": case["parent_case_id"],
+            "source_role": "ordered_original_acquisition"}
+
+
 def read_native_dicom(case: dict[str, Any]) -> tuple[sitk.Image, dict[str, Any]]:
     """Decode exactly one selected phase and reconstruct a regular native grid."""
-    if case["first_post"].get("phase_index_zero_based") != 1:
-        raise ValueError("Inventory does not identify acquisition 1 as first postcontrast")
-    paths = [Path(p) for p in case["first_post"]["files"]]
+    selected = selected_volume(case)
+    ordered_original = case.get("selection_mode") == "ordered_original"
+    paths = [Path(p) for p in selected["files"]]
     if len(paths) < 2 or len(set(paths)) != len(paths):
         raise ValueError("A phase requires at least two distinct DICOM slices")
     reference = None
     slices = []
     slopes, intercepts, photometric = [], [], set()
     source_stats = []
-    expected_sops = case["first_post"].get("sop_instance_uids")
+    expected_sops = selected.get("sop_instance_uids")
     if expected_sops is not None and len(expected_sops) != len(paths):
         raise ValueError("Inventory source SOP/file counts differ")
+    if expected_sops is not None and len(set(expected_sops)) != len(expected_sops):
+        raise ValueError("Inventory contains duplicate source SOP identities")
     frames = set()
     for file_index, path in enumerate(paths):
         before = file_metadata(path)
@@ -132,6 +167,13 @@ def read_native_dicom(case: dict[str, Any]) -> tuple[sitk.Image, dict[str, Any]]
             raise ValueError("Expected single-channel MR source")
         if "DERIVED" in getattr(ds, "ImageType", []):
             raise ValueError("Derived PE/SER/subtraction images are not source MR inputs")
+        if ordered_original:
+            if not {"ORIGINAL", "PRIMARY"}.issubset(set(getattr(ds, "ImageType", []))):
+                raise ValueError("Order-only inputs require ORIGINAL PRIMARY images")
+            if str(getattr(ds, "MRAcquisitionType", "")) != "3D":
+                raise ValueError("Order-only inputs require original 3D MR acquisitions")
+            if str(getattr(ds, "PatientID", "")) != case["patient_id"]:
+                raise ValueError("Selected slice belongs to another patient")
         if expected_sops is not None and str(ds.SOPInstanceUID) != expected_sops[file_index]:
             raise ValueError("Source SOP identity differs from audited inventory")
         frames.add(str(getattr(ds, "FrameOfReferenceUID", "")))
@@ -147,7 +189,7 @@ def read_native_dicom(case: dict[str, Any]) -> tuple[sitk.Image, dict[str, Any]]
         if not np.allclose(direction.T @ direction, np.eye(3), atol=1e-4):
             raise ValueError("Non-orthonormal DICOM direction")
         series = str(ds.SeriesInstanceUID)
-        if series != str(case["first_post"]["series_uid"]):
+        if series != str(selected["series_uid"]):
             raise ValueError("Selected slice belongs to another series")
         if str(ds.StudyInstanceUID) != str(case["study_uid"]):
             raise ValueError("Selected slice belongs to another study")
@@ -337,8 +379,9 @@ def load_predictor(args: argparse.Namespace):
 
 
 def inference_contract(args: argparse.Namespace) -> dict[str, Any]:
-    return {
-        "schema": SCHEMA,
+    ordered_original = args.selection_mode == "ordered_original"
+    contract = {
+        "schema": ORDERED_SCHEMA if ordered_original else SCHEMA,
         "model_files": [file_metadata(args.model / name) for name in ("plans.json", "dataset.json", *[f"fold_{i}/checkpoint_final.pth" for i in range(5)])],
         "nnunet_source": str(args.nnunet_source.resolve()),
         "source_version": {
@@ -354,11 +397,15 @@ def inference_contract(args: argparse.Namespace) -> dict[str, Any]:
             )],
         },
         "orientation": {"sagittal": "PSR", "axial": "LAS", "interpolation": "axis permutation/flips only; preserve obliquity"},
-        "input": "one full first-post MR phase; DICOM rescale; no external z-score",
+        "input": "one complete ORIGINAL PRIMARY 3D MR acquisition; retain temporal order without requiring first-POST identity; DICOM rescale; no external z-score" if ordered_original else "one full first-post MR phase; DICOM rescale; no external z-score",
         "preprocessing": {"implementation": "author DefaultPreprocessor", "nonzero_bbox_crop": True, "normalization": "single-image z-score over all voxels of cropped bounding box", "use_mask_for_norm": False, "spacing_mm": [1, 1, 1]},
         "inference": {"folds": [0, 1, 2, 3, 4], "patch_size": [128, 128, 128], "mirror_axes": [0, 1, 2], "tile_step_size": 0.5, "gaussian_blending": True, "fold_aggregation": "mean logits", "gpu_accumulation": False, "mirroring": "sequential author implementation"},
-        "output": "binary all-component mask in native first-post grid; no registration or component pruning",
+        "output": "binary all-component mask in the selected acquisition's native grid; no registration or component pruning" if ordered_original else "binary all-component mask in native first-post grid; no registration or component pruning",
     }
+    if ordered_original:
+        contract["selection_mode"] = "ordered_original"
+        contract["selection_policy"] = "Exclude DERIVED and incomplete grids; select original acquisitions from formerly ambiguous/missing-source examinations. Pxx denotes acquisition order only. Never combine phases to fill missing slices."
+    return contract
 
 
 def completed_case(case: dict[str, Any], directory: Path, contract: dict[str, Any]) -> dict[str, Any] | None:
@@ -368,8 +415,13 @@ def completed_case(case: dict[str, Any], directory: Path, contract: dict[str, An
     receipt = read_json(path)
     if receipt.get("status") != "complete" or receipt.get("contract") != contract:
         raise ValueError(f"Existing receipt contract/status differs: {case['case_id']}")
-    if set(receipt["source_files"]) != set(case["first_post"]["files"]):
+    if set(receipt["source_files"]) != set(selected_volume(case)["files"]):
         raise ValueError("Completed case source selection differs")
+    if receipt.get("source_phase") != selected_volume(case):
+        raise ValueError("Completed case acquisition provenance differs")
+    for key, value in acquisition_provenance(case).items():
+        if receipt.get(key) != value:
+            raise ValueError("Completed case selection mode or parent differs")
     for stat in receipt["source_file_metadata"] + receipt["output_file_metadata"]:
         if file_metadata(Path(stat["path"])) != stat:
             raise ValueError(f"Completed case artifact/source changed: {stat['path']}")
@@ -418,15 +470,20 @@ def process_case(case: dict[str, Any], directory: Path, predictor: Any, contract
     # needed and no geometry is manufactured by replacing a mismatched header.
     write_image(paths["native_mask"], mask)
     qc = qc_mask(mask)
+    if case.get("selection_mode") == "ordered_original":
+        qc["review_flags"].append("ordered_original_input_not_verified_first_post")
+        if selected_volume(case)["contrast_state"] == "unknown":
+            qc["review_flags"].append("contrast_identity_unknown")
     if case.get("normalized_visit") not in ("T0", "baseline"):
         qc["review_flags"].append("postbaseline_visit_model_trained_on_baseline_mri")
     write_overlay(paths["overlay"], native, mask, case["case_id"])
     receipt = {
-        "schema": SCHEMA, "case_id": case["case_id"], "patient_id": case["patient_id"],
+        "schema": contract["schema"], "case_id": case["case_id"], "patient_id": case["patient_id"],
         "study_uid": case["study_uid"], "normalized_visit": case.get("normalized_visit"),
         "original_visit": case.get("original_visit"), "status": "complete", "started_at": started,
         "completed_at": now(), "elapsed_seconds": time.monotonic() - start,
-        "contract": contract, "inventory_provenance": file_metadata(args.inventory), **source, "source_phase": case["first_post"],
+        "contract": contract, "inventory_provenance": file_metadata(args.inventory), **source,
+        **acquisition_provenance(case), "source_phase": selected_volume(case),
         "source_geometry": geometry(native), "input_geometry": geometry(oriented),
         "mask_geometry": geometry(mask), "orientation_transform": orientation,
         "preprocessing_properties": properties, "output_paths": paths,
@@ -493,7 +550,12 @@ def main() -> int:
     cases = [case for case in all_cases if case["status"] == "ready" and (not case_ids or case["case_id"] in case_ids) and (not patients or case["patient_id"] in patients) and (not visits or case.get("normalized_visit") in visits)]
     if not cases:
         raise ValueError("No ready cases matched selection")
+    modes = {case.get("selection_mode", "verified_first_post") for case in cases}
+    if len(modes) != 1:
+        raise ValueError("Separate verified first-POST and ordered-original runs/output directories")
+    args.selection_mode = next(iter(modes))
     for case in cases:
+        selected_volume(case)
         if not re.fullmatch(r"[A-Za-z0-9_.-]+", case["case_id"]) or case["case_id"] in (".", ".."):
             raise ValueError("Unsafe case identifier")
     args.output.mkdir(parents=True, exist_ok=True)
@@ -508,7 +570,7 @@ def main() -> int:
             raise ValueError("Output directory belongs to a different model/inventory contract")
         write_json(contract_path, contract)
         status = {
-            "schema": SCHEMA, "started_at": now(), "status": "running",
+            "schema": contract["schema"], "started_at": now(), "status": "running",
             "inventory_provenance": file_metadata(args.inventory),
             "inventory_cases": len(all_cases), "inventory_ready_cases": sum(c["status"] == "ready" for c in all_cases),
             "selected_cases": len(cases), "resumed_complete": [], "completed_this_invocation": [],
@@ -535,7 +597,7 @@ def main() -> int:
                     oriented, transform = orient_input(native)
                     write_image(directory / "native_image.nii.gz", native)
                     write_image(directory / "input_oriented.nii.gz", oriented)
-                    write_json(directory / "preparation.json", {"case_id": case_id, "status": "prepared_only", **source, "source_geometry": geometry(native), "input_geometry": geometry(oriented), "orientation_transform": transform})
+                    write_json(directory / "preparation.json", {"case_id": case_id, "patient_id": case["patient_id"], "study_uid": case["study_uid"], "status": "prepared_only", "inventory_provenance": file_metadata(args.inventory), **source, **acquisition_provenance(case), "source_phase": selected_volume(case), "source_geometry": geometry(native), "input_geometry": geometry(oriented), "orientation_transform": transform})
                     status["prepared_only"].append(case_id)
                     print(json.dumps({"case_id": case_id, "status": "prepared_only"}), flush=True)
                     continue

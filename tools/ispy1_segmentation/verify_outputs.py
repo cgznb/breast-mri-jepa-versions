@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
+from functools import lru_cache
 import json
 from pathlib import Path
 import tempfile
@@ -58,6 +59,55 @@ def check_files(metadata):
         require(stat.st_size == item["size_bytes"] and stat.st_mtime_ns == item["mtime_ns"], "Recorded file changed: " + str(path))
 
 
+@lru_cache(maxsize=4)
+def inventory_cases(path, size_bytes, mtime_ns):
+    """Cache only an exact, still-current inventory version for this verifier."""
+    path = Path(path)
+    current = path.stat()
+    require((current.st_size, current.st_mtime_ns) == (size_bytes, mtime_ns), "Source inventory changed after inference")
+    cases = json.loads(path.read_text())["cases"]
+    require(len({case["case_id"] for case in cases}) == len(cases), "Duplicate inventory case identifiers")
+    return {case["case_id"]: case for case in cases}
+
+
+def check_selection(record, prepared):
+    mode = record.get("selection_mode", "verified_first_post")
+    require(mode in ("verified_first_post", "ordered_original"), "Unsupported source selection mode")
+    phase = record.get("source_phase")
+    if mode == "ordered_original":
+        require(isinstance(phase, dict), "Ordered original record has no selected source volume")
+        require(bool(record.get("parent_case_id")), "Ordered original record has no parent examination")
+        require(record.get("source_role") == "ordered_original_acquisition", "Ordered original record has an incorrect source role")
+        require(phase.get("contrast_state") in ("unknown", "known_later_post", "verified_post", "verified_pre"), "Ordered original record has no supported explicit contrast state")
+        order = phase.get("acquisition_order_zero_based")
+        require(type(order) is int and order >= 0 and phase.get("order_label") == f"P{order:02d}", "Ordered original acquisition order/label differs")
+        require(bool(phase.get("sop_instance_uids")), "Ordered original record has no audited SOP identities")
+        if not prepared:
+            require(record["contract"].get("selection_mode") == mode, "Receipt/contract selection modes differ")
+    elif not prepared:
+        require(isinstance(phase, dict) and phase.get("phase_index_zero_based") == 1, "Source selection is not first postcontrast")
+    if phase is not None:
+        files = phase.get("files", [])
+        require(isinstance(files, list) and len(files) == len(record["source_files"]) and len(set(files)) == len(files), "Invalid selected source files")
+        require(set(files) == set(record["source_files"]), "Receipt source selection differs")
+        sops = phase.get("sop_instance_uids")
+        if sops is not None:
+            require(len(sops) == len(files) and len(set(sops)) == len(sops), "Invalid selected source SOP identities")
+    # The new mode additionally verifies the entire audited source selection,
+    # including acquisition order and unknown/known contrast provenance.
+    if mode == "ordered_original":
+        provenance = record.get("inventory_provenance")
+        require(isinstance(provenance, dict), "Ordered original record has no source inventory provenance")
+        check_files([provenance])
+        cases = inventory_cases(provenance["path"], provenance["size_bytes"], provenance["mtime_ns"])
+        case = cases.get(record["case_id"])
+        require(isinstance(case, dict) and "first_post" not in case, "Ordered original inventory case is absent or mixes first-post sources")
+        require(case.get("selection_mode") == mode and case.get("parent_case_id") == record["parent_case_id"], "Inventory selection mode/parent differs")
+        require(case.get("selected_volume") == phase, "Recorded selected volume/provenance differs from inventory")
+        require(case.get("patient_id") == record.get("patient_id") and case.get("study_uid") == record.get("study_uid"), "Inventory patient/study differs")
+    return mode
+
+
 def check_source(native, source_files, record):
     data = sitk.GetArrayFromImage(native)
     require(np.isfinite(data).all(), "Native image contains nonfinite voxels")
@@ -67,12 +117,23 @@ def check_source(native, source_files, record):
     maximum_coordinate_error = 0.0
     maximum_slice_origin_error = 0.0
     maximum_intensity_error = 0.0
+    phase = record.get("source_phase", {})
+    phase_files = phase.get("files", [])
+    phase_sops = phase.get("sop_instance_uids")
+    expected_sops = dict(zip(phase_files, phase_sops)) if phase_sops is not None else {}
+    ordered = record.get("selection_mode") == "ordered_original"
     for source_file in source_files:
         ds = pydicom.dcmread(source_file)
         require(str(ds.StudyInstanceUID) == record["study_uid"], "Source study mismatch")
         if record.get("patient_id"):
             require(str(ds.PatientID) == record["patient_id"], "Source patient mismatch")
         require("ORIGINAL" in ds.ImageType and "DERIVED" not in ds.ImageType, "Source is not original MR")
+        if ordered:
+            require("PRIMARY" in ds.ImageType and str(getattr(ds, "MRAcquisitionType", "")).upper() == "3D", "Ordered source is not ORIGINAL PRIMARY 3D MR")
+        if phase.get("series_uid"):
+            require(str(ds.SeriesInstanceUID) == phase["series_uid"], "Source series differs from selected acquisition")
+        if expected_sops:
+            require(str(ds.SOPInstanceUID) == expected_sops.get(source_file), "Source SOP differs from selected acquisition")
         require(str(ds.Modality) == "MR" and int(getattr(ds, "NumberOfFrames", 1)) == 1, "Unsupported source modality/frames")
         require(str(ds.SOPInstanceUID) not in seen_sop, "Repeated SOP instance")
         seen_sop.add(str(ds.SOPInstanceUID))
@@ -145,20 +206,21 @@ def verify_case(directory, allow_prepared=False):
     require(record["status"] == ("prepared_only" if prepared else "complete"), "Unexpected record status")
     if prepared:
         paths = {"native_image": directory / "native_image.nii.gz", "oriented_input": directory / "input_oriented.nii.gz"}
-        # preparation.json intentionally contains no cohort fields.
+        # Older preparation records omitted cohort fields; new records retain
+        # them and must agree with the actual selected source header.
         header = pydicom.dcmread(record["source_files"][0], stop_before_pixels=True)
-        record["study_uid"] = str(header.StudyInstanceUID)
-        record["patient_id"] = str(header.PatientID)
+        for key, value in (("study_uid", str(header.StudyInstanceUID)), ("patient_id", str(header.PatientID))):
+            require(key not in record or record[key] == value, "Prepared record/source mismatch: " + key)
+            record[key] = value
     else:
         paths = {key: Path(value) for key, value in record["output_paths"].items()}
         check_files(record["output_file_metadata"])
-        require(record["source_phase"]["phase_index_zero_based"] == 1, "Source selection is not first postcontrast")
-        require(set(record["source_phase"]["files"]) == set(record["source_files"]), "Receipt source selection differs")
+    mode = check_selection(record, prepared)
     check_files(record["source_file_metadata"])
     native, oriented = sitk.ReadImage(str(paths["native_image"])), sitk.ReadImage(str(paths["oriented_input"]))
     check_recorded_geometry(native, record["source_geometry"])
     check_recorded_geometry(oriented, record["input_geometry"])
-    result = {"case_id": record["case_id"], "status": "preparation_verified" if prepared else "complete_verified", **check_source(native, record["source_files"], record), **check_orientation(native, oriented)}
+    result = {"case_id": record["case_id"], "status": "preparation_verified" if prepared else "complete_verified", "selection_mode": mode, "parent_case_id": record.get("parent_case_id", record["case_id"]), **check_source(native, record["source_files"], record), **check_orientation(native, oriented)}
     if not prepared:
         mask = sitk.ReadImage(str(paths["native_mask"]))
         same_grid(native, mask)
