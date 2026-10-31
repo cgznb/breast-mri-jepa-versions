@@ -93,6 +93,35 @@ def test_disabled_jepa_reports_untrained_world_unavailable(setup, monkeypatch):
         assert batch["task_auxiliary_cosines"]["jepa"]["encoder"] is None
 
 
+def test_sigreg_probe_is_reproducible_and_preserves_training_rng_without_future_reads(setup, monkeypatch):
+    store, cfg, model = setup
+    cfg = replace(cfg, jepa_weight=0., rollout_weight=0., reconstruction_weight=0.,
+                  variance_weight=0., variance_definition="off", sigreg_weight=.09,
+                  sigreg_num_projections=9, sigreg_num_points=7)
+    model.train()
+    model.encoder.eval()
+    flags = [module.training for module in model.modules()]
+    original = store.batch
+    def observed_only(tasks, **kwargs):
+        assert kwargs["future_supervision"] is False
+        return original(tasks, **kwargs)
+    monkeypatch.setattr(store, "batch", observed_only)
+    tasks = make_probe_tasks(store, "t0", 4)
+    before = rng_state()
+    report, _ = run_training_probe(model, store, cfg, 0, tasks)
+    assert_rng_equal(before, rng_state())
+    assert flags == [module.training for module in model.modules()]
+    for batch in report["gradient_batches"]:
+        assert batch["enabled_terms"]["sigreg"]
+        assert batch["weighted_gradient_norms"]["sigreg"]["encoder"] > 0
+        assert batch["weighted_gradient_norms"]["sigreg"]["world_predictor"] == 0
+        assert "sigreg" in batch["task_auxiliary_cosines"]
+    replay, _ = run_training_probe(model, store, cfg, 5, tasks)
+    assert_rng_equal(before, rng_state())
+    assert report["gradient_batches"] == replay["gradient_batches"]
+    assert not report["world_head_trained"]
+
+
 def test_flow_only_auxiliary_marks_world_head_supervised_and_preserves_rng(setup):
     store, cfg, _ = setup
     cfg = replace(cfg, jepa_weight=0, flow_weight=.1,

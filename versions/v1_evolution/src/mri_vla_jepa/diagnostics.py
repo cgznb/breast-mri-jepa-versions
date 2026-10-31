@@ -304,6 +304,8 @@ def run_training_probe(model, store, cfg, epoch, tasks, previous=None):
     weights = {key: getattr(cfg, key + "_weight") for key in ("task", "jepa", "reconstruction", "variance", "flow")}
     if cfg.rollout_weight:
         weights["rollout"] = cfg.rollout_weight
+    if cfg.sigreg_weight:
+        weights["sigreg"] = cfg.sigreg_weight
     world_enabled = _world_head_trained(cfg)
     teacher_present = model.teacher_encoder is not None
     future_supervision = world_enabled or bool(
@@ -311,7 +313,8 @@ def run_training_probe(model, store, cfg, epoch, tasks, previous=None):
         model.cfg.pcr_readout in {"forecast", "forecast_detach"})
     gradients, nll, online, teachers, masks, observed_masks, landmarks, world_rows = [], [], [], [], [], [], [], []
     with preserve_training_state(model):
-        if cfg.flow_weight:
+        if cfg.flow_weight or cfg.sigreg_weight:
+            # Fixed probe slices; preserve_training_state restores training RNGs.
             torch.manual_seed(cfg.diagnostics_seed)
             if str(cfg.device).startswith("cuda"):
                 torch.cuda.manual_seed_all(cfg.diagnostics_seed)
@@ -322,6 +325,7 @@ def run_training_probe(model, store, cfg, epoch, tasks, previous=None):
             with torch.enable_grad(), autocast(cfg.device, cfg.precision):
                 loss, terms = model.compute_loss(inp, sup, variance_definition=cfg.variance_definition,
                     prediction_training=cfg.prediction_training,
+                    sigreg_num_projections=cfg.sigreg_num_projections, sigreg_num_points=cfg.sigreg_num_points,
                     **{key + "_weight": value for key, value in weights.items()})
                 gradients.append({"patients": len(chunk), **weighted_gradient_metrics(model, terms, weights)})
             del loss, terms
@@ -396,3 +400,5 @@ def evaluate_world(model, store, cfg, *, split="val", batch_size=16):
             "verified_registration_subgroup": {"status": "unavailable",
                 "reason": "manifest does not retain per-transition spatial verification metadata"},
             "interpretation": "raw latent L1 between checkpoints with different teachers is not a common coordinate metric"}
+
+# SIGReg integration v1: observed patient-axis stage-token regularization.

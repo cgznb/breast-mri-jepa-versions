@@ -7,6 +7,7 @@ does not import the conversion/inference implementation or invoke a model.
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 from datetime import datetime, timezone
 from functools import lru_cache
 import json
@@ -108,6 +109,39 @@ def check_selection(record, prepared):
     return mode
 
 
+def source_intensity(ds, ordered):
+    """Independently distinguish recorded scaling from uncalibrated magnitude."""
+    raw = {}
+    values = {}
+    for key in ("RescaleSlope", "RescaleIntercept"):
+        value = ds.get(key)
+        raw[key] = "absent" if key not in ds else "empty" if value is None or str(value).strip() == "" else str(value)
+        values[key] = value
+    if not ordered:
+        slope = float(getattr(ds, "RescaleSlope", 1))
+        intercept = float(getattr(ds, "RescaleIntercept", 0))
+        return ds.pixel_array.astype(np.float64) * slope + intercept, "dicom_rescale", raw
+    defined = {key: raw[key] not in ("absent", "empty") for key in raw}
+    require(len(set(defined.values())) == 1, "Only one DICOM rescale parameter is defined")
+    if defined["RescaleSlope"]:
+        slope, intercept = float(values["RescaleSlope"]), float(values["RescaleIntercept"])
+        require(np.isfinite([slope, intercept]).all() and slope > 0, "Invalid DICOM rescale parameters")
+        return ds.pixel_array.astype(np.float64) * slope + intercept, "dicom_rescale", raw
+    # Both absent retains the established stored-pixel input behavior. Only
+    # the new explicit-empty-tag route requires this extra mapping audit.
+    if "empty" in raw.values():
+        for name in ("ModalityLUTSequence", "RealWorldValueMappingSequence", "PixelValueTransformationSequence"):
+            require(name not in ds, "Empty DICOM rescale with an alternative intensity mapping: " + name)
+        for tag in ((0x0029, 0x1010), (0x0029, 0x1020), (0x0029, 0x1110), (0x0029, 0x1120)):
+            if tag in ds:
+                value = ds[tag].value
+                require(value is None or value == "" or value == b"", "Empty DICOM rescale with unreviewed Siemens CSA payload")
+        require("PHILIPS" not in str(ds.get("Manufacturer", "")).upper(), "Empty Philips intensity scaling needs separate review")
+    # This directly retains existing magnitude pixels. No missing DICOM slope
+    # or intercept is manufactured or represented as measured calibration.
+    return ds.pixel_array.astype(np.float64), "stored_magnitude_no_rescale_defined", raw
+
+
 def check_source(native, source_files, record):
     data = sitk.GetArrayFromImage(native)
     require(np.isfinite(data).all(), "Native image contains nonfinite voxels")
@@ -122,6 +156,8 @@ def check_source(native, source_files, record):
     phase_sops = phase.get("sop_instance_uids")
     expected_sops = dict(zip(phase_files, phase_sops)) if phase_sops is not None else {}
     ordered = record.get("selection_mode") == "ordered_original"
+    transform_modes = Counter()
+    raw_fields = {key: set() for key in ("RescaleSlope", "RescaleIntercept")}
     for source_file in source_files:
         ds = pydicom.dcmread(source_file)
         require(str(ds.StudyInstanceUID) == record["study_uid"], "Source study mismatch")
@@ -160,11 +196,22 @@ def check_source(native, source_files, record):
         error = float(np.max(np.abs(expected - actual)))
         maximum_coordinate_error = max(maximum_coordinate_error, error)
         require(error <= DICOM_POSITION_TOLERANCE_MM, "DICOM/native corner physical coordinates differ")
-        expected_pixels = ds.pixel_array.astype(np.float64) * float(getattr(ds, "RescaleSlope", 1)) + float(getattr(ds, "RescaleIntercept", 0))
+        expected_pixels, transform_mode, raw = source_intensity(ds, ordered)
+        transform_modes[transform_mode] += 1
+        for key, value in raw.items():
+            raw_fields[key].add(value)
+        if ordered and "empty" in raw.values():
+            require("intensity_transform_modes" in record and "raw_rescale_field_values" in record, "Empty rescale fields require an explicit stored-magnitude policy and raw-field provenance")
         actual_pixels = data[z]
         require(np.allclose(expected_pixels, actual_pixels, atol=1e-4, rtol=1e-6), "Native voxel values differ from rescaled DICOM")
         maximum_intensity_error = max(maximum_intensity_error, float(np.max(np.abs(expected_pixels - actual_pixels))))
     require(seen_z == set(range(data.shape[0])), "Native slices do not have one-to-one source coverage")
+    if ordered:
+        require(len(transform_modes) == 1, "Volume mixes defined and undefined intensity transforms across slices")
+        if "intensity_transform_modes" in record:
+            require(record["intensity_transform_modes"] == dict(transform_modes), "Recorded intensity transform modes differ from actual source")
+        if "raw_rescale_field_values" in record:
+            require(record["raw_rescale_field_values"] == {key: sorted(values) for key, values in raw_fields.items()}, "Recorded raw rescale fields differ from actual source")
     return {"source_slices_checked": len(seen_z), "source_voxels_checked": int(data.size), "dicom_native_coordinate_tolerance_mm": DICOM_POSITION_TOLERANCE_MM, "coordinate_error_metric": "maximum_absolute_LPS_component", "maximum_dicom_native_slice_origin_error_mm": maximum_slice_origin_error, "maximum_dicom_native_coordinate_error_mm": maximum_coordinate_error, "maximum_dicom_native_intensity_error": maximum_intensity_error}
 
 

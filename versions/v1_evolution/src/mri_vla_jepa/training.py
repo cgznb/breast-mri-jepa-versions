@@ -136,7 +136,7 @@ def _source_snapshot():
             ("model.py", "model_config.py", "encoder.py", "vq_encoder.py", "flow.py", "training.py",
              "train_config.py", "cli.py", "data.py", "contracts.py", "constants.py",
              "arm.py", "io.py", "metrics.py", "data_pipeline.py", "diagnostics.py",
-             "attention.py", "phases.py")}
+             "attention.py", "phases.py", "sigreg.py")}
 
 
 def _patient_partitions(store):
@@ -275,6 +275,8 @@ def _checkpoint_config_matches(saved, cfg):
     normalized = dict(saved)
     defaults = RawVLATrainConfig()
     normalized.setdefault("rollout_weight", defaults.rollout_weight)
+    for name in ("sigreg_weight", "sigreg_num_projections", "sigreg_num_points"):
+        normalized.setdefault(name, getattr(defaults, name))
     for name in ("training_unit", "max_epochs", "early_stopping_patience", "early_stopping_min_delta",
                  "lr_scheduler", "plateau_factor", "plateau_patience", "plateau_min_lr", "plateau_threshold",
                  "warmup_epochs", "warmup_start_factor", "cosine_end_epoch", "cosine_min_lr"):
@@ -567,7 +569,8 @@ def _train(store, cfg, output, *, resume, stop_after, loader):
                     jepa_weight=cfg.jepa_weight, rollout_weight=cfg.rollout_weight, flow_weight=cfg.flow_weight,
                     reconstruction_weight=cfg.reconstruction_weight, variance_weight=cfg.variance_weight,
                     representation_only=phase == "representation", variance_definition=cfg.variance_definition,
-                    prediction_training=cfg.prediction_training)
+                    prediction_training=cfg.prediction_training, sigreg_weight=cfg.sigreg_weight,
+                    sigreg_num_projections=cfg.sigreg_num_projections, sigreg_num_points=cfg.sigreg_num_points)
             if not torch.isfinite(loss):
                 raise FloatingPointError(f"Non-finite VLA-JEPA loss at step {completed + 1}")
             (loss / cfg.accumulation).backward()
@@ -831,3 +834,5 @@ def predict(checkpoint, manifest, patient_key, output, *, landmark=0, device="cp
     write_json(output, report)
     Path(output).chmod(0o600)
     return report
+
+# SIGReg integration v1: observed patient-axis stage-token regularization.

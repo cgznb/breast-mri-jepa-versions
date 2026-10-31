@@ -8,6 +8,7 @@ to the exact selected native grid. A completed receipt is committed last.
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import datetime as dt
 import fcntl
 import gc
@@ -151,6 +152,8 @@ def read_native_dicom(case: dict[str, Any]) -> tuple[sitk.Image, dict[str, Any]]
     reference = None
     slices = []
     slopes, intercepts, photometric = [], [], set()
+    transform_modes = Counter()
+    raw_rescale = {key: set() for key in ("RescaleSlope", "RescaleIntercept")}
     source_stats = []
     expected_sops = selected.get("sop_instance_uids")
     if expected_sops is not None and len(expected_sops) != len(paths):
@@ -197,17 +200,38 @@ def read_native_dicom(case: dict[str, Any]) -> tuple[sitk.Image, dict[str, Any]]
             reference = (iop, spacing, shape, direction)
         elif shape != reference[2] or not np.allclose(iop, reference[0], atol=1e-5) or not np.allclose(spacing, reference[1], atol=1e-5):
             raise ValueError("Inconsistent slice orientation, matrix or spacing")
-        slope = float(getattr(ds, "RescaleSlope", 1.0))
-        intercept = float(getattr(ds, "RescaleIntercept", 0.0))
-        if not np.isfinite([slope, intercept]).all() or slope <= 0:
-            raise ValueError("Invalid intensity rescale")
+        raw_slope = getattr(ds, "RescaleSlope", None)
+        raw_intercept = getattr(ds, "RescaleIntercept", None)
+        for key in raw_rescale:
+            value = getattr(ds, key, None)
+            raw_rescale[key].add("absent" if key not in ds else "empty" if value is None or str(value).strip() == "" else str(value))
+        if ordered_original and (raw_slope not in (None, "")) != (raw_intercept not in (None, "")):
+            raise ValueError("Only one intensity rescale field is defined")
+        if ordered_original and raw_slope in (None, "") and raw_intercept in (None, ""):
+            # Conventional MR stored magnitude remains a usable model input.
+            # This explicitly selects stored pixels; it does not reconstruct
+            # missing quantitative calibration or assert DICOM values of 1/0.
+            explicitly_empty = "RescaleSlope" in ds or "RescaleIntercept" in ds
+            if explicitly_empty and any(key in ds for key in ("ModalityLUTSequence", "RealWorldValueMappingSequence", "PixelValueTransformationSequence")):
+                raise ValueError("Undefined rescale with another intensity transform requires explicit review")
+            if explicitly_empty and ("PHILIPS" in str(getattr(ds, "Manufacturer", "")).upper() or any(ds.get(tag) is not None and ds[tag].value not in (None, b"", "") for tag in ((0x0029, 0x1010), (0x0029, 0x1020), (0x0029, 0x1110), (0x0029, 0x1120)))):
+                raise ValueError("Undefined rescale with private intensity metadata requires explicit review")
+            slope, intercept = 1.0, 0.0  # arithmetic identity, not source calibration
+            transform_mode = "stored_magnitude_no_rescale_defined"
+        else:
+            slope = float(getattr(ds, "RescaleSlope", 1.0))
+            intercept = float(getattr(ds, "RescaleIntercept", 0.0))
+            if not np.isfinite([slope, intercept]).all() or slope <= 0:
+                raise ValueError("Invalid intensity rescale")
+            transform_mode = "dicom_rescale"
+            slopes.append(slope)
+            intercepts.append(intercept)
+        transform_modes[transform_mode] += 1
         pixels = ds.pixel_array
         if pixels.shape != shape:
             raise ValueError("Decoded DICOM pixel shape differs")
         pixels = pixels.astype(np.float32) * slope + intercept
         slices.append((float(ipp @ direction[:, 2]), ipp, pixels, str(path.resolve()), before))
-        slopes.append(slope)
-        intercepts.append(intercept)
         photometric.add(str(getattr(ds, "PhotometricInterpretation", "")))
         if before != file_metadata(path):
             raise ValueError("Source DICOM changed during decoding")
@@ -234,7 +258,7 @@ def read_native_dicom(case: dict[str, Any]) -> tuple[sitk.Image, dict[str, Any]]
     image.SetOrigin(tuple(positions[0]))
     image.SetDirection(tuple(direction.ravel()))
     source_stats = [row[4] for row in slices]
-    return image, {
+    source = {
         "source_files": [row[3] for row in slices],
         "source_file_metadata": source_stats,
         "pixel_policy": "pydicom stored pixels * per-slice RescaleSlope + RescaleIntercept; float32; no VOI LUT/windowing/inversion; no external normalization",
@@ -247,6 +271,13 @@ def read_native_dicom(case: dict[str, Any]) -> tuple[sitk.Image, dict[str, Any]]
         "intensity_min": float(data.min()),
         "intensity_max": float(data.max()),
     }
+    if ordered_original:
+        if len(transform_modes) > 1:
+            raise ValueError("Mixed defined and undefined intensity calibration within a volume")
+        source["pixel_policy"] = "Defined DICOM rescale: stored pixels * RescaleSlope + RescaleIntercept; otherwise paired undefined rescale with no alternative transform: explicitly use stored magnitude pixels. float32; no VOI LUT/windowing/inversion or external normalization. Undefined fields are not imputed quantitative calibration."
+        source["intensity_transform_modes"] = dict(transform_modes)
+        source["raw_rescale_field_values"] = {key: sorted(values) for key, values in raw_rescale.items()}
+    return image, source
 
 
 def orient_input(native: sitk.Image) -> tuple[sitk.Image, dict[str, Any]]:

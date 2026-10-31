@@ -20,7 +20,8 @@ from mri_vla_jepa.training import _configure, _make_optimizer, _source_snapshot,
 def loss_arguments(cfg):
     return {**{name: getattr(cfg, name) for name in (
         "task_weight", "jepa_weight", "rollout_weight", "flow_weight",
-        "reconstruction_weight", "variance_weight", "variance_definition")},
+        "reconstruction_weight", "variance_weight", "variance_definition",
+        "sigreg_weight", "sigreg_num_projections", "sigreg_num_points")},
         "prediction_training": cfg.prediction_training}
 
 
@@ -184,3 +185,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# SIGReg integration v1: observed patient-axis stage-token regularization.

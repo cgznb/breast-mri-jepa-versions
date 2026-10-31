@@ -19,6 +19,7 @@ from .encoder import build_visit_encoder
 from .flow import ConditionalMRIFlow
 from .attention import build_transformer
 from .phases import selected_phases, select_phases
+from .sigreg import observed_state_sigreg
 
 
 
@@ -554,10 +555,18 @@ class RawVLAJEPA(nn.Module):
                      task_weight=1., jepa_weight=1., flow_weight=.1,
                      reconstruction_weight=.1, variance_weight=.01,
                      representation_only=False, variance_definition="legacy", rollout_weight=0.,
-                     prediction_training="hybrid"):
+                     prediction_training="hybrid", sigreg_weight=0.,
+                     sigreg_num_projections=256, sigreg_num_points=17):
         inp.validate()
+        if (isinstance(sigreg_weight, bool) or not isinstance(sigreg_weight, (int, float))
+                or not math.isfinite(sigreg_weight) or sigreg_weight < 0):
+            raise ValueError("sigreg_weight must be finite and nonnegative")
+        for name, value, minimum in (("sigreg_num_projections", sigreg_num_projections, 1),
+                                     ("sigreg_num_points", sigreg_num_points, 2)):
+            if type(value) is not int or value < minimum:
+                raise ValueError(f"{name} must be an integer >= {minimum}")
         weights = (task_weight, jepa_weight, flow_weight, reconstruction_weight, variance_weight,
-                   rollout_weight)
+                   rollout_weight, sigreg_weight)
         if any(not math.isfinite(w) or w < 0 for w in weights):
             raise ValueError("Loss weights must be finite and nonnegative")
         if not self.cfg.enable_world_model and (representation_only or any(weights[1:])):
@@ -639,12 +648,22 @@ class RawVLAJEPA(nn.Module):
                 flow = F.mse_loss(velocity, x1 - x0)
         loss = (task_weight * task + jepa_weight * world + rollout_weight * rollout + flow_weight * flow
                 + reconstruction_weight * reconstruction + variance_weight * variance)
+        if sigreg_weight:
+            sigreg = observed_state_sigreg(observed, inp.observed_mask,
+                num_projections=sigreg_num_projections, num_points=sigreg_num_points)
+            loss = loss + sigreg_weight * sigreg
         terms = {"loss": loss, "task": task, "jepa": world, "world_model": world,
                       "rollout": rollout,
                       "flow": flow, "reconstruction": reconstruction, "variance": variance,
                       "label_count": sup.label_mask.sum().to(observed.dtype),
                       "future_count": sup.future_mask.sum().to(observed.dtype),
                       "pair_count": pair_count, "rollout_count": rollout_count}
+        if sigreg_weight:
+            terms["sigreg"] = sigreg
+            patient_counts = inp.observed_mask.sum(0).detach().float()
+            terms["sigreg_stage_count"] = (patient_counts >= 2).sum().float()
+            for stage in range(inp.observed_mask.shape[1]):
+                terms[f"sigreg_T{stage}_patient_count"] = patient_counts[stage]
         if teacher_forcing:
             stage = output.get("pcr_read_stage")
             for index in range(4):
@@ -732,3 +751,5 @@ class RawVLAJEPA(nn.Module):
                     "query_mask": inp.query_mask.clone(), "phase_order": list(selected_phases(self.cfg))}
         finally:
             self.train(training)
+
+# SIGReg integration v1: observed patient-axis stage-token regularization.

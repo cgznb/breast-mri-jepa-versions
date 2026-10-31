@@ -34,6 +34,9 @@ class RawVLATrainConfig:
     reconstruction_weight: float = 0.1
     variance_weight: float = 0.01
     variance_definition: str = "legacy"
+    sigreg_weight: float = 0.0
+    sigreg_num_projections: int = 256
+    sigreg_num_points: int = 17
     diagnostics_every_epochs: int = 0
     diagnostics_patients: int = 32
     diagnostics_batch_size: int = 16
@@ -94,6 +97,12 @@ class RawVLATrainConfig:
             raise ValueError("Epoch training requires one_stage and accumulation=1")
         if self.landmarks not in {"all_observed", "t0"}:
             raise ValueError("landmarks must be all_observed or t0")
+        if (isinstance(self.sigreg_weight, bool) or not isinstance(self.sigreg_weight, (int, float))
+                or not math.isfinite(self.sigreg_weight) or self.sigreg_weight < 0):
+            raise ValueError("sigreg_weight must be finite and nonnegative")
+        for name, minimum in (("sigreg_num_projections", 1), ("sigreg_num_points", 2)):
+            if type(getattr(self, name)) is not int or getattr(self, name) < minimum:
+                raise ValueError(f"{name} must be an integer >= {minimum}")
         if self.variance_definition not in {"legacy", "off", "patient_axis_stage_token_fp32"}:
             raise ValueError("Unsupported variance_definition")
         if self.variance_definition == "off" and self.variance_weight != 0:
@@ -174,11 +183,11 @@ class RawVLATrainConfig:
         if self.cosine_min_lr <= 0 or (self.lr_scheduler == "warmup_cosine" and self.cosine_min_lr > self.lr):
             raise ValueError("cosine_min_lr must be positive and no greater than the initial cosine lr")
         if self.schedule == "two_stage" and not any((self.jepa_weight, self.rollout_weight, self.reconstruction_weight,
-                                                     self.variance_weight)):
+                                                     self.variance_weight, self.sigreg_weight)):
             raise ValueError("Representation-only training requires an active auxiliary loss")
         if not self.model.enable_world_model and (self.schedule != "one_stage" or any((
                 self.jepa_weight, self.rollout_weight, self.flow_weight,
-                self.reconstruction_weight, self.variance_weight))):
+                self.reconstruction_weight, self.variance_weight, self.sigreg_weight))):
             raise ValueError("Disabled world model requires one_stage BCE-only training with all auxiliary weights zero")
         if self.flow_weight > 0 and not self.model.enable_flow:
             raise ValueError("Positive flow loss requires enable_flow=true")
@@ -233,3 +242,5 @@ def from_dict(value):
 
 def load_config(path):
     return from_dict(yaml.safe_load(Path(path).read_text(encoding="utf-8")))
+
+# SIGReg integration v1: observed patient-axis stage-token regularization.
