@@ -1,0 +1,68 @@
+ZHAO ET AL.: CORE-WM FOR LONGITUDINAL TREATMENT-RESPONSE PREDICTION                                                                            9
+
+
+
+five folds. The larger effect of clinical-profile permutation is       Limitations. The image-only JEPA baseline achieved an
+consistent with the cumulative ablation, in which molecular         AUROC of only 0.5816 at T0–T1, and the matched 3-D
+profile and age supplied the largest conditioning gain. The         ResNet and PrefixGRU baselines similarly remained below
+smaller treatment-permutation effect should be interpreted          0.60 at most decision points. These results indicate that
+in the context of limited treatment-subtype overlap. These          learning discriminative imaging features from the available
+perturbations establish model dependence on the observed            sample size remains challenging for all evaluated architec-
+conditions, but they neither identify causal treatment effects      tures. The explicit geometry pathway and response guidance
+nor estimate outcomes under unassigned regimens.                    partially compensate for this by encoding structural priors
+   Finally, we tested whether the cumulative response-state         about lesion morphology, but the reliance on handcrafted
+update retained an observable measure of treatment response.        geometry descriptors limits the model’s capacity to discover
+Within each fold, an outcome-free ridge probe mapped                novel imaging biomarkers. Improving image-only representa-
+the frozen T0-to-T2 state change to log-volume shrinkage,           tion learning under limited longitudinal data is an important
+log(VT0 /VT2 ). Its regularization strength was selected using      direction for future work. Although cross-cohort transfer to
+the corresponding validation partition, and prediction was          I-SPY1 provides preliminary evidence of generalization, inde-
+restricted to the held-out partition. Across 791 OOF pa-            pendent external validation on larger and more diverse cohorts
+tients, predicted and observed shrinkage had Spearman corre-        remains necessary and is currently limited by the availability
+lation 0.8623 (95% CI, 0.8347–0.8865), fold-mean correlation        of longitudinal DCE-MRI datasets with matched clinical data
+0.8608 ± 0.0500, and pooled R2 = 0.6744 (Fig. 2(d)). Median         and annotations.
+observed shrinkage was 1.9005 among non-pCR patients and
+2.7631 among pCR patients (p = 7.03 × 10−15 , descrip-                                        VI. C ONCLUSION
+tive Mann–Whitney test). Because lesion-volume change con-
+tributes to the imaging-derived response guidance used during          We presented CoRe-WM, a world-model framework that
+pretraining, this analysis verifies that the intended geometric     formulates longitudinal pCR prediction as conditioned next-
+response signal is retained and generalizes to held-out patients;   state prediction rather than direct outcome classification. The
+it does not represent independent discovery of an unsupervised      model learns a state-transition function from serial DCE-MRI,
+volume biomarker.                                                   assigned therapy, and patient clinical profile, producing frozen
+                                                                    response states that are linearly probed for pCR prediction at
+                                                                    each decision point. Our experiments establish world-model-
+                       V. D ISCUSSION                               based representation learning as a promising framework for
+   The cumulative ablation shows that patient profile con-          outcome prediction in oncology and beyond.
+tributes the largest performance gain (image-only JEPA 0.5816
+→ 0.7135). This result is consistent with the well-established                          DATA AND C ODE AVAILABILITY
+association between receptor subtype and pCR rates [1], [12]:          I-SPY1 and I-SPY2 are de-identified public collections
+pCR exceeds 40% in HER2-positive and triple-negative tumors         distributed by TCIA [13], [22]. Code for preprocessing, train-
+while remaining below 20% in HR-positive/HER2-negative              ing, evaluation, and figure generation will be made publicly
+disease. Knowing the patient’s receptor status and associated       available upon publication.
+clinical characteristics therefore provides a strong baseline for
+pCR discrimination, and the conditioning mechanism allows
+this prior to shape the learned state trajectory from the outset.                                  R EFERENCES
+The condition-permutation analysis (Fig. 2(c)) further confirms      [1] P. Cortazar, L. Zhang, M. Untch et al., “Pathological complete response
+this role: permuting clinical profile within treatment families          and long-term clinical benefit in breast cancer: The CTNeoBC pooled
+                                                                         analysis,” The Lancet, vol. 384, no. 9938, pp. 164–172, 2014.
+reduced five-fold AUROC from 0.7621 to 0.6476 at T0–T2,              [2] L. J. Esserman, D. A. Berry, A. DeMichele et al., “Pathologic complete
+and jointly permuting clinical and treatment context reduced             response predicts recurrence-free survival more effectively by cancer
+it to 0.5951, with every perturbation reducing AUROC in all              subset: Results from the I-SPY 1 TRIAL–CALGB 150007/150012,
+                                                                         ACRIN 6657,” Journal of Clinical Oncology, vol. 30, no. 26, pp. 3242–
+five folds.                                                              3249, 2012.
+   Treatment conditioning yielded no additional marginal AU-         [3] D. Yee, A. M. DeMichele, C. Yau et al., “Association of event-free and
+ROC increment in the ablation (−0.0019), yet the condition-              distant recurrence-free survival with individual-level pathologic com-
+                                                                         plete response in neoadjuvant treatment of stages 2 and 3 breast cancer:
+permutation analysis shows that the transition model does                Three-year follow-up analysis for the I-SPY2 adaptively randomized
+encode treatment information in the frozen response state.               clinical trial,” JAMA Oncology, vol. 6, no. 9, pp. 1355–1362, 2020.
+Permuting treatment within biological strata reduced T0–T2           [4] N. M. Hylton, J. D. Blume, W. K. Bernreuter et al., “Locally advanced
+                                                                         breast cancer: MR imaging for prediction of response to neoadjuvant
+AUROC by 0.0292 ± 0.0086 across all five folds (Fig. 2(c)).              chemotherapy—results from ACRIN 6657/I-SPY TRIAL,” Radiology,
+The contrast between the ablation and permutation results re-            vol. 263, no. 3, pp. 663–672, 2012.
+flects the strong correlation between treatment assignment and       [5] N. M. Hylton, C. A. Gatsonis, M. A. Rosen et al., “Neoadjuvant
+                                                                         chemotherapy for breast cancer: Functional tumor volume by MR
+receptor subtype in I-SPY2, where biological subtype largely             imaging predicts recurrence-free survival—results from the ACRIN
+determines treatment-arm eligibility. Treatment conditioning             6657/CALGB 150007 I-SPY 1 TRIAL,” Radiology, vol. 279, no. 1,
+therefore serves a representational role, specifying the context         pp. 44–55, 2016.
+                                                                     [6] M. C. Comes, A. Fanizzi, S. Bove et al., “Early prediction of neoadju-
+under which the next state is predicted, rather than acting as           vant chemotherapy response by exploiting a transfer learning approach
+an independent source of pCR discrimination in this cohort.              on breast DCE-MRIs,” Scientific Reports, vol. 11, p. 14123, 2021.

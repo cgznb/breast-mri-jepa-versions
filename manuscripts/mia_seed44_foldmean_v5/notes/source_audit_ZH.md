@@ -1,0 +1,11 @@
+# Seed44 五折指标均值来源审计
+
+来源为 `/projects/xts0030/public/cxx/medium976_t0_t2_no_tf_cv5_multiseed_v1`。suite整体60/60训练及正式评估完成，本版只选seed44的四模型×五折，共20个目标运行。全部目标matrix任务为completed，evaluation_done.json均completed=true；正式评估完成于北京时间2026-10-29 22:32–22:37。
+
+已核对60份登记评估报告的大小和mtime_ns；20份manifest、run_identity、training_done、输入配置及codec资产身份；1840次runtime身份检查。每run记录92份runtime文件，92份独立文件SHA256内容在所有目标运行一致。相同模型的config在五折间相同，各fold使用对应不同患者划分manifest。NoJEPA与DirectReadout仅rollout_weight由0变0.5；DirectReadout与ForecastAttention还改变pCR读出及空间池化；ForecastMean与ForecastAttention仅空间池化不同。
+
+所有60个模型×fold×时点测试向量均为同一批175人、56位pCR阳性；患者排序、标签、manifest test成员和标签逐项一致。五个fold manifest均为976人队列，同fold在模型间路径/hash一致。测试标记为内部downstream holdout、independent_test=false，不能称外部验证。
+
+本版直接在每个fold的概率向量上计算指标，然后对五个fold指标等权平均并报告样本SD（ddof=1）。Macro先在每个fold内平均T0/T1/T2指标，再求五fold均值/SD。不对fold概率做平均，不增加独立患者数量；五fold开发集重叠，不能把其SD解释为五个独立临床试验的变异。
+
+本次只读已有预测与身份，未重新训练、加载checkpoint payload或重做MRI。本文档与JSON只含聚合统计、文件路径及哈希，不含患者ID或患者级概率。未重新审计上游预训练重叠、原生影像几何或解剖配准准确性。

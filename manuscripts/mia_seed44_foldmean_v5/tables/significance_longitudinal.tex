@@ -1,0 +1,21 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Exploratory paired T2 minus T0 comparisons. Shared patient-bootstrap draws retain dependence between folds and landmarks. All metrics use approximate, null-centered paired patient-bootstrap tests (99,999 shared draws across folds, models, and landmarks). All $p$ values are two-sided. $p_{\mathrm{Holm}}$ adjusts jointly over the 81 secondary tests in Tables~\ref{tab:significance_landmarks}--\ref{tab:significance_longitudinal}. Direct and Attention abbreviate DirectReadout and ForecastAttention. $^{*}p_{\mathrm{Holm}}<0.05$, $^{**}p_{\mathrm{Holm}}<0.01$, $^{***}p_{\mathrm{Holm}}<0.001$; ns, not significant after the stated correction. Intervals are unadjusted 95\% patient-bootstrap intervals (2,000 shared draws) and need not agree with adjusted test decisions. All analyses condition on the five fixed seed44 fold models; folds are not resampled and share one holdout.}
+\label{tab:significance_longitudinal}
+\begin{tabular}{llrrrc}
+\toprule
+Model & Metric & Difference [95\% CI] & $p$ & $p_{\mathrm{Holm}}$ & Sig. \\
+\midrule
+NoJEPA & AUROC & +0.0021 [-0.0027, +0.0073] & 0.4258 & 1.0000 & ns \\
+NoJEPA & AP & +0.0063 [-0.0093, +0.0197] & 0.4193 & 1.0000 & ns \\
+NoJEPA & F1 & -0.0030 [-0.0163, +0.0091] & 0.6396 & 1.0000 & ns \\
+DirectReadout & AUROC & -0.0005 [-0.0086, +0.0081] & 0.9031 & 1.0000 & ns \\
+DirectReadout & AP & +0.0065 [-0.0062, +0.0189] & 0.3131 & 1.0000 & ns \\
+DirectReadout & F1 & +0.0238 [+0.0009, +0.0478] & 0.0443 & 1.0000 & ns \\
+ForecastAttention & AUROC & +0.0127 [+0.0026, +0.0235] & 0.0189 & 1.0000 & ns \\
+ForecastAttention & AP & +0.0110 [-0.0048, +0.0264] & 0.1848 & 1.0000 & ns \\
+ForecastAttention & F1 & +0.0176 [-0.0051, +0.0424] & 0.1341 & 1.0000 & ns \\
+\bottomrule
+\end{tabular}
+\end{table*}

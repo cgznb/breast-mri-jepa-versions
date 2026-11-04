@@ -1,0 +1,15 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Archived epoch 20 fixed-training-probe diagnostics, averaged within each seed over five folds and then equally over seeds 21/44. Skill is $1-\mathrm{L1}_{forecast}/\mathrm{L1}_{copy}$ within the corresponding EMA coordinates; positive is better than holding the landmark state constant. These are training-probe summaries, not best-checkpoint holdout forecast evaluations. NoJEPA has no trained-world diagnostic.}
+\label{tab:worldprobe}
+\begin{tabular}{lrrr}
+\toprule
+Model & Horizon 1 skill & Horizon 2 skill & Horizon 3 skill \\
+\midrule
+NoJEPA & -- & -- & -- \\
+DirectReadout & +0.023 & +0.037 & +0.158 \\
+ForecastAttention & -0.029 & -0.027 & +0.017 \\
+\bottomrule
+\end{tabular}
+\end{table*}

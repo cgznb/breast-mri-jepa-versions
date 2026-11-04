@@ -1,0 +1,166 @@
+\section{Dataset and preprocessing}
+\label{sec:data}
+
+\subsection{Cohort construction and clinical variables}
+We retrospectively analysed longitudinal breast dynamic contrast-enhanced MRI
+(DCE-MRI) from the public I-SPY2 and ACRIN-6698 imaging
+resources~\cite{tciaispy2_2022,tciaacrin6698_2021}. Source imaging identifiers
+were linked to research identifiers using the accompanying official identity
+mapping, and outcomes and baseline clinical variables were obtained from the
+official I-SPY2 Imaging Cohort~1 clinical spreadsheet. The final cohort
+comprised 976 patients with 3,641 usable examinations. Native imaging
+identifiers belonged to the ISPY2 and ACRIN-6698 namespaces for 712 and 264
+patients, respectively; these identifiers were mapped to the same clinical
+release and do not define independent development and external validation
+cohorts. The official collection pages identify the source imaging and clinical
+release as CC BY 4.0. \todo{Confirm terms for redistributing derived assets and
+document the applicable ethics approval or waiver and original consent arrangements.}
+
+Eligibility required an actual baseline examination, an available binary pCR
+label, usable baseline registered image assets, and a nonempty baseline
+localisation produced by the existing MAMA-MIA segmentation workflow. Of 980
+clinically matched source candidates, three lacked a baseline examination and
+one had an empty or unavailable predicted baseline localisation. Their
+exclusion yielded 976 patients and 3,642 candidate examinations. One
+post-treatment examination was subsequently marked unavailable because its
+saved within-examination phase transforms displaced the postcontrast images
+outside the prescribed baseline crop. The patient's earlier examinations were
+retained, leaving 3,641 usable examinations. Missing follow-up examinations did
+not cause patient exclusion. No additional admission thresholds based on
+normalised cross-correlation, field-of-view ratios, functional tumour volume,
+or the availability of an accepted adjacent longitudinal pair were applied.
+
+The endpoint was the released binary pCR field: 313 patients were labelled
+positive and 663 negative. \todo{Verify and state the release-specific
+pathological definition of pCR, including breast and nodal criteria and the
+handling of in-situ disease; do not infer this definition from the binary
+column alone.} Baseline covariates were age at screening, hormone-receptor
+(HR) status, HER2 status, and the released binary MammaPrint indicator. Age was
+available for 973 patients; all three binary covariates were available for the
+entire cohort. The official assigned treatment arm, represented by 13
+categories, was also supplied to the model. The current experiments use an
+\emph{assigned-arm scenario}: the assigned arm and available baseline
+covariates are assumed known at baseline. The spreadsheet does not establish
+prospective allocation timestamps, doses, cycle-level exposure, or interval
+treatment schedules, and the model does not reconstruct these quantities.
+
+\begin{table*}[t]
+\centering
+\caption{Characteristics of the analysed cohort. Development statistics count
+each of the 801 development patients once, rather than pooling overlapping
+training folds. Age is reported as mean $\pm$ sample standard deviation among
+patients with observed age; other entries are counts.}
+\label{tab:cohort}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Characteristic & All & Development & Holdout \\
+\midrule
+Patients & 976 & 801 & 175 \\
+pCR positive & 313 & 257 & 56 \\
+pCR negative & 663 & 544 & 119 \\
+Age (years) & $48.7\pm10.5$ & $48.7\pm10.6$ & $48.9\pm10.2$ \\
+Missing age & 3 & 3 & 0 \\
+HR positive & 533 & 434 & 99 \\
+HER2 positive & 240 & 195 & 45 \\
+Available T0 & 976 & 801 & 175 \\
+Available T1 & 935 & 760 & 175 \\
+Available T2 & 875 & 700 & 175 \\
+Available T3 & 855 & 692 & 163 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Examinations were indexed by the canonical study stages T0--T3 rather than
+continuous elapsed time. Availability at these stages was 976, 935, 875, and
+855 patients, respectively (Table~\ref{tab:cohort}); 803 patients had all four
+examinations and 861 had T0--T2. The nominal source protocol acquired T0 before
+randomization, T1 after three weeks of the first regimen (paclitaxel with or
+without an experimental agent), T2 between paclitaxel and anthracycline
+regimens, and T3 after four cycles of anthracycline treatment and before
+surgery~\citep{tciaispy2_2022}. Because T0 MRI preceded randomization, supplying
+the eventual assigned arm at T0 is a retrospective conditional scenario,
+rather than a prospectively available predictor before treatment allocation.
+The source protocol used 1.5 or 3.0 Tesla scanners with dedicated breast coils
+and required the same scanner configuration within a patient. These are
+nominal protocol specifications, not a patient-level audit of timing or
+scanner compliance. Twenty-three patients had T0 only and remained
+eligible for pCR supervision. Their unavailable future MRI targets were
+masked, and no synthetic follow-up images were substituted. Model inputs and
+evaluation landmarks were restricted to T0, T1, and T2; a real T3 examination,
+when available in the training partition, could provide a future-state target.
+\todo{Report the actual examination intervals, acquisition centres, scanner
+distribution, and sequence-parameter ranges for the final analysed cohort.}
+
+\subsection{Patient partitioning and evaluation scope}
+The cohort was divided into 801 development patients and a fixed internal
+holdout of 175 patients, including 56 pCR-positive patients. All holdout
+patients had actual T0, T1, and T2 examinations, allowing matched longitudinal
+evaluation; 163 also had T3. The holdout retained 139 patients with complete
+T0--T2 observations from the historical benchmark and added 36 eligible
+patients. Additional patients were selected using outcome quotas and a fixed
+baseline-clinical distribution balancing rule with split seed 2026, without
+using model predictions or performance. This fixed cohort-construction seed
+is distinct from the training-seed comparison: the split is unchanged for
+training seeds 42, 44, and 2026. Development folds were stratified by
+pCR and examination-availability pattern; rare joint strata were combined
+within the same pCR class. Each development patient appeared in validation
+exactly once across the five folds. Fold~1 contained 640 training and 161
+validation patients; the remaining folds each contained 641 training and 160
+validation patients. Training, validation, and holdout identities were
+disjoint within each fold, and the same holdout was used for every fold
+model at each training seed.
+
+This partition is an internal downstream benchmark. In particular, 29 of the
+36 added holdout patients had belonged to the development population of an
+earlier experiment, so earlier trained models cannot be treated as held out
+on the entire new set. The present downstream models were trained using the
+new fold definitions. Patient independence of the supplied codec and
+segmentation pretraining checkpoints relative to the final holdout has not
+yet been established; that provenance must be audited before stronger claims
+of end-to-end independence. The complete-examination holdout eligibility also
+restricts inference about patients with missing early follow-up examinations.
+
+\subsection{Registration, fixed localisation, and normalisation}
+Within each examination, postcontrast phases were registered to the
+precontrast reference. Follow-up examinations were aligned to the patient's
+T0 reference using the saved longitudinal transforms, retaining a rigid
+fallback when the final deformable candidate was not usable. Baseline
+localisation used the existing MAMA-MIA nnU-Net prediction on the native
+first-postcontrast examination~\cite{mamamia2025}. The centre of the largest
+26-connected predicted component defined a fixed baseline crop, which was
+reused at every actual follow-up. Follow-up segmentation and follow-up-driven
+recentering were not used.
+
+Each examination was represented by three channels: the precontrast phase,
+the first postcontrast phase, and the late phase explicitly specified in the
+examination metadata. The late channel was not selected by assuming a fixed
+phase number or taking the last available phase. Images were resampled to
+$32\times128\times128$ voxels with spacing
+$2.0\times0.7032\times0.7032\,\mathrm{mm}$ in the slice and two in-plane
+dimensions, approximately covering $64\times90\times90\,\mathrm{mm}$.
+Linear interpolation was used for MRI intensities and nearest-neighbour
+interpolation for masks and acquisition support, with zero padding outside
+the acquired field of view. The localisation mask determined the crop; it was
+not a contemporaneous ground-truth tumour segmentation or a future
+observation supplied to the classifier.
+
+Native metadata, baseline mask headers, registered reference grids, and saved
+transforms were maintained as matched versions. Explicit array-index
+mappings, rather than placeholder NIfTI affines, defined sampling positions.
+The exported arrays were checked for finite values, consistent coordinate
+mapping, and numerical agreement after compressed storage and readback.
+These checks establish data and geometry consistency but do not establish
+anatomical registration or segmentation accuracy. The fixed crop partly
+truncated the largest predicted baseline component for 85 patients; these
+patients were retained and the limitation was recorded.
+
+Raw cropped intensities were stored once and shared across folds. For each
+fold, a single intensity mean and population standard deviation were fitted
+to nonzero precontrast foreground voxels from every unique actual examination
+of that fold's training patients. The same scalar transform was applied once
+to the foreground of all three channels, stages, and partitions; background
+and padding remained zero. Validation and holdout images were excluded from
+fitting. Age normalisation was likewise fitted to observed training-patient
+values; HR, HER2, and MammaPrint retained their official binary coding, with
+missingness represented explicitly.

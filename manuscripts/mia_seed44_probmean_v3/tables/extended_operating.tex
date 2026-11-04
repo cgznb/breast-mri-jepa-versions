@@ -1,0 +1,26 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Extended operating-point metrics for seed 44 at probability threshold 0.5. Each patient score is the arithmetic mean of probabilities from the five fold models before any metric is calculated. All landmarks contain the same 175 holdout patients (56 pCR-positive). Macro equally averages the three landmark metric values. PPV and NPV denote positive and negative predictive value; BA is balanced accuracy.}
+\label{tab:extended_operating}
+\begin{tabular}{llrrrrrr}
+\toprule
+Model & Stage & Sens. & Spec. & PPV & NPV & BA & MCC \\
+\midrule
+NoJEPA & T0 & 0.607 & 0.689 & 0.479 & 0.788 & 0.648 & 0.281 \\
+NoJEPA & T1 & 0.625 & 0.681 & 0.479 & 0.794 & 0.653 & 0.289 \\
+NoJEPA & T2 & 0.625 & 0.689 & 0.486 & 0.796 & 0.657 & 0.298 \\
+NoJEPA & Macro & 0.619 & 0.686 & 0.481 & 0.793 & 0.653 & 0.289 \\
+\midrule
+DirectReadout & T0 & 0.643 & 0.706 & 0.507 & 0.808 & 0.674 & 0.331 \\
+DirectReadout & T1 & 0.661 & 0.689 & 0.500 & 0.812 & 0.675 & 0.330 \\
+DirectReadout & T2 & 0.679 & 0.664 & 0.487 & 0.814 & 0.671 & 0.321 \\
+DirectReadout & Macro & 0.661 & 0.686 & 0.498 & 0.811 & 0.673 & 0.328 \\
+\midrule
+ForecastAttention & T0 & 0.661 & 0.697 & 0.507 & 0.814 & 0.679 & 0.339 \\
+ForecastAttention & T1 & 0.714 & 0.571 & 0.440 & 0.810 & 0.643 & 0.267 \\
+ForecastAttention & T2 & 0.714 & 0.613 & 0.465 & 0.820 & 0.664 & 0.306 \\
+ForecastAttention & Macro & 0.696 & 0.627 & 0.471 & 0.814 & 0.662 & 0.304 \\
+\bottomrule
+\end{tabular}
+\end{table*}

@@ -1,0 +1,39 @@
+\section{Supplementary pooling, metrics, and uncertainty}
+\label{sec:supplement}
+The supplementary \meanmodel{} uses training seed 44, the same five development folds, observed-history protocol, future-state objective, and forecast feature groups as \fullmodel{}, replacing spatial attention with mean pooling. Metrics are calculated separately from each fold model's predictions and then equally averaged. The per-fold results in Tables~\ref{tab:foldresults} and~\ref{tab:foldresults_forecast} retain the fitted-model estimates underlying the reported mean and sample standard deviation.
+\input{tables/pooling}
+\input{tables/fold_results}
+\input{tables/fold_results_forecast}
+\input{tables/extended_macro_metrics}
+\input{tables/extended_threshold}
+
+\subsection{Paired significance checks}
+Table~\ref{tab:bootstrap} reports the nine principal Macro comparisons, with unadjusted 95\% paired patient-bootstrap intervals, raw two-sided approximate bootstrap $p$ values, within-family Holm adjustment, and all-90 Holm adjustment. The secondary family comprises 81 tests in Tables~\ref{tab:significance_landmarks}--\ref{tab:significance_longitudinal}. Every patient draw is shared across all five fixed fold models, variants, and landmarks. Metrics are recomputed separately for each fold before averaging, so the independent patient count remains 175. A significance marker refers to the stated Holm-adjusted family; ns denotes $p_{\mathrm{Holm}}\geq0.05$. The 2,000-resample percentile intervals are unadjusted and are not exact inversions of the 99,999-resample null-centered tests. All testing and reporting choices remain retrospective and exploratory.
+
+\input{tables/significance_landmarks}
+\input{tables/significance_extended}
+\input{tables/significance_pooling}
+\input{tables/significance_longitudinal}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/landmark_performance.pdf}
+\caption{Six complementary landmark summaries: AUROC, AP, F1, sensitivity, specificity, and Brier score. Metrics are computed separately for each seed-44 fold model and then equally averaged across five folds. Error bars show descriptive sample fold standard deviations, while shading gives conditional 95\% shared-patient-bootstrap intervals for the fold mean. All models and landmarks use the same 175 patients.}
+\label{fig:longitudinal}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/outcome_score_changes.pdf}
+\caption{Outcome-conditioned changes in predicted pCR probability from T0 to T2. Each fold model supplies one probability change per patient. Histograms are constructed separately within folds and then equally averaged; probabilities are not averaged between models. Panels separate variants and outcome classes. Repeated fold predictions are correlated observations of the same 175 patients and do not multiply the sample size by five. Score changes do not establish individual treatment effects.}
+\label{fig:scorechanges}
+\end{figure*}
+
+\section{Supplementary subgroup and training-probe summaries}
+\input{tables/subgroup_results}
+\input{tables/subgroup_world_probe}
+
+\section{Reproducibility and reporting items to complete}
+The source package includes aggregate CSV files, source-report hashes, reproducible metric and figure scripts, the shared-patient-bootstrap procedure, and the official article class. The significance CSV includes raw $p$ values, within-family Holm adjustment, and adjustment over all 90 tests as a sensitivity analysis. It contains no patient identifiers, patient-level prediction rows, original MRI volumes, or model checkpoints. The method figure includes only rendered, anonymous development-image slices. Every variant uses training seed 44. Metrics are computed separately from each fold model's predictions before averaging across folds, with no probability ensembling. Archived training diagnostics are calculated in each model's own latent coordinates and summarized descriptively across folds.
+
+\todo{Before submission, complete author and ethics statements; verify the precise pCR pathology definition; document codec and segmentation patient-level pretraining provenance; add matched external baselines and prospectively locked training and analysis policies; audit external-cohort independence; and confirm the journal's current submission and anonymization requirements.}

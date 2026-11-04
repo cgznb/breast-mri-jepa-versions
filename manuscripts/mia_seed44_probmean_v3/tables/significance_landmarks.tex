@@ -1,0 +1,39 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Exploratory landmark comparisons. AUROC uses paired DeLong tests; other metrics use approximate, null-centered paired patient-bootstrap tests (99,999 shared resamples). All $p$ values are two-sided. $p_{\mathrm{Holm}}$ adjusts jointly over the 81 secondary tests in Tables~\ref{tab:significance_landmarks}--\ref{tab:significance_longitudinal}. Direct and Attention abbreviate DirectReadout and ForecastAttention. $^{*}p_{\mathrm{Holm}}<0.05$, $^{**}p_{\mathrm{Holm}}<0.01$, $^{***}p_{\mathrm{Holm}}<0.001$; ns, not significant after the stated correction. Intervals are unadjusted 95\% patient-bootstrap intervals (2,000 shared draws) and need not agree with adjusted test decisions. All analyses condition on the fitted, retrospectively selected seed44 ensembles.}
+\label{tab:significance_landmarks}
+\begin{tabular}{lllrrrc}
+\toprule
+Comparison & Landmark & Metric & Difference [95\% CI] & $p$ & $p_{\mathrm{Holm}}$ & Sig. \\
+\midrule
+Direct -- NoJEPA & T0 & AUROC & +0.0098 [-0.0074, +0.0274] & 0.2414 & 1.0000 & ns \\
+Direct -- NoJEPA & T0 & AP & +0.0071 [-0.0144, +0.0283] & 0.4821 & 1.0000 & ns \\
+Direct -- NoJEPA & T0 & F1 & +0.0315 [+0.0000, +0.0722] & 0.0886 & 1.0000 & ns \\
+Direct -- NoJEPA & T1 & AUROC & +0.0135 [-0.0032, +0.0312] & 0.1218 & 1.0000 & ns \\
+Direct -- NoJEPA & T1 & AP & +0.0134 [-0.0111, +0.0397] & 0.2842 & 1.0000 & ns \\
+Direct -- NoJEPA & T1 & F1 & +0.0266 [-0.0047, +0.0669] & 0.1543 & 1.0000 & ns \\
+Direct -- NoJEPA & T2 & AUROC & +0.0129 [-0.0032, +0.0299] & 0.1233 & 1.0000 & ns \\
+Direct -- NoJEPA & T2 & AP & +0.0115 [-0.0133, +0.0365] & 0.3588 & 1.0000 & ns \\
+Direct -- NoJEPA & T2 & F1 & +0.0203 [-0.0209, +0.0671] & 0.3585 & 1.0000 & ns \\
+Attention -- NoJEPA & T0 & AUROC & +0.0176 [-0.0071, +0.0439] & 0.1598 & 1.0000 & ns \\
+Attention -- NoJEPA & T0 & AP & +0.0303 [-0.0068, +0.0705] & 0.1305 & 1.0000 & ns \\
+Attention -- NoJEPA & T0 & F1 & +0.0382 [-0.0119, +0.0974] & 0.1802 & 1.0000 & ns \\
+Attention -- NoJEPA & T1 & AUROC & +0.0240 [+0.0019, +0.0492] & 0.0424 & 1.0000 & ns \\
+Attention -- NoJEPA & T1 & AP & +0.0297 [-0.0094, +0.0707] & 0.1462 & 1.0000 & ns \\
+Attention -- NoJEPA & T1 & F1 & +0.0016 [-0.0506, +0.0616] & 0.9564 & 1.0000 & ns \\
+Attention -- NoJEPA & T2 & AUROC & +0.0269 [+0.0058, +0.0502] & 0.0150 & 1.0000 & ns \\
+Attention -- NoJEPA & T2 & AP & +0.0345 [+0.0025, +0.0700] & 0.0450 & 1.0000 & ns \\
+Attention -- NoJEPA & T2 & F1 & +0.0165 [-0.0343, +0.0756] & 0.5574 & 1.0000 & ns \\
+Attention -- Direct & T0 & AUROC & +0.0078 [-0.0172, +0.0337] & 0.5342 & 1.0000 & ns \\
+Attention -- Direct & T0 & AP & +0.0231 [-0.0123, +0.0634] & 0.2375 & 1.0000 & ns \\
+Attention -- Direct & T0 & F1 & +0.0067 [-0.0450, +0.0650] & 0.8132 & 1.0000 & ns \\
+Attention -- Direct & T1 & AUROC & +0.0105 [-0.0101, +0.0326] & 0.3113 & 1.0000 & ns \\
+Attention -- Direct & T1 & AP & +0.0163 [-0.0214, +0.0561] & 0.3968 & 1.0000 & ns \\
+Attention -- Direct & T1 & F1 & -0.0250 [-0.0693, +0.0225] & 0.2870 & 1.0000 & ns \\
+Attention -- Direct & T2 & AUROC & +0.0140 [-0.0056, +0.0350] & 0.1612 & 1.0000 & ns \\
+Attention -- Direct & T2 & AP & +0.0230 [-0.0084, +0.0575] & 0.1754 & 1.0000 & ns \\
+Attention -- Direct & T2 & F1 & -0.0038 [-0.0372, +0.0370] & 0.8416 & 1.0000 & ns \\
+\bottomrule
+\end{tabular}
+\end{table*}

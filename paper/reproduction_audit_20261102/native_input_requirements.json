@@ -1,0 +1,237 @@
+{
+  "reviewed_at_utc": "2026-11-02T14:05:12.316359+00:00",
+  "user_policy": "Patient train/val/test membership exactly fixed; method-native network inputs, no forcedcommonROI/clinical/prefix. Paper takes precedence over simplified code.",
+  "test_patients": 175,
+  "test_positives": 56,
+  "actual_test_T3": 163,
+  "missing_test_T3": 12,
+  "no_training_or_image_reconstruction_performed": true,
+  "methods": [
+    {
+      "id": "BSTNet2026",
+      "paper": "10.1038/s41698-025-01256-2",
+      "paper_source": "paper/reproduction_audit_20261102/recent_literature/PMC12886838.xml",
+      "native_input": {
+        "phase": "single peak-tumor-enhancement postcontrast phase, not necessarily firstpost",
+        "shape_per_visit": [
+          64,
+          128,
+          128
+        ],
+        "fov": "tumor-centered VOI, 3mm extension, per-visit nnUNet segmentation radiologist-adjusted",
+        "preprocessing": "cohort median spatial resolution; X/Y cubic spline and Z linear; VOI resize nearest-neighbor; foreground train-derived zscore (paper mu244.46 sigma383.74; in new split refit train only)",
+        "clinical": "BSTNet image pathway not shown as clinical-fusion; HR/HER2 et al used separate clinical comparator; do not force our clinical inputs into native model"
+      },
+      "native_timepoints": {
+        "representation_training": "I-SPY2 T0/T1/T2/T3; native training cohort accepts complete three- or four-timepoint sequences; one original-order positive plus three shuffled negatives",
+        "pcr_inference": "longitudinal sequence; I-SPY2 three/four exams and external pretreatment plus scans after1–4 cycles; variable observations with published zero-padding. T0-only standalone classification not verified as a native endpoint.",
+        "not_required": "Four actual observations are not universally required, contrary to the simplified code x.chunk(4) assumption."
+      },
+      "labels": {
+        "pretraining": "order labels, no pCR needed for temporal permutation",
+        "fine_tuning": "pCR labels from training patients"
+      },
+      "missing_policy": {
+        "paper": "zero-padding for external varying scan intervals; three/four scans accepted in source cohort",
+        "uncertain": "which absent canonical slot, attention mask details and exact supervised subset at each interim time are not fully specified in article; recover supplement/native recipe before launch"
+      },
+      "fixed175_compatibility": {
+        "T0": "not confirmed native evaluation",
+        "T1_or_T2": "candidate at matching interim clinical timing if native variable-length/zero-padding prescription confirmed; requires peak phase and native VOIs",
+        "T3": "12 absent T3 may use only published native missing handling if applicable; never silently remove; must report coverage and padding"
+      }
+    },
+    {
+      "id": "TemporalRL_ART2025",
+      "paper": "arXiv:2509.14872",
+      "paper_source": "paper/reproduction_audit_20261102/recent_literature/2509.14872.html",
+      "native_input": {
+        "maps": [
+          "PE_early120–150s",
+          "PE_late~450s",
+          "SER=PE_early/PE_late"
+        ],
+        "spatial": "whole volume resized256x256x256, intensity[0,1], then axial maximum-intensity projection; three 2D map channels",
+        "clinical": "none verified; responder alignment consumes pCR during representation learning",
+        "uncertain": "precise enhancement formula/zero-denominator handling and physical FOV/cropping beyond volume resize to be recovered from native preprocessing; do not infer from our raw pre/firstpost/late"
+      },
+      "native_timepoints": {
+        "representation_training": "all four T0,T1,T2,T3 for all585 selected complete-series patients",
+        "pcr_inference": [
+          "T0",
+          "T0+T1",
+          "T0+T1+T2+T3"
+        ],
+        "T0+T1+T2": "not directly confirmed as a paper evaluation endpoint, even if mathematical concatenation is possible"
+      },
+      "labels": {
+        "pretraining": "pCR positive labels explicitly used by L_Align; not outcome-free SSL",
+        "readout": "frozen representation + supervised sklearn LogisticRegression"
+      },
+      "missing_policy": {
+        "paper": "585 patients required complete four visits and all three maps; no native missing-visit policy verified",
+        "consequence": "cannot fabricate T3/maps or silently restrict our801 development patients to complete cases"
+      },
+      "fixed175_compatibility": {
+        "T0": "native early-readout endpoint, all175 could be evaluated after source image/map availability audit",
+        "T0+T1": "native early-readout endpoint, all175 have observed visits but derived-map acquisition times still need audit",
+        "full_four_visits": "only163 have T3; 175-patient full-series comparison blocked without an explicitly sanctioned native policy",
+        "representation_training": "fixed development cohorts include missing visits; strict native training not currently ready under unchanged patient membership"
+      }
+    },
+    {
+      "id": "STI2025",
+      "paper": "10.1016/j.eclinm.2025.103298",
+      "paper_source": "paper/reproduction_audit_20261102/recent_literature/PMC12205660.xml",
+      "native_input": {
+        "phase": "peak-enhancement DCE phase",
+        "spatial": "tumor ROI plus three habitat subregions at each visit; exact native shape/spacing/normalization awaits SupplementaryA2/A4",
+        "code_shape": [
+          150,
+          150,
+          150
+        ],
+        "code_shape_status": "official config value only, not substituted for paper specification",
+        "extra": "between-scan time difference; tumor/habitat masks at both observed scans",
+        "clinical": "model is image/habitat temporal branch; do not append ours by default"
+      },
+      "native_timepoints": {
+        "pcr_inference": "two scans: within two weeks before NAC and after1–2 cycles NAC, denotedT0/T1 by paper",
+        "representation_training": "contrastive pretraining publicDCE-MRI, exact corpus/protocol/labels pendingSupplementaryA4",
+        "not_native": "using lateT2 or T3 as replacement for earlyT1 is a timing change, not paper-native reproduction"
+      },
+      "labels": {
+        "fine_tuning": "pCR labels",
+        "contrastive_pretraining": "objective and positive-pair generation not complete in visible release; pendingnative supplement"
+      },
+      "missing_policy": {
+        "paper": "two required imaging timepoints; no verified missing-input substitution",
+        "habitats": "cannot replace nativehabitat segmentation with arbitrary3 threshold masks"
+      },
+      "fixed175_compatibility": {
+        "early_T0_T1": "best native timing candidate; all175 havecanonicalT0/T1, but confirm ourT1 corresponds1–2cycles and both nativepeak/habitat inputs exist",
+        "T0_only": "notnative",
+        "T2_macro": "no nativeT2 result; must not duplicateearlypair predictions as an extra independent native endpoint"
+      }
+    },
+    {
+      "id": "Nishizawa2025",
+      "paper": "10.1186/s12967-025-06617-w",
+      "paper_source": "paper/reproduction_audit_20261102/recent_literature/PMC12247266.xml",
+      "native_input": {
+        "phase": "firstpostcontrast",
+        "fov": "whole/unilateral breast rather than tumorROI; article stresses no manualtumor segmentation",
+        "shape_per_visit": [
+          80,
+          256,
+          256
+        ],
+        "preprocessing": "normalized; unilateral croppedDCE; >80slices middle80, <80zero-pad at bothends; detailed intensity formula pending",
+        "clinical": [
+          "HR",
+          "HER2",
+          "age",
+          "race",
+          "menopausal status"
+        ],
+        "excludes": [
+          "assigned treatment",
+          "MammaPrint"
+        ]
+      },
+      "native_timepoints": {
+        "pcr_inference": "pretreatmentT1 + posttreatmentT4 in original notation = ourT0+T3",
+        "early_endpoint": "no originalT0/T1/T2 earlyprediction benchmark verified"
+      },
+      "labels": {
+        "training": "supervisedpCR"
+      },
+      "missing_policy": {
+        "imaging": "cohortcurationrequired before/after scans; no native missingT3 imputationverified",
+        "clinical": "I-SPY1menopause setN/A natively; other missingfeatures handled pernative pipeline, pendingaudit"
+      },
+      "fixed175_compatibility": {
+        "early": "not comparable asnativeearlypredictor",
+        "late": "nativeT0+T3 unavailablefor12/175; reportnotready ratherthan silenciouslyevaluate163; cannot removeT3 input and keepnative label"
+      }
+    },
+    {
+      "id": "MRP2024_iMRrhpc",
+      "paper": "10.1038/s41467-024-53450-8",
+      "paper_source": "paper/reproduction_audit_20261102/recent_literature/PMC11544255.xml",
+      "native_input": {
+        "phase": "eachpostcontrast minusprecontrast subtractionvolume",
+        "spatial": "bilateralbreast, resampled1mm isotropic, crop176x176x352",
+        "clinical": "nativepersonal/histopathological/radiological/clinical rhpc feature schema; muchlargerthanour4vars; fullfieldmappingpending",
+        "mammography": "fullMRP additionallypreNAT mammography; MRIbranch iMRrhpc is namednativeseparatemodel, notfullMRP"
+      },
+      "native_timepoints": {
+        "supported": "pre-,mid-,post-NAT stagedinputs withstageembedding; nativeloaders randomlycombine available phases; paper evaluatespre/mid/post separately withfutureblinded",
+        "mapping": "ourT0 maps pre; which ofourT1/T2 mapsmid mustvalidate clinicaltiming; post mapsT3"
+      },
+      "labels": {
+        "training": "pCRand auxiliaryrhpc-target supervision"
+      },
+      "missing_policy": {
+        "paper": "at leastone NATtimepoint admittedinhouse, randomcombinationsofavailable inputs; missingmultimodality explicitlyconsidered",
+        "uncertain": "exact per-landmark pooling, repeatsinglevisit policy and absentclinicaltoken handling mustfollowcode/paper ratherthaninvent"
+      },
+      "fixed175_compatibility": {
+        "early": "MRIbranch potentiallynativepre/midcandidate withnativefullbreastsubtractionandrhpc; fieldsnotcurrentlycomplete",
+        "fullMRP": "mammographyabsence blocksnativefullmultimodal model",
+        "late": "T3full175notavailable; only163realT3 cannotstandinfor175"
+      }
+    },
+    {
+      "id": "Seq2Seq2024",
+      "paper": "10.1016/j.media.2023.103044",
+      "paper_source": "paper/reproduction_audit_20261102/local_readiness/seq2seq_original_readme.md",
+      "native_input": {
+        "task": "multi-sequence within-examMRI synthesis and imaging-differentiationmaps; notvisitforecasting",
+        "breast_input": "exact breastDCEsequence selection, spatialpreprocessing, downstreampCRclassifier and clinicalinputs notverifiedfromoriginalfullpaper; mustreadarticleand supplement",
+        "public_code": "publications/src/seq2seq containsBraTS2D training/config only; modernrootnnseq2seq isdifferentversion"
+      },
+      "native_timepoints": {
+        "breast_pcr": "treatment-landmark specification pendingoriginalarticle; do not assignT0/T1/T2fromCoReWM comparisonthatdidnotincludeSeq2Seq"
+      },
+      "labels": {
+        "generation": "image-to-image training",
+        "pcr": "downstreamsupervisedpCR; completepipelinepending"
+      },
+      "missing_policy": {
+        "sequence": "arbitrarysequencegeneration supported inmethod; notproof ofmissinglongitudinalvisitsupport"
+      },
+      "fixed175_compatibility": {
+        "status": "notreadyfornativepCRcomparison untilbreastspecificcontract andclassifierrecovered"
+      }
+    },
+    {
+      "id": "CoReWM2026",
+      "paper": "arXiv:2610.25333v1",
+      "paper_source": "paper/2610.25333v1.pdf",
+      "native_input": {
+        "image": "eight channels fromBreastDCEDL adaptivephaseprotocol;32x96x96 tumor-centeredT0crop, robustpervisitnormalization",
+        "geometry": "9DgeometrydescriptorpervisitROI; releasedFTVanalysis masksorautomaticenhancementlocalization",
+        "clinical": "patientprofileHR/HER2/MammaPrint/age + assignedtherapy + visitposition;25Dcondition",
+        "uncertain": "exacteightchannelconstruct requiresmethod/supplement; current3phaseROIandfixedT0maskcannotreplace"
+      },
+      "native_timepoints": {
+        "pretraining": "nextvisitT1/T2/T3supervision fromcompletefourvisitI-SPY2; no pCR labels inrepresentationlearning",
+        "pcr_inference": [
+          "T0",
+          "T0+T1",
+          "T0+T1+T2"
+        ],
+        "readout": "frozenparameters + class-balancedlogisticreadouttrainedpCR"
+      },
+      "missing_policy": {
+        "paper": "808patients fourvisits; no verifiedincomplete-seriespretraining policy",
+        "current_data": "currentvisits976mixed; fixedT0ROIarraysdonotprovideactualfollowupq"
+      },
+      "fixed175_compatibility": {
+        "early": "nativeinferenceendpointscompatiblewith175visitavailability, but8channels/nativeROI/qneedrecovery",
+        "pretraining": "same801developmentmembershipincludesincompletehistories; cannot silentlyadopt originalcompletecasefilter"
+      }
+    }
+  ]
+}

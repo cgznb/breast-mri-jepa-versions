@@ -1,0 +1,102 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{ctneobc2014}
+\citation{hylton2012mri,hylton2016ftv}
+\citation{tciaispy2_2022,tciaacrin6698_2021}
+\citation{jepa2023}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{2}{Introduction}{section.1}{}}
+\citation{hylton2012mri,hylton2016ftv}
+\citation{ACRIN6698diffusion2018}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related work}{3}{section.2}\protected@file@percent }
+\newlabel{sec:related}{{2}{3}{Related work}{section.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{MRI biomarkers and learned pCR prediction.}{3}{section*.1}\protected@file@percent }
+\citation{han2024synthesis}
+\citation{tang2025spatiotemporal,du2025early}
+\citation{jepa2023}
+\citation{vaswani2017}
+\citation{vqgan2021}
+\@writefile{toc}{\contentsline {paragraph}{Predictive latent representations.}{4}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Attention and volumetric image representation.}{4}{section*.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Conceptual overview of \textsc  {ForecastAttention}{}. The prediction path uses observed information and an autonomously generated trajectory. The EMA encoder supplies the detached current state; future MRI enters only the training-target branch. The classifier combines direct pCR features with the attention-pooled terminal state and its change from the current state. The diagram summarizes information flow rather than every query or attention-mask connection.}}{5}{figure.1}\protected@file@percent }
+\newlabel{fig:framework}{{1}{5}{Conceptual overview of \fullmodel {}. The prediction path uses observed information and an autonomously generated trajectory. The EMA encoder supplies the detached current state; future MRI enters only the training-target branch. The classifier combines direct pCR features with the attention-pooled terminal state and its change from the current state. The diagram summarizes information flow rather than every query or attention-mask connection}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Method}{5}{section.3}\protected@file@percent }
+\newlabel{sec:method}{{3}{5}{Method}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Longitudinal prediction problem}{5}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:problem}{{3.1}{5}{Longitudinal prediction problem}{subsection.3.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Continuous MRI encoding and multimodal fusion}{6}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:encoding}{{3.2}{6}{Continuous MRI encoding and multimodal fusion}{subsection.3.2}{}}
+\citation{vaswani2017}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}EMA target states and autonomous forecasting}{7}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:forecasting}{{3.3}{7}{EMA target states and autonomous forecasting}{subsection.3.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Prediction-conditioned pCR readout}{8}{subsection.3.4}\protected@file@percent }
+\newlabel{sec:readout}{{3.4}{8}{Prediction-conditioned pCR readout}{subsection.3.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Training objective and matched ablations}{9}{subsection.3.5}\protected@file@percent }
+\newlabel{sec:objective}{{3.5}{9}{Training objective and matched ablations}{subsection.3.5}{}}
+\citation{tciaispy2_2022,tciaacrin6698_2021}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Dataset and preprocessing}{10}{section.4}\protected@file@percent }
+\newlabel{sec:data}{{4}{10}{Dataset and preprocessing}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Cohort construction and clinical variables}{10}{subsection.4.1}\protected@file@percent }
+\citation{tciaispy2_2022}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Characteristics of the analysed cohort. Development statistics count each of the 801 development patients once, rather than pooling overlapping training folds. Age is reported as mean $\pm $ sample standard deviation among patients with observed age; other entries are counts.}}{12}{table.1}\protected@file@percent }
+\newlabel{tab:cohort}{{1}{12}{Characteristics of the analysed cohort. Development statistics count each of the 801 development patients once, rather than pooling overlapping training folds. Age is reported as mean $\pm $ sample standard deviation among patients with observed age; other entries are counts}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Patient partitioning and evaluation scope}{12}{subsection.4.2}\protected@file@percent }
+\citation{mamamia2025}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Registration, fixed localisation, and normalisation}{13}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Experimental design}{14}{section.5}\protected@file@percent }
+\newlabel{sec:experiments}{{5}{14}{Experimental design}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Development protocol and landmark evaluation}{14}{subsection.5.1}\protected@file@percent }
+\citation{adamw2019}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Model comparisons}{15}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Implementation and optimization}{15}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Metrics, aggregation, and patient-level uncertainty}{16}{subsection.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Scope of the selected-seed analysis}{16}{subsection.5.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Seed44 performance on the fixed 175-patient internal holdout. Values are means of five separately evaluated fold models; AP denotes average precision and F1 uses a threshold of 0.5. Macro averages the three landmarks. These are not probability-ensemble scores.}}{17}{table.2}\protected@file@percent }
+\newlabel{tab:main}{{2}{17}{Seed44 performance on the fixed 175-patient internal holdout. Values are means of five separately evaluated fold models; AP denotes average precision and F1 uses a threshold of 0.5. Macro averages the three landmarks. These are not probability-ensemble scores}{table.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Results}{17}{section.6}\protected@file@percent }
+\newlabel{sec:results}{{6}{17}{Results}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Landmark-specific prediction}{17}{subsection.6.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Landmark-specific seed44 performance on the internal holdout. Each point averages metrics of five separately evaluated fold models. All landmarks use the same 175 patients. Lines connect landmark summaries and do not imply a statistically established temporal trend.}}{18}{figure.2}\protected@file@percent }
+\newlabel{fig:landmarks}{{2}{18}{Landmark-specific seed44 performance on the internal holdout. Each point averages metrics of five separately evaluated fold models. All landmarks use the same 175 patients. Lines connect landmark summaries and do not imply a statistically established temporal trend}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Auxiliary supervision and forecast readout}{18}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Longitudinal change and calibration}{18}{subsection.6.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Calibration and probability accuracy, averaged over landmarks and five fold models for seed44. Lower is better. ECE uses ten equal-width bins.}}{19}{table.3}\protected@file@percent }
+\newlabel{tab:calibration}{{3}{19}{Calibration and probability accuracy, averaged over landmarks and five fold models for seed44. Lower is better. ECE uses ten equal-width bins}{table.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Conditional patient-level uncertainty}{19}{subsection.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Discussion}{19}{section.7}\protected@file@percent }
+\newlabel{sec:discussion}{{7}{19}{Discussion}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}What the matched comparisons establish}{19}{subsection.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Longitudinal prediction and the role of treatment context}{20}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Discrimination is not calibrated clinical utility}{21}{subsection.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Limitations and requirements for a confirmatory study}{21}{subsection.7.4}\protected@file@percent }
+\newlabel{sec:limitations}{{7.4}{21}{Limitations and requirements for a confirmatory study}{subsection.7.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{22}{section.8}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {A.4}{\ignorespaces Supplementary pooling comparison using seed44. ForecastMean and ForecastAttention share forecast-based pCR readout and future-state supervision, and differ in spatial pooling.}}{24}{table.4}\protected@file@percent }
+\newlabel{tab:pooling}{{A.4}{24}{Supplementary pooling comparison using seed44. ForecastMean and ForecastAttention share forecast-based pCR readout and future-state supervision, and differ in spatial pooling}{table.4}{}}
+\@writefile{toc}{\let\numberline\tmptocnumberline}
+\@writefile{toc}{\contentsline {section}{\numberline {Appendix~A}Supplementary pooling and uncertainty analyses}{24}{appendix.A}\protected@file@percent }
+\newlabel{sec:supplement}{{Appendix~A}{24}{Supplementary pooling and uncertainty analyses}{appendix.A}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {Appendix~B}Reproducibility and reporting items to complete}{24}{appendix.B}\protected@file@percent }
+\bibstyle{elsarticle-harv}
+\bibdata{references}
+\bibcite{jepa2023}{{1}{2023}{{Assran et~al.}}{{Assran, Duval, Misra, Bojanowski, Vincent, Rabbat, LeCun and Ballas}}}
+\bibcite{ctneobc2014}{{2}{2014}{{Cortazar et~al.}}{{Cortazar, Zhang, Untch, Mehta, Costantino, Wolmark, Bonnefoi, Cameron, Gianni, Valagussa, Swain, Prowell, Loibl, Wickerham, Bogaerts, Baselga, Perou, Blumenthal, Blohmer, Mamounas, Bergh, Semiglazov, Justice, Eidtmann, Paik, Piccart, Sridhara, Fasching, Slaets, Tang, Gerber, Geyer, Pazdur, Ditsch, Rastogi, Eiermann and von Minckwitz}}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.5}{\ignorespaces Exploratory paired patient-bootstrap intervals for three-landmark mean differences (2,000 shared patient resamples). Intervals condition on the fixed seed44 models; they exclude retraining and seed-selection uncertainty.}}{25}{table.5}\protected@file@percent }
+\newlabel{tab:bootstrap}{{A.5}{25}{Exploratory paired patient-bootstrap intervals for three-landmark mean differences (2,000 shared patient resamples). Intervals condition on the fixed seed44 models; they exclude retraining and seed-selection uncertainty}{table.5}{}}
+\bibcite{du2025early}{{3}{2025}{{Du et~al.}}{{Du, Xie, Gao, Zhao, Wang, Tian, Liu, Liu and Zhang}}}
+\bibcite{vqgan2021}{{4}{2021}{{Esser et~al.}}{{Esser, Rombach and Ommer}}}
+\bibcite{mamamia2025}{{5}{2025}{{Garrucho et~al.}}{{Garrucho, Kushibar, Reidel, Joshi, Osuala, Tsirikoglou, Bobowicz, Del~Riego, Catanese, Gwo\'{z}dziewicz, Cosaka, Abo-Elhoda, Tantawy, Sakrana, Shawky-Abdelfatah, Salem, Kozana, Divjak, Ivanac, Nikiforaki, Klontzas, Garc\'{i}a-Dosd\'{a}, Gulsun-Akpinar, Lafc{\i }, Mann, Mart\'{i}n-Isla, Prior, Marias, Starmans, Strand, D\'{i}az, Igual and Lekadir}}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.3}{\ignorespaces Three-landmark mean metrics with exploratory 95\% percentile patient-bootstrap intervals. All 2,000 resamples preserve pairing across models, folds, and landmarks. Intervals describe patient-sampling uncertainty conditional on the trained seed44 models and do not account for seed selection or retraining.}}{26}{figure.3}\protected@file@percent }
+\newlabel{fig:bootstrap}{{A.3}{26}{Three-landmark mean metrics with exploratory 95\% percentile patient-bootstrap intervals. All 2,000 resamples preserve pairing across models, folds, and landmarks. Intervals describe patient-sampling uncertainty conditional on the trained seed44 models and do not account for seed selection or retraining}{figure.3}{}}
+\bibcite{han2024synthesis}{{6}{2024}{{Han et~al.}}{{Han, Tan, Zhang, Huang, Wang, Gao, Teuwen and Mann}}}
+\bibcite{hylton2012mri}{{7}{2012}{{Hylton et~al.}}{{Hylton, Blume, Bernreuter, Pisano, Rosen, Morris, Weatherall, Lehman, Newstead, Polin, Marques, Esserman and Schnall}}}
+\bibcite{hylton2016ftv}{{8}{2016}{{Hylton et~al.}}{{Hylton, Gatsonis, Rosen, Lehman, Newitt, Partridge, Bernreuter, Pisano, Morris, Weatherall, Polin, Newstead, Marques, Esserman and Schnall}}}
+\bibcite{tciaispy2_2022}{{9}{2022}{{Li et~al.}}{{Li, Newitt, Gibbs, Wilmes, Jones, Arasu et~al.}}}
+\bibcite{adamw2019}{{10}{2019}{{Loshchilov and Hutter}}{{}}}
+\bibcite{tciaacrin6698_2021}{{11}{2021}{{Newitt et~al.}}{{Newitt, Partridge, Zhang, Gibbs, Chenevert, Rosen et~al.}}}
+\bibcite{ACRIN6698diffusion2018}{{12}{2018}{{Partridge et~al.}}{{Partridge, Zhang, Newitt, Gibbs, Chenevert, Rosen, Bolan, Marques, Romanoff, Cimino, Joe, Umphrey, Ojeda-Fournier, Dogan, Oh, Abe, Drukteinis, Esserman and Hylton}}}
+\bibcite{tang2025spatiotemporal}{{13}{2025}{{Tang et~al.}}{{Tang, Jin, Kong, Liu, Chen, Ding, Liu, Feng, Li, Dai, Zhang, Chen, Han, Liu, Chen, Weng, Liu, Wei, Jiang, Zhou, Mao and Guo}}}
+\bibcite{vaswani2017}{{14}{2017}{{Vaswani et~al.}}{{Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser and Polosukhin}}}
+\gdef \@abspage@last{28}

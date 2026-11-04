@@ -1,0 +1,54 @@
+{
+  "schema": "pcr_native_input_reproduction_policy_v2",
+  "updated_at_utc": "2026-11-02T14:03:58.475095+00:00",
+  "authority": "User explicitly requires the same patient partitions and holdout as the current study, with each method using its original-paper network inputs. This supersedes the earlier preferred common-three-phase-ROI adaptation plan.",
+  "primary_comparison": "Original-paper method inputs and architecture on our frozen patient partitions; not exact replication of the original article cohort or reported scores.",
+  "partitions": {
+    "dataset": "registered_roi32_medium976_v1 membership only; source image representations differ by method",
+    "development_patients": 801,
+    "fixed_holdout_patients": 175,
+    "fixed_holdout_pcr_positive": 56,
+    "folds": 5,
+    "same_train_val_test_patient_assignment": true,
+    "split_seed": 2026,
+    "training_seed": 44,
+    "test_subset_replacement_allowed": false,
+    "train_eligibility": "Honor fixed assignments. If the native method cannot train on missing-input patients, report actual eligible training/validation denominators and exclusions; do not reassign patients across partitions."
+  },
+  "method_native_contract_required": [
+    "MRI acquisition phase selection and phase timing",
+    "derived image formulas, units, denominator handling and clipping",
+    "2D/3D representation, MIP axes and field of view",
+    "voxel spacing, crop dimensions, interpolation and localization rules",
+    "contemporaneous segmentation/habitat/geometry definitions and annotation source",
+    "original clinical variables and modality set",
+    "original observed visit combination and decision time",
+    "native missing-visit handling",
+    "network architecture and initialization/pretraining source",
+    "self-supervised/pretraining objectives and use of training pCR labels",
+    "training recipe and validation-only checkpoint rule"
+  ],
+  "preprocessing_fit": "Retain each article preprocessing algorithm. Fit any data-dependent image/clinical normalization, imputation, feature selection and resampling target on the appropriate training partition; do not reuse article cohort-specific fitted means solely because printed in the paper, or fit on heldout patients.",
+  "representation_policy": "Create method-specific derived datasets from version-matched source images. Existing three-phase ROI32 is not a universal baseline input and should only be reused when the original method contract is demonstrably identical.",
+  "timepoint_policy": "Compare in the same clinical decision-time panel only when the original method supports that observed-input set. Preserve native visit combinations; no forced prefix conversion for the primary comparison. T3-dependent classification is a later-information reference, not an early T0/T1/T2 competitor.",
+  "current_holdout_availability": {
+    "T0": 175,
+    "T1": 175,
+    "T2": 175,
+    "T3": 163,
+    "T3_missing": 12
+  },
+  "missing_required_input": "Try to obtain and audit required source inputs first. Apply only a documented native missing-input policy when appropriate. Otherwise mark the fixed-cohort native reproduction blocked/not feasible; do not silently drop test patients, substitute masks/modalities, or invent zero-padding.",
+  "evaluation": {
+    "probabilities": "Mean the five fold-model probabilities separately for every heldout patient and native decision point, then compute metrics.",
+    "primary_classification_threshold": 0.5,
+    "author_validation_threshold": "Additional operating-point analysis if specified by source paper; select on validation only and report separately.",
+    "metrics": "Existing common 14 metrics plus paired patient intervals and comparisons at matched decision times.",
+    "macro": "T0/T1/T2 Macro only for methods natively supporting all three decision points; otherwise NA, not copied or synthesized.",
+    "new_comparison_multiplicity": "Specify appropriate new comparison families before inspecting added-model results."
+  },
+  "input_information_reporting": "Different native modalities, clinical covariates, masks, FOV, pretraining supervision and decision times must be explicit in tables; this measures complete methods under their native inputs rather than isolating architecture alone.",
+  "code_fixes": "Repair objective implementation defects (cross-patient attention, patient-split leakage, selecting checkpoints on test, dropped evaluation patients) against article intent, and document paper-code discrepancies. No undocumented architecture/input simplification.",
+  "separate_secondary_experiments": "Common-input adaptations or added clinical features are optional separate controls; never presented as faithful native-input reproductions.",
+  "geometry": "Before any new image/mask reconstruction: preserve version-matched native metadata, mask header, registered geometry, phase/longitudinal transforms and crop mappings; no corrected public JSON combined with incompatible old masks. Original data are preserved."
+}

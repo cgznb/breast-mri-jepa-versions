@@ -1,0 +1,38 @@
+\section{Supplementary pooling, metrics, and uncertainty}
+\label{sec:supplement}
+The supplementary \meanmodel{} uses seeds 42, 44, and 2026, the same five development folds, observed-history protocol, future-state objective, and forecast feature groups as \fullmodel{}, replacing spatial attention with mean pooling. Metrics are computed from patient-wise five-fold probability means within each seed and then averaged across the three seeds. The per-seed results in Table~\ref{tab:seedresults} preserve the individual training realizations underlying the reported mean and sample standard deviation.
+\input{tables/pooling}
+\input{tables/seed_results}
+\input{tables/extended_macro_metrics}
+\input{tables/extended_threshold}
+
+\subsection{Paired significance checks}
+Table~\ref{tab:bootstrap} reports the nine principal Macro comparisons, with unadjusted 95\% paired patient-bootstrap intervals, raw two-sided approximate bootstrap $p$ values, within-family Holm adjustment, and all-90 Holm adjustment. The secondary family comprises 81 tests in Tables~\ref{tab:significance_landmarks}--\ref{tab:significance_longitudinal}. Every patient draw is shared across all three fixed seeds, models, and landmarks; metrics are computed within seeds before averaging. The independent patient count remains 175. A significance marker refers to the stated Holm-adjusted family; ns denotes $p_{\mathrm{Holm}}\geq0.05$. The existing 2,000-resample percentile intervals are unadjusted and are not exact inversions of the 99,999-resample null-centered tests. All testing and reporting choices remain retrospective and exploratory.
+
+\input{tables/significance_landmarks}
+\input{tables/significance_extended}
+\input{tables/significance_pooling}
+\input{tables/significance_longitudinal}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/landmark_performance.pdf}
+\caption{Six complementary landmark summaries: AUROC, AP, F1, sensitivity, specificity, and Brier score. Metrics are computed separately from each seed's five-fold ensemble probabilities and then averaged across seeds 42, 44, and 2026. Error bars show descriptive sample seed standard deviations, while shading gives conditional 95\% shared-patient-bootstrap intervals for the seed mean. The same 175 patients appear at every seed and landmark.}
+\label{fig:longitudinal}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/outcome_score_changes.pdf}
+\caption{Outcome-conditioned changes in predicted pCR probability from T0 to T2. For each seed-specific five-fold ensemble, every patient contributes one probability change. Histograms summarize these within-seed changes and are then equally averaged across seeds; probabilities are not averaged across seeds before constructing a change distribution. Panels separate models and outcome classes. Repeated seed predictions are correlated observations of the same 175 patients and do not triple the sample size. Score changes do not establish individual treatment effects.}
+\label{fig:scorechanges}
+\end{figure*}
+
+\section{Supplementary subgroup and training-probe summaries}
+\input{tables/subgroup_results}
+\input{tables/subgroup_world_probe}
+
+\section{Reproducibility and reporting items to complete}
+The source package includes aggregate CSV files, source-report hashes, reproducible metric and figure scripts, the shared-patient-bootstrap procedure, and the official article class. The significance CSV includes raw $p$ values, within-family Holm adjustment, and adjustment over all 90 tests as a sensitivity analysis. It contains no patient identifiers, patient-level prediction rows, original MRI volumes, or model checkpoints. The method figure includes only rendered, anonymous development-image slices. Every variant uses training seeds 42, 44, and 2026. Five fold probabilities are averaged per patient within each seed before computing pCR metrics, and seed-specific metric values are then equally averaged. Individual-fold metrics are retained for numerical audit; archived training diagnostics are summarized across folds within seed and then across seeds in their own latent coordinates.
+
+\todo{Before submission, complete author and ethics statements; verify the precise pCR pathology definition; document codec and segmentation patient-level pretraining provenance; add matched external baselines and prospectively locked training and analysis policies; audit external-cohort independence; and confirm the journal's current submission and anonymization requirements.}

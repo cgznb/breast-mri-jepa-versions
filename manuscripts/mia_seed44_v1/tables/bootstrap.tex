@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\caption{Exploratory paired patient-bootstrap intervals for three-landmark mean differences (2,000 shared patient resamples). Intervals condition on the fixed seed44 models; they exclude retraining and seed-selection uncertainty.}
+\label{tab:bootstrap}
+\small
+\begin{tabular}{llr}
+\toprule
+Comparison & Metric & Difference [95\% interval] \\
+\midrule
+DirectReadout -- NoJEPA & AUROC & +0.0084 [-0.0051, +0.0219] \\
+DirectReadout -- NoJEPA & AP & +0.0097 [-0.0128, +0.0315] \\
+DirectReadout -- NoJEPA & F1 & +0.0102 [-0.0118, +0.0325] \\
+ForecastAttention -- NoJEPA & AUROC & +0.0146 [-0.0062, +0.0369] \\
+ForecastAttention -- NoJEPA & AP & +0.0198 [-0.0161, +0.0597] \\
+ForecastAttention -- NoJEPA & F1 & +0.0032 [-0.0339, +0.0398] \\
+ForecastAttention -- DirectReadout & AUROC & +0.0062 [-0.0129, +0.0268] \\
+ForecastAttention -- DirectReadout & AP & +0.0101 [-0.0244, +0.0482] \\
+ForecastAttention -- DirectReadout & F1 & -0.0070 [-0.0396, +0.0237] \\
+\bottomrule
+\end{tabular}
+\end{table}

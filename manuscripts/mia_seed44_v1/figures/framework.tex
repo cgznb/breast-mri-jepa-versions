@@ -1,0 +1,29 @@
+\begin{figure}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  box/.style={draw=blue!40!black,rounded corners,fill=blue!4,align=center,minimum height=1.7cm,text width=4.2cm,font=\small},
+  aux/.style={draw=orange!65!black,rounded corners,fill=orange!6,align=center,minimum height=1.5cm,text width=4.2cm,font=\small},
+  link/.style={-{Stealth[length=2.2mm]},thick,blue!45!black},
+  target/.style={-{Stealth[length=2.2mm]},thick,dashed,orange!70!black}]
+\node[box] (input) at (0,0) {Observed MRI prefix\\T0 through landmark $k$\\three DCE phases};
+\node[box] (encoder) at (5.2,0) {Continuous MRI encoding\\spatial tokens and fusion\\transition and pCR queries};
+\node[box] (predictor) at (10.4,0) {Autonomous predictor\\roll detached current state\\forward to terminal T3};
+\node[box] (readout) at (15.6,0) {Forecast attention\\terminal state + change\\and direct features\\pCR probability $p_k$};
+\draw[link] (input)--(encoder);\draw[link] (encoder)--(predictor);\draw[link] (predictor)--(readout);
+\node[aux] (context) at (5.2,3.4) {Baseline clinical data\\assigned-arm scenario\\assumed known at T0};
+\draw[link] (context)--(encoder);
+\node[aux] (ema) at (5.2,-3.5) {EMA encoder\\observed current state\\and training targets};
+\node[aux] (future) at (0,-3.5) {Available future MRI\\development patients only\\target branch only};
+\node[aux] (loss) at (10.4,-3.5) {Masked future-state L1\\training-only objective\\weight 0.5};
+\draw[target] (encoder)--node[right,font=\scriptsize] {EMA update} (ema);
+\draw[target] (future)--(ema);
+\draw[link] (input.south) -- ++(0,-.8) -| (ema.north west);
+\draw[link] (ema.north east) -- ++(.5,.9) -| node[pos=.65,above,font=\scriptsize,fill=white,inner sep=1pt] {current state} (predictor.south west);
+\draw[target] (ema)--node[above,font=\scriptsize] {targets} (loss);
+\draw[target] (predictor)--(loss);
+\draw[link] (encoder.north east) -- ++(.5,.8) -| node[pos=.65,above,font=\scriptsize,fill=white,inner sep=1pt] {direct pCR features} (readout.north west);
+\end{tikzpicture}}
+\caption{Conceptual overview of \fullmodel{}. The prediction path uses observed information and an autonomously generated trajectory. The EMA encoder supplies the detached current state; future MRI enters only the training-target branch. The classifier combines direct pCR features with the attention-pooled terminal state and its change from the current state. The diagram summarizes information flow rather than every query or attention-mask connection.}
+\label{fig:framework}
+\end{figure}

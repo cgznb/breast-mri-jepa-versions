@@ -1,0 +1,21 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Exploratory paired T2 minus T0 comparisons. DeLong placements and bootstrap draws retain within-patient dependence between landmarks. AUROC uses paired DeLong tests; other metrics use approximate, null-centered paired patient-bootstrap tests (99,999 shared resamples). All $p$ values are two-sided. $p_{\mathrm{Holm}}$ adjusts jointly over the 81 secondary tests in Tables~\ref{tab:significance_landmarks}--\ref{tab:significance_longitudinal}. Direct and Attention abbreviate DirectReadout and ForecastAttention. $^{*}p_{\mathrm{Holm}}<0.05$, $^{**}p_{\mathrm{Holm}}<0.01$, $^{***}p_{\mathrm{Holm}}<0.001$; ns, not significant after the stated correction. Intervals are unadjusted 95\% patient-bootstrap intervals (2,000 shared draws) and need not agree with adjusted test decisions. All analyses condition on the fitted, retrospectively selected seed44 ensembles.}
+\label{tab:significance_longitudinal}
+\begin{tabular}{llrrrc}
+\toprule
+Model & Metric & Difference [95\% CI] & $p$ & $p_{\mathrm{Holm}}$ & Sig. \\
+\midrule
+NoJEPA & AUROC & +0.0006 [-0.0062, +0.0070] & 0.8441 & 1.0000 & ns \\
+NoJEPA & AP & +0.0017 [-0.0100, +0.0125] & 0.7254 & 1.0000 & ns \\
+NoJEPA & F1 & +0.0114 [+0.0000, +0.0396] & 0.5334 & 1.0000 & ns \\
+DirectReadout & AUROC & +0.0038 [-0.0064, +0.0140] & 0.4384 & 1.0000 & ns \\
+DirectReadout & AP & +0.0061 [-0.0109, +0.0248] & 0.4881 & 1.0000 & ns \\
+DirectReadout & F1 & +0.0002 [-0.0336, +0.0395] & 0.9922 & 1.0000 & ns \\
+ForecastAttention & AUROC & +0.0099 [+0.0013, +0.0187] & 0.0145 & 1.0000 & ns \\
+ForecastAttention & AP & +0.0059 [-0.0098, +0.0203] & 0.4225 & 1.0000 & ns \\
+ForecastAttention & F1 & -0.0103 [-0.0535, +0.0340] & 0.6492 & 1.0000 & ns \\
+\bottomrule
+\end{tabular}
+\end{table*}

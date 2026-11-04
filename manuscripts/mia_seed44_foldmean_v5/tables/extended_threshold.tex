@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Threshold sensitivity analysis: seed44 five-fold metric means. Each fold model uses its own landmark-specific validation Youden threshold on the holdout scores from the same model. Validation also informed best-checkpoint selection; this is sensitivity analysis, not nested calibration. No test labels choose thresholds.}
+\label{tab:extended_threshold}
+\begin{tabular}{llrrrr}
+\toprule
+Model & Policy & F1 & Sens. & Spec. & MCC \\
+\midrule
+NoJEPA & 0.5 & 0.544 & 0.610 & 0.705 & 0.300 \\
+NoJEPA & Fold validation Youden & 0.551 & 0.645 & 0.675 & 0.303 \\
+\midrule
+DirectReadout & 0.5 & 0.554 & 0.636 & 0.691 & 0.311 \\
+DirectReadout & Fold validation Youden & 0.537 & 0.581 & 0.734 & 0.310 \\
+\midrule
+ForecastAttention & 0.5 & 0.547 & 0.704 & 0.594 & 0.293 \\
+ForecastAttention & Fold validation Youden & 0.541 & 0.644 & 0.656 & 0.288 \\
+\bottomrule
+\end{tabular}
+\end{table*}

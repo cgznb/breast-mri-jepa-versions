@@ -1,0 +1,21 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Exploratory principal Macro comparisons. AUROC uses paired DeLong tests with correlated landmark placements averaged per patient. AP and F1 use approximate, null-centered paired patient-bootstrap tests with 99,999 shared resamples. All $p$ values are two-sided. Holm adjustment covers all nine entries in this table. Direct and Attention abbreviate DirectReadout and ForecastAttention. $^{*}p_{\mathrm{Holm}}<0.05$, $^{**}p_{\mathrm{Holm}}<0.01$, $^{***}p_{\mathrm{Holm}}<0.001$; ns, not significant after the stated correction. Intervals are unadjusted 95\% patient-bootstrap intervals (2,000 shared draws) and need not agree with adjusted test decisions. All analyses condition on the fitted, retrospectively selected seed44 ensembles.}
+\label{tab:bootstrap}
+\begin{tabular}{llrrrc}
+\toprule
+Comparison & Metric & Difference [95\% CI] & $p$ & $p_{\mathrm{Holm}}$ & Sig. \\
+\midrule
+Direct -- NoJEPA & AUROC & +0.0121 [-0.0038, +0.0287] & 0.1401 & 0.8404 & ns \\
+Direct -- NoJEPA & AP & +0.0107 [-0.0114, +0.0321] & 0.3286 & 1.0000 & ns \\
+Direct -- NoJEPA & F1 & +0.0261 [-0.0039, +0.0621] & 0.1150 & 0.8048 & ns \\
+Attention -- NoJEPA & AUROC & +0.0228 [+0.0012, +0.0465] & 0.0462 & 0.4161 & ns \\
+Attention -- NoJEPA & AP & +0.0315 [-0.0030, +0.0698] & 0.0899 & 0.7190 & ns \\
+Attention -- NoJEPA & F1 & +0.0188 [-0.0264, +0.0735] & 0.4471 & 1.0000 & ns \\
+Attention -- Direct & AUROC & +0.0108 [-0.0101, +0.0327] & 0.3055 & 1.0000 & ns \\
+Attention -- Direct & AP & +0.0208 [-0.0108, +0.0566] & 0.2327 & 1.0000 & ns \\
+Attention -- Direct & F1 & -0.0074 [-0.0424, +0.0352] & 0.6995 & 1.0000 & ns \\
+\bottomrule
+\end{tabular}
+\end{table*}

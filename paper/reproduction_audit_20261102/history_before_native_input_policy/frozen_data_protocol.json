@@ -1,0 +1,119 @@
+{
+  "schema": "pcr_comparison_data_protocol_v1",
+  "training_seed": 44,
+  "evaluation_landmarks": [
+    "T0",
+    "T1",
+    "T2"
+  ],
+  "macro": "equal mean of landmark metric values",
+  "ensemble": "mean five fold probabilities per patient and landmark before metrics",
+  "threshold": 0.5,
+  "holdout_status": "internal fixed downstream holdout; not external",
+  "patient_count": 976,
+  "development_count": 801,
+  "holdout_count": 175,
+  "holdout_positives": 56,
+  "usable_examinations": 3641,
+  "folds": [
+    {
+      "fold": 1,
+      "manifest_path": "/personal_fast_storage/VLA-PCRV1/data/registered_roi32_medium976_v1/cv_manifests/fold1/manifest.json",
+      "sha256": "4330676fff6015a9abec7b4097e8d9a380479042183feda9790162d5447353e8",
+      "bytes": 2428797,
+      "patients": 976,
+      "splits": {
+        "train": 640,
+        "val": 161,
+        "test": 175
+      },
+      "available_visits": {
+        "T0": 976,
+        "T1": 935,
+        "T2": 875,
+        "T3": 855
+      },
+      "test_positives": 56.0
+    },
+    {
+      "fold": 2,
+      "manifest_path": "/personal_fast_storage/VLA-PCRV1/data/registered_roi32_medium976_v1/cv_manifests/fold2/manifest.json",
+      "sha256": "cd1d6498ee21a5ee71a0ad51ca21e9ed0947ecf62015025d8030051189bcc0ed",
+      "bytes": 2428797,
+      "patients": 976,
+      "splits": {
+        "train": 641,
+        "val": 160,
+        "test": 175
+      },
+      "available_visits": {
+        "T0": 976,
+        "T1": 935,
+        "T2": 875,
+        "T3": 855
+      },
+      "test_positives": 56.0
+    },
+    {
+      "fold": 3,
+      "manifest_path": "/personal_fast_storage/VLA-PCRV1/data/registered_roi32_medium976_v1/cv_manifests/fold3/manifest.json",
+      "sha256": "fa42d84839c38137b95d9b22fa64d8cb7ecd795929bc6a09b145058ca88e40c7",
+      "bytes": 2428799,
+      "patients": 976,
+      "splits": {
+        "train": 641,
+        "val": 160,
+        "test": 175
+      },
+      "available_visits": {
+        "T0": 976,
+        "T1": 935,
+        "T2": 875,
+        "T3": 855
+      },
+      "test_positives": 56.0
+    },
+    {
+      "fold": 4,
+      "manifest_path": "/personal_fast_storage/VLA-PCRV1/data/registered_roi32_medium976_v1/cv_manifests/fold4/manifest.json",
+      "sha256": "556f6e0d70d72a42a9689d60e34035afa09d45e4cfd5df66cd87a5feb32381cc",
+      "bytes": 2428798,
+      "patients": 976,
+      "splits": {
+        "train": 641,
+        "val": 160,
+        "test": 175
+      },
+      "available_visits": {
+        "T0": 976,
+        "T1": 935,
+        "T2": 875,
+        "T3": 855
+      },
+      "test_positives": 56.0
+    },
+    {
+      "fold": 5,
+      "manifest_path": "/personal_fast_storage/VLA-PCRV1/data/registered_roi32_medium976_v1/cv_manifests/fold5/manifest.json",
+      "sha256": "076d64d43309af7e9a4df90047ea53efe524291bd4dd3c87e32c3507de0143f5",
+      "bytes": 2428798,
+      "patients": 976,
+      "splits": {
+        "train": 641,
+        "val": 160,
+        "test": 175
+      },
+      "available_visits": {
+        "T0": 976,
+        "T1": 935,
+        "T2": 875,
+        "T3": 855
+      },
+      "test_positives": 56.0
+    }
+  ],
+  "validation_once_verified": true,
+  "same_test_across_folds_verified": true,
+  "patient_identifiers_exported": false,
+  "test_outcomes_for_selection": false
+}

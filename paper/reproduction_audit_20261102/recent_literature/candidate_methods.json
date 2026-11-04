@@ -1,0 +1,188 @@
+{
+  "retrieved_at_utc": "2026-11-02T13:45:08.302197+00:00",
+  "cutoff_user_date": "2026-11-02",
+  "scope": "Literature and source-code audit only; no external code executed, no training launched, no patient data transformed.",
+  "selection": "Prioritize after verifying native-input feasibility on the unchanged175-person holdout; do not substitute common three-phase ROI or invented prefixes.",
+  "candidates": [
+    {
+      "title": "Longitudinal MRI-based deep learning model for predicting pathological complete response in breast cancer: a multicenter, retrospective cohort study",
+      "doi": "10.1038/s41698-025-01256-2",
+      "pmcid": "PMC12886838",
+      "fulltext_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12886838/fullTextXML",
+      "key": "BSTNet",
+      "year": 2026,
+      "venue": "npj Precision Oncology",
+      "repository": {
+        "url": "https://github.com/XmySz/BreastPCRClassification_Github",
+        "commit": "723a09ef114240b2f78638b893d89dd2227b6b4c",
+        "branch": "master",
+        "evidence": "paper/reproduction_audit_20261102/recent_literature/XmySz__BreastPCRClassification_Github/fetch_receipt.json"
+      },
+      "priority": "first_batch_paper_guided_reimplementation",
+      "training_coverage": "Official simplified release contains ResNet18+MHSA+LSTM, train/finetune and temporal permutation data scripts. Training protocol and tensor axes require repairs; not exact original training reproduction.",
+      "inputs": "Peak DCE phase, ROI64x128x128, T0-T3 for temporal permutation pretraining; ResNet18+MHSA+LSTM; downstream clinical integration optional.",
+      "adaptation": "Same-split observed-prefix variant; no test future MRI; reproduce temporal-order stage using development patients only.",
+      "notes": "Official README explicitly calls release simplified. code_inventory audit found best_test checkpoint selection and test evaluation each epoch, validation/test drop_last=True, random file splits, hardcoded four visits; 2D MHSA input mixes patient axis, finetune channel mismatch, paper256d/8heads versus code512d/4heads. Reimplement paper method with correct temporal attention, patient-disjoint manifests and validation-only selection; do not reproduce leaked protocol.",
+      "license": "README claims MIT, but no LICENSE file in root snapshot; do not automatically redistribute large code excerpts in public package."
+    },
+    {
+      "key": "TemporalRL_ART",
+      "year": 2025,
+      "venue": "arXiv:2509.14872",
+      "repository": {
+        "url": "https://github.com/cirmuw/temporal-representation-learning",
+        "commit": "07ffd8b652105291d9bc49e877f9b0ebff501930",
+        "branch": "master",
+        "evidence": "paper/reproduction_audit_20261102/recent_literature/cirmuw__temporal-representation-learning/fetch_receipt.json"
+      },
+      "priority": "first_batch_adapted",
+      "training_coverage": "Models, ART/TESSL losses, data loaders and pretraining training/validation engines present; no downstream pCR linear-evaluation script found in exact archive.",
+      "inputs": "585 ISPY2, four visits, early PE/late PE/SER 2D MIP; reconstruction+temporal continuity+responder alignment; frozen representation linear readout.",
+      "adaptation": "Supplement linear readout and evaluate legal prefixes. Existing NPZs store raw cropped pre/firstpost/metadata_late intensities (normalization occurs in loader), providing a basis for PE/SER derivation, but original phase timing, denominator, clipping, units and MIP generation must be audited. Start with explicitly labeled matched three-phase-MIP input adaptation.",
+      "notes": "Alignment uses training pCR labels; do not label it outcome-free SSL. README December2025 acknowledges sensitivity to loss weights and recommends tuning on new tasks.",
+      "license": "MIT file present.",
+      "title": "Temporal Representation Learning of Phenotype Trajectories for pCR Prediction in Breast Cancer",
+      "doi": null,
+      "paper_url": "https://arxiv.org/abs/2509.14872"
+    },
+    {
+      "title": "Attention-based multimodal deep learning for interpretable and generalizable prediction of pathological complete response in breast cancer",
+      "doi": "10.1186/s12967-025-06617-w",
+      "pmcid": "PMC12247266",
+      "fulltext_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12247266/fullTextXML",
+      "key": "Attention_Multimodal",
+      "year": 2025,
+      "venue": "Journal of Translational Medicine",
+      "repository": {
+        "url": "https://github.com/TaishiNishizawa/bc_pcr_prediction",
+        "commit": "712e068955b95859b15c2d7de70a20e76e2fc5f9",
+        "branch": "main",
+        "evidence": "paper/reproduction_audit_20261102/recent_literature/TaishiNishizawa__bc_pcr_prediction/fetch_receipt.json"
+      },
+      "priority": "first_batch_supervised_backup",
+      "training_coverage": "Four source scripts include model.py,data_utils.py,train_test.py,main.py; main placeholders for JSON paths, split indices and checkpoint; import/environment adaptation required.",
+      "inputs": "Whole-breast firstpost MRI80x256x256 at pre-NAC and post-NAC (our T0/T3), clinical age/race/HR/HER2/menopausal.",
+      "adaptation": "Restrict to observed T0/T1/T2 histories, match available covariates and specify ROI-vs-whole-breast adaptation; original T3 model is not early-prediction baseline.",
+      "notes": "Original I-SPY2 660, external I-SPY1 114. No treatment arms. Private data paths alone are routine adapter work, not absence of architecture.",
+      "license": "No LICENSE file in complete archive."
+    },
+    {
+      "title": "Development and validation of an MRI spatiotemporal interaction model for early noninvasive prediction of neoadjuvant chemotherapy response in breast cancer: a multicentre study",
+      "doi": "10.1016/j.eclinm.2025.103298",
+      "pmcid": "PMC12205660",
+      "fulltext_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12205660/fullTextXML",
+      "key": "STI",
+      "year": 2025,
+      "venue": "EClinicalMedicine",
+      "repository": {
+        "url": "https://github.com/JBnoJB/STIModel",
+        "commit": "7d24ba6f7635089ed9533f0f1eb4bab918d43343",
+        "branch": "master",
+        "evidence": "paper/reproduction_audit_20261102/recent_literature/JBnoJB__STIModel/fetch_receipt.json"
+      },
+      "priority": "second_batch",
+      "training_coverage": "Main, fivefold trainer, 3D ResNet, Siamese/temporal/habitat architecture and dataset present. No habitat segmentation generation or contrastive pretrain recipe/weights found.",
+      "inputs": "Peak-enhancement DCE at baseline and early treatment; three-class tumor habitat masks; elapsed time; Siamese+temporal attention.",
+      "adaptation": "Supply valid habitat masks/elapsed time; restrict T0-T1 or legal T0-T2 pair; preserve three habitats or label spatial-prior simplification; repair split-before-oversampling.",
+      "notes": "Source device condition always selects CPU. Main oversamples before k-fold risking same-patient leakage. Masks pass through image preprocessing and must preserve integer labels. Do not run official pipeline blindly.",
+      "license": "README claims MIT but full archive has no LICENSE file."
+    },
+    {
+      "title": "An explainable longitudinal multi-modal fusion model for predicting neoadjuvant therapy response in women with breast cancer",
+      "doi": "10.1038/s41467-024-53450-8",
+      "pmcid": "PMC11544255",
+      "fulltext_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11544255/fullTextXML",
+      "key": "MRP_iMRrhpc",
+      "year": 2024,
+      "venue": "Nature Communications",
+      "repository": {
+        "url": "https://github.com/yawwG/MRP",
+        "commit": "ac79736164caa7057fd2c2462512b02d7ac9c6ec",
+        "branch": "main",
+        "evidence": "paper/reproduction_audit_20261102/recent_literature/yawwG__MRP/fetch_receipt.json"
+      },
+      "priority": "second_batch",
+      "training_coverage": "MRI+MG model, data loaders, run.py and Lightning training/test routines present. Official environment Python3.7/PyTorch1.8.1/Lightning1.5.9; private clinical schema and checkpoint paths.",
+      "inputs": "MRI branch iMRrhpc: longitudinal subtraction MRI+stage embeddings+rhpc clinical factors; full MRP additionally mammography, unavailable in current task.",
+      "adaptation": "Use MRI branch only, align observed prefixes and available pre-outcome covariates; cannot claim reproducing full mammography+MRI fusion MRP.",
+      "notes": "Current dataset x_idx1 and x_idx2 both use date2; INB_COMPETITION_TASKS undefined; cfg.data.frac/transform mismatches. Fix/audit before training. Do not automatically use post-operative pathology columns as predictors.",
+      "license": "MIT file present."
+    },
+    {
+      "key": "Seq2Seq",
+      "year": 2024,
+      "venue": "Medical Image Analysis",
+      "repository": {
+        "url": "https://github.com/fiy2W/mri_seq2seq",
+        "commit": "0414c0766678719b0f5c50bfb1ad67e71b218770",
+        "branch": "main",
+        "evidence": "paper/reproduction_audit_20261102/recent_literature/fiy2W__mri_seq2seq/fetch_receipt.json"
+      },
+      "priority": "synthesis_mechanism_supplement",
+      "training_coverage": "Large active official repo; exact2024 publication source is under publications/src/seq2seq; pCR downstream completeness audited separately by code_inventory.",
+      "inputs": "Multi-sequence3D/4D MRI cross-sequence synthesis and differentiation map representation; breast pCR downstream.",
+      "adaptation": "Reuse exact publication method, common development/holdout and legal longitudinal prefixes; distinguish cross-sequence synthesis from future-visit prediction.",
+      "notes": "Recent nnseq2seq main is a newer method; cannot call current main exact2024 reproduction.",
+      "license": "MIT licence file present.",
+      "title": "Synthesis-based imaging-differentiation representation learning for multi-sequence 3D/4D MRI",
+      "doi": "10.1016/j.media.2023.103044",
+      "paper_url": "https://doi.org/10.1016/j.media.2023.103044"
+    },
+    {
+      "key": "GNN_pCR",
+      "year": 2026,
+      "venue": "arXiv:2607.04912",
+      "repository": {
+        "url": "https://github.com/hannesk95/GNN_pCR_ISPY2",
+        "commit": "4acf6f3208b56265cdd1cd04380060133c35a912",
+        "branch": "main",
+        "evidence": "paper/reproduction_audit_20261102/recent_literature/hannesk95__GNN_pCR_ISPY2/fetch_receipt.json"
+      },
+      "priority": "defer_no_training_code",
+      "training_coverage": "Current root has README and figures only; README says full source code will be released upon publication.",
+      "inputs": "Longitudinal graph representation of real multi-timepoint MRI embeddings; not generative.",
+      "adaptation": "Paper-based independent reimplementation possible; cannot claim official training-code reproduction now.",
+      "notes": "Repository existence is not release of training implementation.",
+      "license": "No LICENSE file visible.",
+      "title": "Graph Representation Learning of Longitudinal Medical Imaging Trajectories for Treatment Response Prediction",
+      "doi": null,
+      "paper_url": "https://arxiv.org/abs/2607.04912"
+    },
+    {
+      "title": "Early prediction of neoadjuvant therapy response in breast cancer using MRI-based neural networks: data from the ACRIN 6698 trial and a prospective Chinese cohort",
+      "doi": "10.1186/s13058-025-02009-6",
+      "pmcid": "PMC11969705",
+      "fulltext_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11969705/fullTextXML",
+      "key": "MESN",
+      "year": 2025,
+      "venue": "Breast Cancer Research",
+      "repository": null,
+      "priority": "defer_modality_and_code_gap",
+      "training_coverage": "Article links generic self-attention-cv library only; no full model training repository verified.",
+      "inputs": "Pre/early-treatment T1/DWI/ADC tumor/peritumor features plus clinic.",
+      "adaptation": "Requires additional DWI/ADC feature inputs absent from current DCE-only tensor; DCE-only variant is a substantial adaptation.",
+      "notes": "Do not mistake generic attention library for official MESN training code.",
+      "license": "Not applicable; no verified official repo."
+    },
+    {
+      "key": "LMF",
+      "year": 2025,
+      "venue": "MICCAI2025 claimed by README; publication metadata not independently confirmed",
+      "repository": {
+        "url": "https://github.com/martin-bro/LMF",
+        "commit": "0fab332210fb129450177e1c69035cc1c56664d2",
+        "branch": "main",
+        "evidence": "paper/reproduction_audit_20261102/recent_literature/martin-bro__LMF/fetch_receipt.json"
+      },
+      "priority": "defer_stub",
+      "training_coverage": "Archive/root only.gitignore/LICENSE/README; timeline promises full code by end2025 but not present.",
+      "inputs": "README claims longitudinal MRI/clinical ISPY2.",
+      "adaptation": "No code to port currently; would require independent paper verification and reimplementation.",
+      "notes": "Do not rank as mature open-source method merely from repository description.",
+      "license": "MIT file present.",
+      "title": "Longitudinal MRI-Clinical Multimodal Fusion for pCR Prediction in Breast Cancer",
+      "doi": null
+    }
+  ],
+  "current_execution_policy": "../native_input_policy.json: same frozen patient assignments, original-paper inputs and original supported decision times. Earlier adaptation suggestions are secondary only."
+}

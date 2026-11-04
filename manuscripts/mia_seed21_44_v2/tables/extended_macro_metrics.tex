@@ -1,0 +1,27 @@
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\caption{All 14 macro metrics for the principal variants: point estimate [95\% patient-bootstrap percentile interval]. Each statistic averages fold metrics within seed, equally averages seeds 21/44, and equally averages T0--T2. Threshold-dependent metrics use 0.5. Identical patient resamples preserve pairing across models, folds, seeds, and landmarks; entries are marginal model intervals, rather than intervals for differences. Intervals condition on the fitted models and exclude retraining and retrospective selection uncertainty. Downward arrows identify metrics for which lower is better.}
+\label{tab:extended_macro}
+\begin{tabular}{lccc}
+\toprule
+Metric & NoJEPA & DirectReadout & ForecastAttention \\
+\midrule
+AUROC & 0.7157 [0.6432, 0.7893] & 0.7277 [0.6560, 0.8007] & 0.7360 [0.6656, 0.8063] \\
+AP & 0.5773 [0.4588, 0.6935] & 0.5904 [0.4701, 0.7061] & 0.5969 [0.4841, 0.7136] \\
+F1 & 0.5333 [0.4332, 0.6247] & 0.5425 [0.4421, 0.6326] & 0.5490 [0.4598, 0.6319] \\
+Accuracy & 0.6743 [0.6168, 0.7307] & 0.6790 [0.6202, 0.7362] & 0.6509 [0.5985, 0.7038] \\
+Sensitivity & 0.5875 [0.4780, 0.6994] & 0.5970 [0.4847, 0.7132] & 0.6673 [0.5698, 0.7639] \\
+Specificity & 0.7151 [0.6460, 0.7810] & 0.7176 [0.6490, 0.7841] & 0.6431 [0.5770, 0.7076] \\
+PPV & 0.4954 [0.3861, 0.6083] & 0.5011 [0.3921, 0.6167] & 0.4796 [0.3817, 0.5831] \\
+NPV & 0.7888 [0.7170, 0.8592] & 0.7922 [0.7198, 0.8609] & 0.8143 [0.7456, 0.8797] \\
+Balanced accuracy & 0.6513 [0.5860, 0.7171] & 0.6573 [0.5915, 0.7241] & 0.6552 [0.6003, 0.7140] \\
+MCC & 0.2931 [0.1656, 0.4208] & 0.3037 [0.1773, 0.4281] & 0.3013 [0.1949, 0.4120] \\
+Youden index & 0.3026 [0.1719, 0.4342] & 0.3147 [0.1830, 0.4481] & 0.3104 [0.2005, 0.4279] \\
+NLL $\downarrow$ & 0.6018 [0.5403, 0.6624] & 0.5959 [0.5318, 0.6605] & 0.6102 [0.5592, 0.6611] \\
+Brier score $\downarrow$ & 0.2083 [0.1825, 0.2347] & 0.2049 [0.1783, 0.2324] & 0.2118 [0.1903, 0.2334] \\
+ECE $\downarrow$ & 0.1323 [0.1127, 0.1916] & 0.1280 [0.1101, 0.1868] & 0.1544 [0.1253, 0.2128] \\
+\bottomrule
+\end{tabular}
+\end{table*}

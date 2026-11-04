@@ -1,0 +1,73 @@
+ZHAO ET AL.: CORE-WM FOR LONGITUDINAL TREATMENT-RESPONSE PREDICTION                                                                                              7
+
+
+
+TABLE I: Five-fold I-SPY2 comparison using the same patient splits and seed for all methods. Values are fold mean ± standard
+deviation. The “Available MRI” column lists the examinations used by the pCR predictor; T3 may additionally be used as an
+outcome-free pretraining target (CoRe-WM and BSTNet temporal-order pretraining). ViT two-stage fusion uses the complete
+BreastDCEDL clinical and geometry feature set. Accuracy, sensitivity, and specificity use a validation-selected threshold.
+                   Method                       Avail. MRI         AUROC              AUPRC                Acc.                Sens.                Spec.
+                  ViT [23]                          T0         0.5591 ± 0.0320   0.4064 ± 0.0156    0.5657 ± 0.0507       0.5164 ± 0.1935      0.5917 ± 0.1741
+     Pretreatment
+       methods    ViT + two-stage fusion [23]       T0         0.5950 ± 0.0130   0.4230 ± 0.0194    0.5521 ± 0.0629       0.5745 ± 0.2431      0.5412 ± 0.2194
+                  3-D ResNet                        T0         0.5444 ± 0.0391   0.3685 ± 0.0242    0.4977 ± 0.0617       0.6836 ± 0.1546      0.4022 ± 0.1661
+                  PrefixGRU                       T0–T2        0.5784 ± 0.0668   0.4157 ± 0.0799    0.5718 ± 0.0514       0.4982 ± 0.2075      0.6098 ± 0.1709
+     Longitudinal Temp. repr. learning [34]       T0–T2        0.5179 ± 0.0516   0.3710 ± 0.0559    0.5606 ± 0.0476       0.3527 ± 0.2079      0.6678 ± 0.1748
+       methods    Two-stage dual-task [33]        T0–T1        0.6958 ± 0.0193   0.5412 ± 0.0378    0.6435 ± 0.0323       0.5745 ± 0.0539      0.6792 ± 0.0600
+                  BSTNet [32]                     T0–T2        0.6578 ± 0.0555   0.4773 ± 0.0740    0.6052 ± 0.0739       0.5964 ± 0.1633      0.6095 ± 0.1505
+
+     Proposed      CoRe-WM + FLR                   T0          0.7337 ± 0.0320   0.6107 ± 0.0474    0.6412 ± 0.0588       0.6582 ± 0.2075      0.6325 ± 0.1860
+                   CoRe-WM + FLR                  T0–T1        0.7545 ± 0.0468   0.6401 ± 0.0461    0.6980 ± 0.0572       0.6473 ± 0.0625      0.7243 ± 0.0996
+      method
+                   CoRe-WM + FLR                  T0–T2        0.7620 ± 0.0363   0.6381 ± 0.0307    0.7141 ± 0.0381       0.6436 ± 0.1224      0.7504 ± 0.1116
+
+
+TABLE II: Cross-cohort transfer from I-SPY2 to 156 I-SPY1 patients (41 pCR). AUROC brackets are patient-bootstrap 95%
+confidence intervals. All pCR supervision, model selection, and operating-threshold selection use I-SPY2 only.
+                                    Method                        Avail. MRI      AUROC (95% CI)         AUPRC     Acc.       Sens.    Spec.
+                                   ViT [23]                          T0        0.5584 [0.4549, 0.6609]   0.3159   0.4872     0.6829    0.4174
+                      Pretreatment
+                        methods    ViT + two-stage fusion [23]       T0        0.5750 [0.4764, 0.6746]   0.3276   0.4487     0.6585    0.3739
+                                   3-D ResNet                        T0        0.6738 [0.5698, 0.7709]   0.4213   0.2949     0.9512    0.0609
+                                   PrefixGRU                        T0–T2      0.6494 [0.5510, 0.7428]   0.3798   0.6282     0.6341    0.6261
+                      Longitudinal Temp. repr. learning [34]        T0–T2      0.5548 [0.4519, 0.6579]   0.3433   0.7308     0.0732    0.9652
+                        methods    Two-stage dual-task [33]         T0–T1      0.7635 [0.6780, 0.8402]   0.5391   0.7372     0.2439    0.9130
+                                   BSTNet [32]                      T0–T2      0.4390 [0.3392, 0.5387]   0.2295   0.3846     0.5854    0.3130
+
+                      Proposed      CoRe-WM + FLR                    T0        0.7396 [0.6523, 0.8178]   0.4439   0.6667     0.7561    0.6348
+                                    CoRe-WM + FLR                   T0–T1      0.7321 [0.6396, 0.8177]   0.4774   0.7179     0.5610    0.7739
+                       method
+                                    CoRe-WM + FLR                   T0–T2      0.7082 [0.6114, 0.7986]   0.4515   0.7179     0.3659    0.8435
+
+
+
+
+E. Ablation Study                                                                   F. Calibration and Decision-Curve Analysis
+
+   We evaluated the proposed components through a cumu-                                Discrimination alone does not establish whether the pre-
+lative ablation in which modules were added one at a time                           dicted probabilities are reliable enough for threshold-based
+to an image-only JEPA. Every configuration used the same                            use. We therefore evaluated calibration and decision-curve
+five I-SPY2 folds, seed, pretraining budget, and frozen-readout                     utility from the five held-out I-SPY2 partitions. Within each
+protocol, and was evaluated at the early-treatment T0–T1                            outer fold, a Platt calibrator was fitted using that fold’s valida-
+decision point. Table III reports model-native fold metrics;                        tion patients and applied without refitting to its test patients.
+the AUROC increment in each row is measured relative to                             Concatenating the five test partitions yielded one out-of-fold
+the immediately preceding configuration.                                            (OOF) probability for each of the 808 I-SPY2 patients. The
+   The largest gain came from conditioning the image tra-                           resulting pooled OOF AUROC is a different estimand from
+jectory on patient profile, which increased mean AUROC                              the arithmetic fold-mean AUROC in Table I; in particular,
+from 0.5816 to 0.7135. Treatment conditioning did not pro-                          fold-specific calibration can change rankings between patients
+vide an additional marginal AUROC gain after the clinical                           belonging to different folds while preserving rankings within
+variables were introduced, although it remained part of the                         each fold.
+transition formulation because treatment specifies the context                         The T0–T2 model had the strongest overall probability per-
+under which the next state is predicted. Adding explicit ROI                        formance, with pooled OOF AUROC 0.7288, AUPRC 0.5853,
+geometry increased mean AUROC to 0.7380; in pooled out-                             and a calibrated Brier score of 0.1911 (95% CI, 0.1780–
+of-fold predictions, its gain was 0.0253 (95% CI, 0.0001–                           0.2045), compared with calibrated Brier scores of 0.1942 at T0
+0.0507). The factorized response state and image-derived                            and 0.1949 at T0–T1. Calibration at T0–T2 was close to the
+response guidance further increased mean AUROC to 0.7506                            ideal line, with intercept −0.020, slope 0.978, and expected
+and 0.7545, respectively. Overall, the ablation indicates that                      calibration error 0.0176; Platt scaling reduced its Brier score
+patient profile provides the dominant conditioning signal,                          from 0.2166 before calibration (Fig. 2(a)). These findings
+while explicit lesion geometry and imaging-derived response                         indicate that the probabilities were well aligned with observed
+guidance contribute smaller but complementary improvements                          pCR frequency after validation-only recalibration, while the
+beyond the image-only trajectory.                                                   improvement over the earlier decision points was modest.
+                                                                                       For decision-curve analysis [45], non-pCR was defined
+                                                                                    as the actionable event and referral for treatment-adaptation
+                                                                                    review as the modeled action. At T0–T2, the CoRe-WM curve

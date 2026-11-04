@@ -1,0 +1,83 @@
+{
+  "schema": "pcr_reproduction_candidate_plan_v2_native_inputs",
+  "created_at_utc": "2026-11-02T13:50:24.886592+00:00",
+  "status": "same_partitions_native_paper_inputs_required; source_inventory_pending; no_training_started",
+  "data_protocol": "frozen_data_protocol.json",
+  "implementation_readiness": "local_readiness/LOCAL_READINESS_ZH.md",
+  "reference_audit": "reference_paper/AUDIT_ZH.md",
+  "selection_reason": "Prioritize recent breast pCR methods whose original-paper inputs and decision times can be constructed for the same frozen patients; no replacement with common ROI32 inputs.",
+  "first_batch": [],
+  "second_batch": [],
+  "mechanism_supplement": {
+    "method": "seq2seq_pcr_adapted",
+    "source": {
+      "url": "https://github.com/fiy2W/mri_seq2seq",
+      "commit": "0414c0766678719b0f5c50bfb1ad67e71b218770",
+      "branch": "main",
+      "evidence": "paper/reproduction_audit_20261102/recent_literature/fiy2W__mri_seq2seq/fetch_receipt.json"
+    },
+    "source_subdirectory": "publications/src/seq2seq",
+    "status": "native_synthesis_inputs_and_breast_pcr_protocol_needed; no_automatic_ROI_or_prefix_adaptation"
+  },
+  "deferred": [
+    "GNN_pCR: full training code not released",
+    "LMF: current repository is a stub",
+    "CoRe-WM: official full code and dynamic geometry not verified",
+    "MESN: extra modalities and code gap"
+  ],
+  "reproduction_labels": [
+    "native_input_method_reproduction_on_our_frozen_cohort",
+    "documented_paper_guided_reimplementation_when_official_code_is_incomplete",
+    "common_input_adaptation_only_as_separate_secondary_control"
+  ],
+  "test_selection_policy": "Frozen patient assignments and identical175-person test; native original-paper inputs; validation-only tuning and train-only fitted preprocessing; seed44/five-model probability mean evaluation retained.",
+  "statistics": "Reuse 14-metric evaluation; define new comparison families for newly added methods before inspecting new holdout comparisons, rather than reusing old nine-test Holm adjustment unchanged.",
+  "next_phase": "Finalize source-backed native-input requirement cards, inventory required assets on frozen patient assignments, build separately versioned method inputs, validate source geometry and timepoint alignment, then freeze runnable training recipes.",
+  "updated_at_utc": "2026-11-02T14:03:58.475095+00:00",
+  "authoritative_policy": "native_input_policy.json",
+  "secondary_controls": [
+    {
+      "method": "clinical_logistic",
+      "variants": [
+        "four_baseline_covariates",
+        "same_covariates_plus_assigned_arm"
+      ],
+      "question": "How much discrimination is attributable to baseline context alone?",
+      "status": "selected_not_implemented"
+    },
+    {
+      "method": "resnet3d_clinical",
+      "question": "What do MRI features add to the same clinical information?",
+      "status": "selected_not_implemented"
+    },
+    {
+      "method": "prefix_gru_clinical",
+      "question": "Are directly observed longitudinal histories sufficient without forecasting?",
+      "status": "selected_not_implemented"
+    }
+  ],
+  "primary_candidate_methods": [
+    {
+      "method": "BSTNet",
+      "status": "native_input_and_missing_visit_contract_audit_pending",
+      "required_input": "Original peak-enhancement single-phase tumor VOI64x128x128 with segmentation/3mm margin and article-defined variable visits/padding; do not invent T0-only input to fill a table."
+    },
+    {
+      "method": "TemporalRL_ART",
+      "status": "native_PE_SER_MIP_and_downstream_visit_contract_audit_pending",
+      "required_input": "Original PEearly120-150s/PElate~450s/SER axial MIPs with256cubed preprocessing; native early readouts T0 andT0+T1 already exist; preserve full-sequence training requirements and document missing-input eligibility."
+    },
+    {
+      "method": "STI",
+      "status": "native_habitat_and_weights_source_inventory_pending",
+      "required_input": "Original baseline/early-treatment MRI, habitat masks, elapsed time, and documented pretraining."
+    }
+  ],
+  "native_input_requirements": "native_input_requirements.json",
+  "native_input_review": "native_inputs_review.md",
+  "source_inventory_priority": [
+    "STI: native pre/early-treatment pair and habitat/weights/window audit",
+    "BSTNet: peak-phase VOI and original variable-visit/padding audit",
+    "TemporalRL_ART: native PE/SER MIPs and complete-sequence pretraining feasibility"
+  ]
+}

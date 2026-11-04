@@ -1,0 +1,88 @@
+{
+  "checked_at_utc": "2026-11-02T13:43:25.492569+00:00",
+  "paper_sha256": "0add9bcbfa71c080af6b248709afa29f4ca92dcd924ed5a2e9a8219cfae5c854",
+  "paper_title": "CoRe-WM: Conditioned Response-State World Modeling for Longitudinal Treatment-Response Prediction in Breast DCE-MRI",
+  "paper_status": "arXiv preprint; no journal_ref or DOI in queried arXiv API; IEEE TMI page header is not acceptance evidence",
+  "methods": [
+    {
+      "method": "ViT",
+      "ref": 23,
+      "group": "pretreatment",
+      "available_mri": "T0",
+      "native_input": "BreastDCEDL MinCrop; ViT-B/16 initialized from ImageNet MAE",
+      "reproduction_status": "Native official pipeline needs code/data/weights audit; using our 3-channel ROI would be adaptation",
+      "paper_page": 6,
+      "table": "I"
+    },
+    {
+      "method": "ViT + two-stage fusion",
+      "ref": 23,
+      "group": "pretreatment",
+      "available_mri": "T0",
+      "native_input": "BreastDCEDL complete clinical and geometry feature set with ViT representation",
+      "reproduction_status": "Feature definitions and stage-specific fitting require official code audit",
+      "paper_page": 6,
+      "table": "I"
+    },
+    {
+      "method": "3-D ResNet",
+      "ref": null,
+      "group": "matched supervised",
+      "available_mri": "T0",
+      "native_input": "8 channels, four stages16/32/64/128, pooled representation to pCR",
+      "reproduction_status": "Architecture reconstructable; original seed and fold manifests not released in paper",
+      "paper_page": 6,
+      "table": "I"
+    },
+    {
+      "method": "PrefixGRU",
+      "ref": null,
+      "group": "matched sequential",
+      "available_mri": "T0-T2",
+      "native_input": "Shared 3-D encoder, ordered visit representations, GRU, pCR head",
+      "reproduction_status": "Architecture reconstructable; full layer/config details require code or documented assumptions",
+      "paper_page": 6,
+      "table": "I"
+    },
+    {
+      "method": "Temporal representation learning",
+      "ref": 34,
+      "group": "published longitudinal",
+      "available_mri": "T0-T2",
+      "native_input": "MIP; reconstruction, temporal continuity, responder alignment",
+      "reproduction_status": "Original article arXiv2509.14872; implementation and label supervision need primary-source audit",
+      "paper_page": 6,
+      "table": "I"
+    },
+    {
+      "method": "Two-stage dual-task",
+      "ref": 33,
+      "group": "published longitudinal",
+      "available_mri": "T0-T1",
+      "native_input": "Three-channel early-subtraction MRI with clinical variables; jointly pCR and future-latent objectives",
+      "reproduction_status": "Original article arXiv2502.00051; highly relevant mechanism comparison; original T0-T1 not automatically T0-T2",
+      "paper_page": 6,
+      "table": "I"
+    },
+    {
+      "method": "BSTNet",
+      "ref": 32,
+      "group": "published longitudinal",
+      "available_mri": "T0-T2 at inference; all four visits at pretraining",
+      "native_input": "Peak-postcontrast volumes; temporal-order pretraining; retain encoder, retrain lightweight prefix pCR head",
+      "reproduction_status": "Authors adapted original head for prefixes; must distinguish original reproduction and this modification",
+      "paper_page": 6,
+      "table": "I"
+    },
+    {
+      "method": "CoRe-WM + FLR",
+      "ref": "this paper",
+      "group": "proposed",
+      "available_mri": "T0 / T0-T1 / T0-T2; T3 only pretraining target",
+      "native_input": "8 channels32x96x96, 9D mask geometry, profile/treatment; future-response-state summaries and balanced logistic probe",
+      "reproduction_status": "No official full repository verified; paper says public upon publication. Method reimplementation possible, exact numerical reproduction not presently supported",
+      "paper_page": 5,
+      "table": "I/II/III"
+    }
+  ]
+}

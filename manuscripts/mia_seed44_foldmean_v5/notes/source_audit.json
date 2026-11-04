@@ -1,0 +1,92 @@
+{
+  "verified_at_utc": "2026-11-03T14:44:59.592022+00:00",
+  "read_only_source_audit": true,
+  "training_started": false,
+  "checkpoint_payloads_read": false,
+  "training_seed": 44,
+  "models": [
+    "direct_no_jepa",
+    "direct_readout",
+    "forecast_attention",
+    "forecast_mean"
+  ],
+  "suite": "/projects/xts0030/public/cxx/medium976_t0_t2_no_tf_cv5_multiseed_v1",
+  "suite_matrix_status": "completed",
+  "suite_total_training_completed": 60,
+  "suite_total_evaluation_completed": 60,
+  "selected_runs": 20,
+  "selected_matrix_jobs_completed": 20,
+  "completed_receipts_verified": 20,
+  "registered_reports_verified_by_bytes_and_mtime_ns": 60,
+  "manifest_identity_checks": 20,
+  "run_identity_file_checks": 20,
+  "training_done_identity_checks": 20,
+  "input_config_identity_checks": 20,
+  "codec_asset_identity_checks": 20,
+  "runtime_identity_checks": 1840,
+  "runtime_files_per_run": 92,
+  "unique_runtime_files_hashed": 92,
+  "runtime_identity_consistent_across_all_selected_runs": true,
+  "same_model_config_equal_across_folds": true,
+  "model_contrasts": {
+    "DirectReadout_minus_NoJEPA": {
+      "rollout_weight": [
+        0.0,
+        0.5
+      ]
+    },
+    "ForecastAttention_minus_DirectReadout": {
+      "model.pcr_readout": [
+        "direct",
+        "forecast"
+      ],
+      "model.spatial_readout": [
+        "mean",
+        "attention"
+      ]
+    },
+    "ForecastAttention_minus_ForecastMean": {
+      "model.spatial_readout": [
+        "mean",
+        "attention"
+      ]
+    }
+  },
+  "same_test_patient_and_label_vectors": 60,
+  "patients_per_landmark": 175,
+  "positive_outcomes_per_landmark": 56,
+  "cohort_patients": 976,
+  "test_landmarks": [
+    "T0",
+    "T1",
+    "T2"
+  ],
+  "test_split": "internal downstream holdout",
+  "independent_test": false,
+  "manifest_test_membership_and_pcr_labels_verified": true,
+  "codec_asset": {
+    "path": "/personal_fast_storage/VLA-PCRV1/data/pretrained/codec.pt",
+    "bytes": 8479721,
+    "mtime_ns": 1789795933290353248
+  },
+  "shared_manifest_sha256_by_fold": {
+    "1": "4330676fff6015a9abec7b4097e8d9a380479042183feda9790162d5447353e8",
+    "2": "cd1d6498ee21a5ee71a0ad51ca21e9ed0947ecf62015025d8030051189bcc0ed",
+    "3": "fa42d84839c38137b95d9b22fa64d8cb7ecd795929bc6a09b145058ca88e40c7",
+    "4": "556f6e0d70d72a42a9689d60e34035afa09d45e4cfd5df66cd87a5feb32381cc",
+    "5": "076d64d43309af7e9a4df90047ea53efe524291bd4dd3c87e32c3507de0143f5"
+  },
+  "shared_manifest_root": "/personal_fast_storage/VLA-PCRV1/data/registered_roi32_medium976_v1/cv_manifests",
+  "evaluation_completed_at_beijing": {
+    "first": "2026-10-29T22:32:13.316655+08:00",
+    "last": "2026-10-29T22:37:01.268125+08:00"
+  },
+  "reporting_estimand": "For seed44 compute metrics on each fold prediction vector separately; average five fold metrics with sample SD ddof1. Macro averages three landmark metrics within fold before fold mean/SD. No prediction-probability ensembling.",
+  "exported_patient_identifiers": false,
+  "exported_patient_predictions": false,
+  "scope_limitations": [
+    "Reports, manifests, configs, runtime and retained identities were checked; checkpoint payloads were not read.",
+    "No new raw MRI geometry, pretraining overlap, external independence or anatomical registration audit.",
+    "Five fold models use overlapping development sets and the same holdout; fold spread is descriptive and folds are not independent test cohorts."
+  ]
+}

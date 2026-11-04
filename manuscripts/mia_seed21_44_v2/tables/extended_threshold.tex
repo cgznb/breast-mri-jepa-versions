@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Three-landmark mean operating-point sensitivity analysis, equally averaged over seeds 21 and 44 after within-seed five-fold aggregation. The alternative threshold maximizes Youden index separately on each fold and landmark validation set; the highest threshold breaks ties. No holdout predictions select thresholds. Probability-based AUROC and AP are unchanged by this operation.}
+\label{tab:extended_threshold}
+\begin{tabular}{llrrrr}
+\toprule
+Model & Policy & F1 & Sens. & Spec. & MCC \\
+\midrule
+NoJEPA & 0.5 & 0.533 & 0.588 & 0.715 & 0.293 \\
+NoJEPA & Validation Youden & 0.535 & 0.614 & 0.684 & 0.285 \\
+\midrule
+DirectReadout & 0.5 & 0.542 & 0.597 & 0.718 & 0.304 \\
+DirectReadout & Validation Youden & 0.537 & 0.601 & 0.706 & 0.298 \\
+\midrule
+ForecastAttention & 0.5 & 0.549 & 0.667 & 0.643 & 0.301 \\
+ForecastAttention & Validation Youden & 0.542 & 0.640 & 0.661 & 0.288 \\
+\bottomrule
+\end{tabular}
+\end{table*}

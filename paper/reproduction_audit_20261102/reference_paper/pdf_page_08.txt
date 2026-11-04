@@ -1,0 +1,112 @@
+8                                                                                                                                                                                                                                                                        IEEE TRANSACTIONS ON MEDICAL IMAGING
+
+
+
+TABLE III: Cumulative five-fold ablation at T0–T1. Values are fold mean ± standard deviation. ∆ AUROC is relative to the
+preceding row. Patient profile includes HR, HER2, MammaPrint, and age; Tx denotes treatment conditioning; Geo denotes
+ROI geometry. FRS and IRG denote factorized response state and image-derived response guidance, respectively.
+                                                                          Cumulative configuration                                                           Profile Tx Geo FRS/IRG                                                               AUROC                             ∆ AUROC
+                                                                          Image-only JEPA                                                                        –            –         –                          –     0.5816 ± 0.0316        –
+                                                                          + patient profile                                                                      ✓            –         –                          –     0.7135 ± 0.0117 +0.1319 ± 0.0350
+                                                                          + treatment conditioning                                                               ✓            ✓         –                          –     0.7115 ± 0.0393 −0.0019 ± 0.0467
+                                                                          + ROI geometry                                                                         ✓            ✓         ✓                          –     0.7380 ± 0.0138 +0.0264 ± 0.0451
+                                                                          + factorized response state                                                            ✓            ✓         ✓                         FRS    0.7506 ± 0.0473 +0.0126 ± 0.0442
+                                                                          + image-derived response guidance                                                      ✓            ✓         ✓                       FRS+IRG 0.7545 ± 0.0468 +0.0039 ± 0.0082
+                                                                          (CoRe-WM)
+
+
+                                            Validation-calibrated reliability                                                      Decision-curve analysis
+                          1.0
+                                      Perfect calibration                                                                                  Review all          T0+T1
+                                                                                                                                                                                                                                                                                                                  T0-to-T2 OOF state update predicts volume shrinkage
+                                      T0 (Brier=0.194)
+                                                                                                             0.6                           Review none         T0+T1+T2 (primary)                              Condition permutations reduce predictive discrimination                                                 Spearman r=0.862                            non-pCR (n=529)
+                                      T0+T1 (Brier=0.195)                                                                                  T0                                                                                                                                                                          95% CI 0.835-0.887
+                          0.8         T0+T1+T2 (primary) (Brier=0.191)                                                                                                                                                     Observed              Clinical perm.                                                                                                    pCR (n=262)
+                                                                                                                                                                                                               0.80        Treatment perm.       Joint perm.                                                       8   R 2=0.674; N=791
+                                                                                                             0.5
+Observed pCR proportion
+
+
+
+
+                                                                                                                                                                                                                                                                                     OOF-predicted log(VT0/VT2)
+                                                                                                                                                                                                               0.75                                                                                                6
+                          0.6                                                                                0.4
+
+
+
+
+                                                                                                                                                                                        Five-fold test AUROC
+                                                                                               Net benefit
+
+
+
+
+                                                                                                                                                                                                               0.70
+                                                                                                                                                                                                                                                                                                                   4
+                                                                                                             0.3
+                                                                                                                                                                                                               0.65
+                          0.4
+                                                                                                             0.2                                                                                                                                                                                                   2
+                                                                                                                                                                                                               0.60
+
+                          0.2                                                                                0.1                                                                                               0.55                                                                                                0
+
+                                                                                                                                                                                                               0.50   Current m6 model: 5 fold-specific checkpoints
+                                                                                                             0.0                                  Action: treatment-adaptation review                                 MRI fixed; 100 condition permutations per fold                                               2                                  positive = volume reduction
+                                                                                                                                                                                                                      Unchanged native response-state FLR
+                          0.0                                                                                                                                                                                  0.45
+                                0.0       0.2          0.4          0.6      0.8         1.0                       0.1   0.2      0.3       0.4        0.5         0.6        0.7                                     T0                          T0+T1                T0+T1+T2                                             2      0        2         4        6         8       10
+                                      Validation-calibrated predicted pCR probability                                           Threshold probability of non-pCR                                                                                                        (primary)                                               Observed shrinkage, log(VT0/VT2)
+
+                                                         (a)                                                                             (b)                                                                                                    (c)                                                                                             (d)
+Fig. 2: Five-fold diagnostic analyses. (a) OOF calibration curves at three prospective decision points; points show equal-
+frequency bins with Wilson 95% CIs. (b) Decision-curve analysis for non-pCR identification; shaded regions are bootstrap
+95% CIs. (c) Condition-dependence analysis; MRI latents and geometry are fixed while treatment, clinical profile, or their joint
+context is permuted; shaded regions show ±1 SD across folds. (d) Response-state grounding; a ridge probe maps the frozen
+T0-to-T2 state update to observed log-volume shrinkage in 791 OOF patients.
+
+
+TABLE IV: Receptor-subtype stratification of CoRe-WM five-                                                                                                                                         value, reflecting the contribution of cross-subtype differences
+fold OOF AUROC at each prospective decision point. Values                                                                                                                                          in baseline pCR prevalence to the aggregate discrimination.
+are pooled out-of-fold AUROC; brackets are patient-bootstrap                                                                                                                                       Among subtypes, TNBC exhibited the largest longitudinal
+95% confidence intervals.                                                                                                                                                                          gain from T0 to T0–T2 (+0.067; 95% CI, 0.010–0.124); this
+                                          Subtype                    n (pCR%)            T0              T0–T1                 T0–T2 (95% CI)
+                                                                                                                                                                                                   estimate was not corrected for multiple comparisons and is
+                                                                                                                                                                                                   reported as exploratory.
+                                          Overall                    808 (34.0)         0.733                0.755               0.762
+                                          HR+/HER2−                  320 (17.8)         0.683                0.689        0.705 [0.616, 0.784]
+                                          HER2+                      201 (46.8)         0.712                0.741        0.731 [0.658, 0.801]                                                     H. Condition Dependence and Response-State
+                                          TNBC                       287 (43.2)         0.640                0.669        0.707 [0.646, 0.765]
+                                                                                                                                                                                                   Grounding
+                                                                                                                                                                                                      We examined whether the frozen response state used the
+                                                                                                                                                                                                   clinical and treatment conditions supplied to the transition
+exceeded both review-all and review-none strategies across
+                                                                                                                                                                                                   model. For every outer fold, the fold-specific CoRe-WM
+probability thresholds from 0.22 to 0.75 (Fig. 2(b)). This range
+                                                                                                                                                                                                   checkpoint and validation-selected native response-state FLR
+suggests potential utility when the cost of unnecessary review
+                                                                                                                                                                                                   were retained while the held-out MRI latents and lesion ge-
+is traded against the cost of missing a patient unlikely to
+                                                                                                                                                                                                   ometry were fixed. Treatment was permuted within HR/HER2
+achieve pCR. However, confidence bands overlapped across
+                                                                                                                                                                                                   strata, clinical profile was permuted within treatment families,
+decision points, and decision-curve net benefit is calculated
+                                                                                                                                                                                                   and the joint clinical-treatment context was permuted globally.
+from predictive outcomes rather than observed effects of
+                                                                                                                                                                                                   Each scenario used 100 permutations per fold. This design
+changing therapy. We therefore treat this result as exploratory
+                                                                                                                                                                                                   changes only the conditioning pathway and therefore tests
+evidence of threshold-dependent utility, not evidence that
+                                                                                                                                                                                                   whether context contributes to the organization of the learned
+model-guided treatment adaptation improves patient outcomes.
+                                                                                                                                                                                                   state.
+                                                                                                                                                                                                      At the primary T0–T2 decision point, the observed-context
+G. Receptor-Subtype Stratification                                                                                                                                                                 response state achieved 0.7621 ± 0.0365 AUROC. Permut-
+  Table IV stratifies the five-fold OOF predictions of                                                                                                                                             ing treatment within biological strata reduced AUROC to
+CoRe-WM by receptor subtype. At T0–T2, the largest pair-                                                                                                                                           0.7329 ± 0.0321, a mean reduction of 0.0292 ± 0.0086.
+wise AUROC difference across subtypes was 0.026, and all                                                                                                                                           Permuting clinical profile within treatment family produced
+pairwise confidence intervals crossed zero, indicating that the                                                                                                                                    a larger reduction to 0.6476 ± 0.0210, and jointly permuting
+overall discrimination was not driven by a single subtype.                                                                                                                                         clinical and treatment context reduced AUROC to 0.5951 ±
+The overall AUROC of 0.762 exceeded each within-subtype                                                                                                                                            0.0242 (Fig. 2(c)). Every perturbation reduced AUROC in all

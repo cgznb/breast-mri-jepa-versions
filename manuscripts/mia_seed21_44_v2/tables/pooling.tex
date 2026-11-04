@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Supplementary pooling comparison using the same two-seed aggregation as the main analysis. ForecastMean and ForecastAttention share forecast readout and future-state supervision, differing in spatial pooling.}
+\label{tab:pooling}
+\begin{tabular}{llrrr}
+\toprule
+Model & Landmark & AUROC & AP & F1 \\
+\midrule
+ForecastMean & T0 & 0.7322 & 0.5863 & 0.5354 \\
+ForecastMean & T1 & 0.7339 & 0.5902 & 0.5355 \\
+ForecastMean & T2 & 0.7322 & 0.5865 & 0.5273 \\
+ForecastMean & Macro & 0.7328 & 0.5877 & 0.5327 \\
+ForecastAttention & T0 & 0.7323 & 0.5933 & 0.5391 \\
+ForecastAttention & T1 & 0.7363 & 0.5976 & 0.5524 \\
+ForecastAttention & T2 & 0.7393 & 0.5998 & 0.5556 \\
+ForecastAttention & Macro & 0.7360 & 0.5969 & 0.5490 \\
+\bottomrule
+\end{tabular}
+\end{table*}

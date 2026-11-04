@@ -1,0 +1,1195 @@
+    Forecast-aware latent modeling for longitudinal
+prediction of pathological complete response from breast
+                           MRI
+                      Author information to be completed
+                 Affiliations and corresponding author to be completed
+
+
+
+
+Abstract
+Longitudinal breast magnetic resonance imaging (MRI) offers repeated mea-
+surements of treatment response, but discriminative models do not necessarily
+exploit the future disease trajectories implied by an observed examination.
+We investigate whether auxiliary future-state prediction and an explicit
+forecast-based readout improve prediction of pathological complete response
+(pCR). The framework combines three-phase dynamic contrast-enhanced
+MRI, baseline clinical variables, and assigned treatment-arm scenarios in
+a latent representation. An autoregressive predictor estimates unobserved
+future states, and an attention readout summarizes the predicted terminal
+state and its change from the current state. We study 976 patients with 3,641
+usable MRI examinations, using 801 patients for five-fold development and a
+fixed internal holdout of 175 patients, including 56 pCR-positive cases. Three
+matched variants isolate direct prediction without future-state supervision,
+direct prediction with that supervision, and the complete forecast-attention
+model. This initial analysis reports training seed44, selected retrospectively,
+and averages metrics from separately evaluated fold models. At T0, T1, and
+T2, the complete model achieved AUROCs of 0.7294, 0.7381, and 0.7421,
+respectively. Its three-landmark mean AUROC and average precision were
+0.7365 and 0.5990, compared with 0.7219 and 0.5792 for the control without
+future-state supervision. Direct readout retained the highest mean F1, and
+forecast attention had worse calibration. Paired patient-bootstrap intervals
+included zero for the principal model differences. These exploratory findings
+support further evaluation of forecast-aware representations while motivating
+independent validation, prospective model selection, and explicit calibration
+assessment.
+
+Preprint submitted to Medical Image Analysis                             November 2, 2026
+Keywords: Breast MRI, Pathological complete response, Longitudinal
+imaging, Latent dynamics, Treatment response prediction
+
+
+1. Introduction
+    Neoadjuvant systemic therapy provides an opportunity to monitor breast
+cancer before surgery and to study how an individual tumor responds over time.
+Pathological complete response (pCR) is a clinically meaningful endpoint
+associated with long-term outcomes, although its relationship to prognosis
+varies across biological subtypes and it should not be equated with a universally
+valid trial-level surrogate (Cortazar et al., 2014). Predicting pCR from imaging
+could support response assessment and the design of future adaptive studies.
+Such a prediction remains a prognostic estimate under an observed treatment
+context; it does not establish that changing treatment would improve an
+individual patient’s outcome.
+    Dynamic contrast-enhanced MRI captures three-dimensional anatomy
+and contrast uptake patterns that evolve during therapy. Prior work in the
+I-SPY setting has demonstrated associations between MRI-derived tumor
+measurements and pathological response or subsequent outcomes (Hylton
+et al., 2012, 2016). Public multicenter imaging resources also make it possible
+to examine learned representations across repeated visits (Li et al., 2022;
+Newitt et al., 2021). However, a longitudinal prediction system must operate
+at the time a decision is considered: a baseline prediction can use baseline
+information, whereas an interim prediction can use the examination history
+accumulated by that interim visit. Future scans may inform representation
+learning on development patients but cannot become inputs to predictions
+for holdout patients at an earlier landmark.
+    Most direct classifiers optimize the endpoint of interest from observed
+images and clinical variables. This is a reasonable objective, but it does not
+explicitly require the representation to capture how the tumor state may
+evolve. A different strategy is to predict future imaging information and use
+the prediction to inform the endpoint readout. Image synthesis provides one
+route to such a representation, but prediction in a compact latent space can
+focus the training signal on state evolution without requiring a pixel-space
+image generator at inference. This distinction is useful for response prediction:
+the relevant question is whether the learned forecast contributes information
+to classification, rather than whether a generated image is visually convincing.
+
+
+                                       2
+    Joint-embedding predictive learning offers a general mechanism for pre-
+dicting target representations computed by a slowly updated encoder (Assran
+et al., 2023). In a longitudinal medical setting, adapting that principle requires
+explicit handling of partial histories, missing future observations, treatment
+context, and the distinction between an auxiliary training target and a classi-
+fier input. A model may benefit from a future-state loss while still making a
+direct prediction from the observed history. Conversely, directly including
+forecast features in the classifier changes both its information pathway and
+its parameterization. These effects should be examined through matched
+controls rather than attributed to a single generic “world model” component.
+    We investigate forecast-aware latent modeling for longitudinal pCR pre-
+diction from breast MRI. The model encodes three selected DCE phases at
+each available visit, fuses observed MRI with baseline clinical information
+and an assigned treatment-arm scenario, and autonomously rolls the current
+latent state forward to a terminal stage. A spatial attention mechanism
+summarizes the predicted terminal state and the predicted change from the
+current state for pCR classification. We compare the complete model with
+two direct-readout controls: one without future-state supervision and one
+with the same auxiliary supervision as the complete model. A supplementary
+mean-pooling model further examines the attention component.
+    The study makes three concrete contributions. First, it formulates a
+common representation and masked future-state objective that can be ap-
+plied to available T0–T2 histories while using observed later scans only as
+development-time targets. Second, it provides a staged comparison that
+distinguishes the effect of auxiliary prediction from the joint effect of forecast
+readout and attention. Third, it reports landmark-specific discrimination,
+thresholded classification, calibration, and paired patient-level uncertainty on
+a fixed internal holdout. The initial manuscript follows a single, retrospec-
+tively selected training seed, seed44. Accordingly, the results are presented
+as an exploratory internal evaluation, with the limits of seed selection and
+upstream data independence stated explicitly.
+
+2. Related work
+MRI biomarkers and learned pCR prediction.. MRI-based response assessment
+has a substantial clinical and quantitative foundation. Functional tumor
+volume and related measurements have been studied in longitudinal breast
+MRI cohorts, including I-SPY (Hylton et al., 2012, 2016). The ACRIN 6698
+
+                                        3
+study additionally examined diffusion-derived measurements in relation to
+response (Partridge et al., 2018). These studies motivate imaging-based
+monitoring but do not establish that a learned model using different inputs or
+a different evaluation split has equivalent clinical validity. Our experiments
+use selected DCE phases and baseline clinical variables; diffusion imaging is
+not an input to the present model.
+    Learning-based approaches can combine complementary image sequences
+or repeated examinations. Synthesis-based representation learning has been
+explored for multi-sequence 3D/4D MRI (Han et al., 2024), and recent
+studies have examined spatiotemporal or early-treatment information for
+pCR prediction (Tang et al., 2025; Du et al., 2025). Such studies provide
+relevant methodological context, but differences in patient selection, imaging
+availability, endpoints, and holdout construction prevent direct numerical
+comparisons with our results. We therefore do not claim superiority to
+published systems from cross-paper metric comparisons. Reimplementation
+of suitable external baselines under the same patient split remains necessary.
+
+Predictive latent representations.. Predicting a target embedding rather than
+reconstructing the input image is a central idea in joint-embedding predictive
+learning (Assran et al., 2023). We use an exponential-moving-average target
+encoder to define latent states and supervise autonomous future predictions.
+The present objective is a supervised pCR loss combined with a masked multi-
+step latent-state loss. It does not activate a separate single-step teacher-forcing
+JEPA loss, image reconstruction loss, or latent-variance regularizer. This
+objective-level distinction matters when interpreting the internal experiment
+name NoJEPA: that control removes future-state supervision, while retaining
+the common fusion architecture.
+
+Attention and volumetric image representation.. Transformer attention pro-
+vides a flexible way to combine image tokens and contextual information
+(Vaswani et al., 2017). Compact convolutional representations can reduce the
+cost of processing volumetric MRI, and vector-quantized generative models
+provide one source of pretrained convolutional encoders (Esser et al., 2021).
+Here the pretrained codec contributes a continuous convolutional encoder.
+The quantizer and image decoder are bypassed, and the main experiments do
+not synthesize MRI volumes. The final attention weights summarize latent
+tokens that have already undergone spatial mixing; they are therefore not
+validated lesion segmentations or anatomical explanations.
+
+
+                                        4
+                            Baseline clinical data
+                            assigned-arm scenario
+                            assumed known at T0
+
+                                                                                   direct pCR features
+
+
+                                  Continuous
+                                                               Autonomous predictor             Forecast attention
+ Observed MRI prefix            MRI encoding
+                                                                    roll detached            terminal state + change
+T0 through landmark k      spatial tokens and fusion
+                                                                    current state               and direct features
+  three DCE phases              transition and
+                                                               forward to terminal T3           pCR probability pk
+                                 pCR queries
+                                                       current state
+                                        EMA update
+
+ Available future MRI
+                                EMA encoder                Masked future-state L1
+     development                                   targets
+                            observed current state         training-only objective
+     patients only
+                             and training targets                 weight 0.5
+  target branch only
+
+
+Figure 1: Conceptual overview of ForecastAttention. The prediction path uses
+observed information and an autonomously generated trajectory. The EMA encoder
+supplies the detached current state; future MRI enters only the training-target branch.
+The classifier combines direct pCR features with the attention-pooled terminal state and
+its change from the current state. The diagram summarizes information flow rather than
+every query or attention-mask connection.
+
+
+3. Method
+3.1. Longitudinal prediction problem
+    We consider prediction of pathological complete response (pCR) from a
+patient’s available magnetic resonance imaging (MRI) history during neoadju-
+vant treatment. Canonical examination stages are indexed by t ∈ {0, 1, 2, 3}.
+At a prediction landmark k ∈ {0, 1, 2}, the model receives only examinations
+acquired and available by that landmark. Let Xt ∈ R3×32×128×128 denote the
+                                             (k)
+processed examination at stage t, and let ot indicate whether this exami-
+nation is available in the observed prefix. Missing examinations retain their
+canonical stage rather than shifting later examinations forward. The three
+channels contain the pre-contrast acquisition, the first post-contrast acqui-
+sition, and a metadata-selected late post-contrast acquisition, respectively.
+The late acquisition is not assumed to have the same acquisition index for all
+examinations.
+    The observed information is
+                               n                              o        n                 o
+                                               (k)
+                        Hk = (Xt , t) : ot             = 1 ∪ ck , mk , ak , τk ,                                 (1)
+
+
+
+                                                         5
+where ck ∈ R4 contains the available clinical variables, mk their availability in-
+dicators, ak the available assigned treatment-arm category, and τk its declared
+availability stage. The clinical variables are age at screening, hormone-receptor
+positivity, HER2 positivity, and a binary MammaPrint variable. Age is stan-
+dardized using the current training partition; binary variables retain their
+original coding. Unavailable values are set to zero after standardization and
+accompanied by an explicit mask. The clinical token embeds the concatenated
+values and masks. Treatment conditioning uses 13 released arm categories and
+an additional unknown category. In this retrospective experiment, assigned
+arm and available baseline clinical variables are assumed to be known at T0.
+This is an assigned-arm scenario; the categorical input does not specify actual
+doses, treatment intervals, or treatment changes, and it does not support a
+causal interpretation.
+    The output is pk = Pr(y = 1 | Hk ), where y ∈ {0, 1} is the final pCR label.
+Future MRI is stored separately as training supervision and is excluded from
+the prediction input. T3 can provide a future representation target during
+training, but is never a prediction landmark in the reported T0–T2 protocol.
+
+3.2. Continuous MRI encoding and multimodal fusion
+    Each observed examination is encoded independently by an online visit
+encoder Eθ . Its convolutional front end shares the same single-channel
+weights across the three acquisition phases. Two stride-two three-dimensional
+convolutional stages, residual blocks, and group normalization produce 64
+continuous feature channels per phase at one-quarter input resolution along
+each spatial axis. The three phase-specific feature maps are concatenated,
+adaptively averaged to a 2 × 4 × 4 grid, and projected to a latent width of
+d = 768. This gives N = 32 spatial tokens per examination. Learned spatial
+positional embeddings and an eight-layer spatial Transformer then produce
+the visit representation Zt = Eθ (Xt ) ∈ RN ×d .
+    The convolutional front end is initialized from the same pre-existing VQ-
+GAN-style codec checkpoint for all compared models and is fine-tuned. Here,
+the model uses continuous features from the codec encoder before its compres-
+sion projection. It does not use discrete codebook assignments, a quantization
+objective, a decoder, or adversarial learning during downstream pCR train-
+ing. [TO COMPLETE: Document the original codec pretraining dataset,
+patient-level overlap with the present partitions, checkpoint provenance, and
+applicable redistribution terms.]
+
+
+                                        6
+    Stage embeddings distinguish examination times. Observed image tokens,
+one clinical token, and one treatment-arm token form the multimodal context.
+An eight-layer fusion Transformer additionally receives eight learned transition-
+query tokens for each of the three canonical transitions and four pCR-query
+tokens. Transition-query slots are retained at every landmark, independently
+of which future targets happen to be available. Their conditioning is derived
+entirely from the observed prefix. Context tokens interact bidirectionally;
+appended transition and pCR queries use a causal attention mask and can
+attend to the context and preceding query positions. Padding masks remove
+                                                                  (k)
+unobserved image tokens. This produces transition features Aj+1 ∈ R8×d for
+transitions j → j + 1, and pCR-query features Qk ∈ R4×d .
+    All spatial, fusion, and prediction Transformers use pre-normalization
+blocks, GELU feed-forward layers of width 3072, and dropout 0.3, following
+the attention-based architecture of Vaswani et al. (2017). Attention has 16
+heads with 64 channels per head: its internal width is therefore 1024, followed
+by projection back to the 768-dimensional residual stream. The clinical and
+treatment tokens condition forecasting through the shared fusion network
+rather than through a separately supplied future treatment trajectory.
+
+3.3. EMA target states and autonomous forecasting
+    A target visit encoder Eθ̄ is initialized as a copy of the online encoder and
+updated after each optimizer step by exponential moving average (EMA):
+
+                      θ̄ ← β θ̄ + (1 − β)θ,    β = 0.999.                     (2)
+
+The target encoder remains in evaluation mode and receives no gradients.
+It defines a common representation space for the observed initial state and
+available future targets,
+
+                       St = stopgrad(Eθ̄ (Xt )) ∈ RN ×d .                     (3)
+
+Encoding a future target in this branch supplies a loss target only; it does
+not make that examination available to the forecasting or classification input.
+    The predictor starts from the latest actually observed state in Hk and
+recursively advances to T3. For the reported landmarks, this initial state is
+Sk . At each future transition, it uses the corresponding transition features
+and its previously generated states. A history input additionally embeds the
+difference between a source state and its latest available predecessor, with
+a separate indicator for whether a predecessor exists. Observed history is
+
+                                        7
+used where available; after the landmark, the history is extended using model
+predictions. Thus, a missing future examination removes supervision at that
+time but does not interrupt the simulated transition sequence.
+    The prediction network is an eight-layer time-causal Transformer. Each
+transition block contains its eight transition tokens and 32 spatial source-state
+tokens, together with learned spatial and temporal embeddings. Tokens can
+interact within a block; attention between transition blocks is directed from
+earlier to later blocks. A learned root token remains available when some
+blocks are masked. The network predicts a residual state increment,
+                                                                
+                                               (k)
+           Sbj+1 = Sej + Gϕ,j Sek:j , Ak+1:j+1 , Dk:j ,                    j = k, . . . , 2,   (4)
+
+where Sek = Sk , subsequent Sej are generated states, and Dk:j denotes the
+available predecessor differences and validity indicators. The residual output
+projection is initialized to zero, so prediction initially preserves the source
+state. The transition features summarize the complete legal prefix even when
+only a subset of previous state differences is available to a particular prediction
+block.
+    Forecasts are generated autonomously during training and inference. A
+true future state never replaces a predicted predecessor. The classifier likewise
+uses this autonomous trajectory. The configuration includes no teacher-
+forced next-state loss in these experiments. EMA encoding of real future
+examinations is used exclusively to evaluate representation error against
+available targets.
+
+3.4. Prediction-conditioned pCR readout
+    The full model, ForecastAttention, combines a direct summary of
+the observed prefix with summaries of the predicted terminal state and
+its change from the current state. First, the four pCR-query features are
+averaged to obtain qk = 14 4r=1 Qk,r . For spatial token n, the forecast change
+                            P
+
+is ∆Sk,n = Sb3,n − Sk,n . A learned scalar scorer defines
+                                                                     
+                                        exp wT LN(Sb3,n )
+                          αk,n = PN                                      .                   (5)
+                                                T
+                                       u=1 exp w LN(S3,u )
+                                                    b
+
+The same weights pool terminal state and change,
+                          N
+                          X                                     N
+                                                                X
+                   vk =         αk,n Sb3,n ,             dk =         αk,n ∆Sk,n .             (6)
+                          n=1                                   n=1
+
+
+                                                     8
+The final prediction is
+                                                            
+                          pk = σ b + uT LN([qk ; vk ; dk ]) .                   (7)
+
+The scorer is initialized with w = 0, corresponding to uniform pooling at ini-
+tialization. Classification gradients propagate through the generated terminal
+state, predictor, and transition-conditioning pathway. The observed EMA
+reference state remains detached. The attention weights summarize trans-
+formed spatial tokens and should not be interpreted as validated anatomical
+localization or tumor segmentation.
+    For DirectReadout, pCR is instead predicted directly from qk using
+a layer-normalized linear head. Its future-state predictor is trained as an
+auxiliary task, but generated states are not explicit inputs to the pCR head.
+The direct head has input width d, whereas the full readout has width 3d.
+Their comparison therefore evaluates the complete forecast-conditioned read-
+out, including its state and change inputs and classifier width. An additional
+mean-pooling variant, when reported, retains the forecast-conditioned readout
+and replaces αk,n by 1/N .
+
+3.5. Training objective and matched ablations
+    Let By be the labeled patients in a training batch, and let mfuture
+                                                                 i,t    indicate
+an actually available future target for patient i after its sampled landmark.
+The pCR objective is unweighted binary cross-entropy,
+                            1 X
+             LpCR = −                 [yi log pi + (1 − yi ) log(1 − pi )] .    (8)
+                           |By | i∈By
+
+Define Mi = t mfuture   and B+ = {i : Mi > 0}. Autonomous representation
+             P
+                   i,t
+supervision is patient-equal:
+
+                             1 X 1 X future ∥Sbi,t − Si,t ∥1
+                 Lroll =                  m                  .                  (9)
+                           |B+ | i∈B+ Mi t i,t     Nd
+
+If a batch contains no future targets, this term is zero. Each available future
+examination has equal weight within a patient; the loss uses no horizon
+discount, lesion weighting, or fabricated target for a missing visit. Patients
+without future MRI still contribute pCR supervision.
+    The full model and DirectReadout minimize
+
+                                L = LpCR + 0.5Lroll .                          (10)
+
+                                            9
+NoJEPA uses the direct pCR head with L = LpCR . This historical con-
+trol name denotes removal of future-state auxiliary supervision, rather than
+removal of every transition-related module: it retains the shared fusion archi-
+tecture and transition-query slots. Consequently, DirectReadout versus
+NoJEPA isolates the added autonomous representation objective under the
+same direct readout, whereas ForecastAttention versus DirectRead-
+out assesses the added forecast-conditioned classification pathway. The latter
+comparison cannot isolate spatial attention alone.
+    All three models omit teacher-forced JEPA, image reconstruction, flow-
+matching, and variance-regularization losses. In particular, the future objec-
+tive reported here is autonomous state prediction, despite the JEPA-related
+implementation lineage. During training, patients are shuffled once per epoch
+and one actual available T0–T2 landmark is sampled uniformly for each
+patient. This balances patient contributions without treating a patient with
+more visits as several independently sampled patients. The same clinical
+endpoint supervises each sampled prefix; validation assesses all available
+eligible prefixes using patient-equal weighting.
+
+4. Dataset and preprocessing
+4.1. Cohort construction and clinical variables
+    We retrospectively analysed longitudinal breast dynamic contrast-
+enhanced MRI (DCE-MRI) from the public I-SPY2 and ACRIN-6698
+imaging resources Li et al. (2022); Newitt et al. (2021). Source imaging
+identifiers were linked to research identifiers using the accompanying official
+identity mapping, and outcomes and baseline clinical variables were obtained
+from the official I-SPY2 Imaging Cohort 1 clinical spreadsheet. The final
+cohort comprised 976 patients with 3,641 usable examinations. Native
+imaging identifiers belonged to the ISPY2 and ACRIN-6698 namespaces for
+712 and 264 patients, respectively; these identifiers were mapped to the same
+clinical release and do not define independent development and external
+validation cohorts. The official collection pages identify the source imaging
+and clinical release as CC BY 4.0. [TO COMPLETE: Confirm terms for
+redistributing derived assets and document the applicable ethics approval or
+waiver and original consent arrangements.]
+    Eligibility required an actual baseline examination, an available binary
+pCR label, usable baseline registered image assets, and a nonempty baseline
+localisation produced by the existing MAMA-MIA segmentation workflow. Of
+
+                                      10
+980 clinically matched source candidates, three lacked a baseline examination
+and one had an empty or unavailable predicted baseline localisation. Their
+exclusion yielded 976 patients and 3,642 candidate examinations. One post-
+treatment examination was subsequently marked unavailable because its
+saved within-examination phase transforms displaced the postcontrast images
+outside the prescribed baseline crop. The patient’s earlier examinations were
+retained, leaving 3,641 usable examinations. Missing follow-up examinations
+did not cause patient exclusion. No additional admission thresholds based on
+normalised cross-correlation, field-of-view ratios, functional tumour volume,
+or the availability of an accepted adjacent longitudinal pair were applied.
+    The endpoint was the released binary pCR field: 313 patients were labelled
+positive and 663 negative. [TO COMPLETE: Verify and state the release-
+specific pathological definition of pCR, including breast and nodal criteria
+and the handling of in-situ disease; do not infer this definition from the
+binary column alone.] Baseline covariates were age at screening, hormone-
+receptor (HR) status, HER2 status, and the released binary MammaPrint
+indicator. Age was available for 973 patients; all three binary covariates
+were available for the entire cohort. The official assigned treatment arm,
+represented by 13 categories, was also supplied to the model. The current
+experiments use an assigned-arm scenario: the assigned arm and available
+baseline covariates are assumed known at baseline. The spreadsheet does
+not establish prospective allocation timestamps, doses, cycle-level exposure,
+or interval treatment schedules, and the model does not reconstruct these
+quantities.
+    Examinations were indexed by the canonical study stages T0–T3 rather
+than continuous elapsed time. Availability at these stages was 976, 935,
+875, and 855 patients, respectively (Table 1); 803 patients had all four
+examinations and 861 had T0–T2. The nominal source protocol acquired T0
+before randomization, T1 after three weeks of the first regimen (paclitaxel with
+or without an experimental agent), T2 between paclitaxel and anthracycline
+regimens, and T3 after four cycles of anthracycline treatment and before
+surgery (Li et al., 2022). Because T0 MRI preceded randomization, supplying
+the eventual assigned arm at T0 is a retrospective conditional scenario, rather
+than a prospectively available predictor before treatment allocation. The
+source protocol used 1.5 or 3.0 Tesla scanners with dedicated breast coils
+and required the same scanner configuration within a patient. These are
+nominal protocol specifications, not a patient-level audit of timing or scanner
+compliance. Twenty-three patients had T0 only and remained eligible for
+
+                                      11
+Table 1: Characteristics of the analysed cohort. Development statistics count each of the
+801 development patients once, rather than pooling overlapping training folds. Age is
+reported as mean ± sample standard deviation among patients with observed age; other
+entries are counts.
+             Characteristic             All     Development       Holdout
+             Patients                   976              801           175
+             pCR positive               313              257            56
+             pCR negative               663              544           119
+             Age (years)        48.7 ± 10.5      48.7 ± 10.6   48.9 ± 10.2
+             Missing age                  3                3             0
+             HR positive                533              434            99
+             HER2 positive              240              195            45
+             Available T0               976              801           175
+             Available T1               935              760           175
+             Available T2               875              700           175
+             Available T3               855              692           163
+
+
+pCR supervision. Their unavailable future MRI targets were masked, and no
+synthetic follow-up images were substituted. Model inputs and evaluation
+landmarks were restricted to T0, T1, and T2; a real T3 examination, when
+available in the training partition, could provide a future-state target. [TO
+COMPLETE: Report the actual examination intervals, acquisition centres,
+scanner distribution, and sequence-parameter ranges for the final analysed
+cohort.]
+
+4.2. Patient partitioning and evaluation scope
+    The cohort was divided into 801 development patients and a fixed internal
+holdout of 175 patients, including 56 pCR-positive patients. All holdout
+patients had actual T0, T1, and T2 examinations, allowing matched longitu-
+dinal evaluation; 163 also had T3. The holdout retained 139 patients with
+complete T0–T2 observations from the historical benchmark and added 36
+eligible patients. Additional patients were selected using outcome quotas
+and a fixed baseline-clinical distribution balancing rule with split seed 2026,
+without using model predictions or performance. Development folds were
+stratified by pCR and examination-availability pattern; rare joint strata were
+combined within the same pCR class. Each development patient appeared in
+validation exactly once across the five folds. Fold 1 contained 640 training
+
+
+                                           12
+and 161 validation patients; the remaining folds each contained 641 training
+and 160 validation patients. Training, validation, and holdout identities were
+disjoint within each fold, and the same holdout was used for all five trained
+models.
+    This partition is an internal downstream benchmark. In particular, 29 of
+the 36 added holdout patients had belonged to the development population of
+an earlier experiment, so earlier trained models cannot be treated as held out
+on the entire new set. The present downstream models were trained using
+the new fold definitions. Patient independence of the supplied codec and
+segmentation pretraining checkpoints relative to the final holdout has not yet
+been established; that provenance must be audited before stronger claims of
+end-to-end independence. The complete-examination holdout eligibility also
+restricts inference about patients with missing early follow-up examinations.
+
+4.3. Registration, fixed localisation, and normalisation
+    Within each examination, postcontrast phases were registered to the
+precontrast reference. Follow-up examinations were aligned to the patient’s
+T0 reference using the saved longitudinal transforms, retaining a rigid fallback
+when the final deformable candidate was not usable. Baseline localisation used
+the existing MAMA-MIA nnU-Net prediction on the native first-postcontrast
+examination Garrucho et al. (2025). The centre of the largest 26-connected
+predicted component defined a fixed baseline crop, which was reused at every
+actual follow-up. Follow-up segmentation and follow-up-driven recentering
+were not used.
+    Each examination was represented by three channels: the precontrast
+phase, the first postcontrast phase, and the late phase explicitly specified in
+the examination metadata. The late channel was not selected by assuming a
+fixed phase number or taking the last available phase. Images were resampled
+to 32 × 128 × 128 voxels with spacing 2.0 × 0.7032 × 0.7032 mm in the slice
+and two in-plane dimensions, approximately covering 64 × 90 × 90 mm. Linear
+interpolation was used for MRI intensities and nearest-neighbour interpolation
+for masks and acquisition support, with zero padding outside the acquired
+field of view. The localisation mask determined the crop; it was not a
+contemporaneous ground-truth tumour segmentation or a future observation
+supplied to the classifier.
+    Native metadata, baseline mask headers, registered reference grids, and
+saved transforms were maintained as matched versions. Explicit array-index
+mappings, rather than placeholder NIfTI affines, defined sampling positions.
+
+                                      13
+The exported arrays were checked for finite values, consistent coordinate
+mapping, and numerical agreement after compressed storage and readback.
+These checks establish data and geometry consistency but do not establish
+anatomical registration or segmentation accuracy. The fixed crop partly
+truncated the largest predicted baseline component for 85 patients; these
+patients were retained and the limitation was recorded.
+    Raw cropped intensities were stored once and shared across folds. For each
+fold, a single intensity mean and population standard deviation were fitted to
+nonzero precontrast foreground voxels from every unique actual examination
+of that fold’s training patients. The same scalar transform was applied once
+to the foreground of all three channels, stages, and partitions; background and
+padding remained zero. Validation and holdout images were excluded from
+fitting. Age normalisation was likewise fitted to observed training-patient
+values; HR, HER2, and MammaPrint retained their official binary coding,
+with missingness represented explicitly.
+
+5. Experimental design
+5.1. Development protocol and landmark evaluation
+    The 801 development patients were partitioned into five patient-level folds.
+Fold 1 used 640 training and 161 validation patients; folds 2–5 each used
+641 training and 160 validation patients. The same 175-patient holdout was
+evaluated by every fold model and every variant. Thus the five test evaluations
+per variant are repeated evaluations of overlapping trained models on the
+same patients, rather than five independent test cohorts. Patient identities
+were disjoint between training, validation, and holdout within the current
+split.
+    At each training epoch, a patient contributed one randomly selected
+available T0, T1, or T2 prefix. Only MRI observations available at or before
+the selected landmark were classifier inputs. Later observed visits, including
+T3, could supply latent targets for the auxiliary loss on training patients.
+Missing targets were masked. The 23 patients with only T0 remained eligible
+for pCR training but supplied no future-state loss. At evaluation, all three
+landmarks were evaluated for the 175 holdout patients, each of whom had
+T0, T1, and T2. T3 was not an evaluation landmark and was not used as
+observed input for these predictions.
+
+
+
+                                      14
+5.2. Model comparisons
+    The principal comparison comprises three variants trained with seed44 and
+the same five development folds. NoJEPA uses direct pCR readout and a
+zero future-state loss weight. DirectReadout uses the same direct readout
+with a future-state loss weight of 0.5. ForecastAttention retains that
+auxiliary weight and replaces the direct readout with a concatenation of direct
+pCR features, attention-pooled predicted terminal state, and attention-pooled
+predicted change. All variants retain the shared image encoder, clinical inputs,
+assigned-arm encoding, fusion architecture, and training schedule.
+    The DirectReadout–NoJEPA contrast most directly tests adding
+future-state supervision. The ForecastAttention–DirectReadout
+contrast jointly changes the use of forecast features, spatial pooling, and
+classifier input width. It cannot isolate attention alone. For that purpose, the
+supplementary ForecastMean comparison uses forecast readout with mean
+spatial pooling and otherwise matches the forecast-attention configuration. All
+reported models in this draft use seed44. No VQ-latent reconstruction-head,
+change-weighted-loss, or state-conditioned-head variants are included.
+
+5.3. Implementation and optimization
+    The network uses a model width of 768, eight layers in each of the spatial
+encoder, multimodal fusion module, and predictor, 16 attention heads with 64
+dimensions per head, and feed-forward width 3,072. The 1,024-dimensional
+concatenated attention-head representation is projected back to the 768-
+dimensional residual stream. The spatial token grid is 2 × 4 × 4. The
+configuration uses eight state queries, four pCR queries, dropout 0.3, and an
+EMA coefficient of 0.999. The pretrained convolutional encoder is fine-tuned
+jointly with the remaining network. Its training-patient provenance requires
+additional documentation, as discussed in Section 7.4.
+    We use AdamW (Loshchilov and Hutter, 2019) with an initial base learning
+rate of 10−4 for both the encoder and the main network, weight decay 0.05,
+batch size 16, no gradient accumulation, and gradient-norm clipping at 1.0.
+Training uses BF16 mixed precision. A ten-epoch warm-up increases the
+learning rate from 10−5 to 10−4 , followed by cosine decay to 10−6 at epoch
+100. Training is capped at 200 epochs, with early stopping after 50 epochs
+without improvement. The best checkpoint is selected independently in each
+fold using validation patient-equal-prefix F1 at threshold 0.5. This is an F1
+selection protocol, even though AUROC is a principal reporting measure.
+
+
+                                      15
+Deterministic execution was not enabled, so a fixed seed does not imply
+bitwise reproducibility across hardware or software changes.
+
+5.4. Metrics, aggregation, and patient-level uncertainty
+    We report AUROC, average precision (AP), and F1 at threshold 0.5 at each
+landmark. AP is calculated as the non-interpolated average precision statistic.
+To assess probability quality, we also report negative log-likelihood (NLL), the
+Brier score, and expected calibration error (ECE) with ten equal-width prob-
+ability bins. No test-set threshold optimization or probability recalibration
+was performed. The positive prevalence of the holdout is 56/175 = 0.32.
+    Let M denote a metric, pif ℓ the probability for patient i from fold model
+f at landmark ℓ, and yi the pCR label. Our landmark summary is
+                       5                                        2
+                   1X                                      1X
+            Mℓ =          M {yi , pif ℓ }175
+                                         i=1 ,   M macro =         M ℓ.    (11)
+                   5 f =1                                    3 ℓ=0
+
+We do not average fold probabilities before computing M . Five-fold metric
+means and probability-ensemble metrics are distinct estimands. Similarly, a
+mean F1 across landmarks is not recomputed after pooling all landmark rows.
+    For exploratory uncertainty estimates, we draw 2,000 bootstrap samples
+of the 175 patients with replacement. Each patient draw is shared across
+all fold models, variants, and landmarks, preserving pairing and repeated
+observations. Within each resample, metrics are computed separately per fold
+and then averaged exactly as above. Percentile 2.5th and 97.5th quantiles form
+the reported intervals. These intervals condition on the trained seed44 models
+and the selected analysis; they do not capture uncertainty from retraining,
+choosing a seed, or selecting a model after results were inspected. We do not
+use fold-level or landmark-level values as independent patient samples, and
+we do not make multiplicity-adjusted significance claims.
+
+5.5. Scope of the selected-seed analysis
+    The choice of seed44 for this manuscript was made retrospectively after
+results from multiple training seeds were available. It was not a prospectively
+registered seed or a selection made without knowledge of the holdout results.
+Reporting the same seed for all models preserves a matched comparison within
+that seed, but it does not remove selection bias or establish robustness across
+training randomness. The analysis therefore evaluates an exploratory model
+configuration rather than providing a confirmatory performance estimate.
+
+                                         16
+Table 2: Seed44 performance on the fixed 175-patient internal holdout. Values are means of
+five separately evaluated fold models; AP denotes average precision and F1 uses a threshold
+of 0.5. Macro averages the three landmarks. These are not probability-ensemble scores.
+            Model                  Landmark      AUROC           AP        F1
+            NoJEPA                 T0              0.7209    0.5749    0.5441
+            NoJEPA                 T1              0.7219    0.5815    0.5458
+            NoJEPA                 T2              0.7230    0.5812    0.5411
+            NoJEPA                 Macro           0.7219    0.5792    0.5437
+            DirectReadout          T0              0.7304    0.5854    0.5447
+            DirectReadout          T1              0.7306    0.5891    0.5485
+            DirectReadout          T2              0.7299    0.5920    0.5685
+            DirectReadout          Macro           0.7303    0.5888    0.5539
+            ForecastAttention      T0              0.7294    0.5924    0.5334
+            ForecastAttention      T1              0.7381    0.6012    0.5563
+            ForecastAttention      T2              0.7421    0.6033    0.5510
+            ForecastAttention      Macro           0.7365    0.5990    0.5469
+
+
+A final study should lock model selection before evaluating an independent
+cohort and report a prespecified multi-seed sensitivity analysis.
+
+6. Results
+6.1. Landmark-specific prediction
+    All 15 principal seed44 runs completed training and formal evaluation.
+The supplementary mean-pooling comparison contributed five additional
+completed runs. Every landmark evaluation contained the same 175 holdout
+patients and 56 positive labels. The aggregate results in Table 2 were rebuilt
+from the saved prediction records and checked against the corresponding
+evaluation reports.
+    ForecastAttention attained AUROCs of 0.7294, 0.7381, and 0.7421
+at T0, T1, and T2, respectively. Relative to NoJEPA, the absolute AUROC
+differences were +0.0084, +0.0162, and +0.0191. AP increased from 0.5924
+at T0 to 0.6033 at T2. The three-landmark mean AUROC/AP/F1 was
+0.7365/0.5990/0.5469, compared with 0.7219/0.5792/0.5437 for NoJEPA
+and 0.7303/0.5888/0.5539 for DirectReadout.
+    The full model did not lead every metric at every landmark. At T0,
+DirectReadout had a slightly higher AUROC than ForecastAttention
+
+                                            17
+                                                                                                          0.570
+                     NoJEPA
+        0.740        DirectReadout                                                                        0.565
+                                                                  0.600
+                     ForecastAttention
+                                                                                                          0.560
+
+
+
+
+                                              Average precision
+                                                                  0.595
+        0.735
+                                                                                                          0.555
+
+
+
+
+                                                                                              F1 at 0.5
+AUROC
+
+
+
+
+                                                                  0.590
+                                                                                                          0.550
+        0.730
+                                                                  0.585                                   0.545
+
+        0.725                                                     0.580                                   0.540
+
+                                                                                                          0.535
+                                                                  0.575
+        0.720
+                T0                T1     T2                               T0        T1   T2                       T0   T1   T2
+
+
+
+
+Figure 2: Landmark-specific seed44 performance on the internal holdout. Each point
+averages metrics of five separately evaluated fold models. All landmarks use the same 175
+patients. Lines connect landmark summaries and do not imply a statistically established
+temporal trend.
+
+
+(0.7304 versus 0.7294). DirectReadout also had a higher T0 F1 (0.5447
+versus 0.5334) and the highest T2 F1 (0.5685 versus 0.5510). Its three-
+landmark mean F1 exceeded that of ForecastAttention by 0.0070. Thus
+the discrimination improvement of the forecast model did not translate into
+a uniform advantage at a fixed decision threshold.
+
+6.2. Auxiliary supervision and forecast readout
+    Adding future-state supervision while retaining direct readout increased
+mean AUROC by 0.0084, AP by 0.0097, and F1 by 0.0102 for DirectRead-
+out relative to NoJEPA. Introducing the complete forecast-attention readout
+produced a further mean AUROC increase of 0.0062 and an AP increase of
+0.0101 relative to DirectReadout, accompanied by a mean F1 decrease of
+0.0070. These two comparisons address different changes: the first isolates
+the auxiliary loss more closely, while the second changes both the classifier
+information pathway and its input representation.
+    The supplementary pooling comparison is provided in Table A.4. Relative
+to ForecastMean, ForecastAttention increased mean AUROC by
+0.0017, AP by 0.0144, and F1 by 0.0011. At T0, however, its AUROC was
+lower by 0.0023 and its F1 was lower by 0.0113. The seed44 evidence therefore
+supports a modest descriptive aggregate difference between pooling choices,
+rather than a uniform attention advantage.
+
+6.3. Longitudinal change and calibration
+    The observed T2–T0 AUROC difference was +0.0127 for ForecastAt-
+tention, compared with +0.0021 for NoJEPA and −0.0005 for Direc-
+
+                                                                               18
+Table 3: Calibration and probability accuracy, averaged over landmarks and five fold
+models for seed44. Lower is better. ECE uses ten equal-width bins.
+                 Model                    NLL      Brier     ECE
+                 NoJEPA            0.5974 0.2069 0.1310
+                 DirectReadout     0.5995 0.2073 0.1377
+                 ForecastAttention 0.6149 0.2147 0.1622
+
+
+tReadout. The T1 value of ForecastAttention lay between its T0
+and T2 values. Because the same patients were evaluated at every landmark,
+these differences are not caused by changes in the evaluated patient set. They
+nevertheless reflect this trained configuration and do not establish that each
+individual’s prediction improved or that added visits would be beneficial in
+another cohort.
+    Probability quality showed an unfavorable trade-off (Table 3). Forecas-
+tAttention had higher mean NLL (0.6149), Brier score (0.2147), and ECE
+(0.1622) than NoJEPA (0.5974, 0.2069, and 0.1310, respectively). Conse-
+quently, the AUROC and AP results should not be interpreted as improved
+calibrated risk estimation. No post-hoc calibration model was fitted in this
+analysis.
+
+6.4. Conditional patient-level uncertainty
+    The 95% patient-bootstrap interval for mean AUROC was [0.6647, 0.8062]
+for ForecastAttention and [0.6485, 0.7966] for NoJEPA. The paired
+mean AUROC difference between these models was +0.0146, with interval
+[−0.0062, +0.0369]. The corresponding AP and F1 differences were +0.0198
+[−0.0161, +0.0597] and +0.0032 [−0.0339, +0.0398]. Principal paired intervals
+included zero (Table A.5), indicating that the observed differences remain
+uncertain even conditional on the fixed models. These intervals additionally
+omit the retrospective seed-selection uncertainty described in Section 5.
+
+7. Discussion
+7.1. What the matched comparisons establish
+    The seed44 analysis shows a descriptive increase in mean AUROC and AP
+as the model progresses from direct prediction without future-state supervision
+to auxiliary-supervised direct prediction and then to forecast-attention readout.
+
+                                        19
+The first contrast is consistent with future-state supervision encouraging an
+observed-history representation that is useful for pCR prediction. The second
+is consistent with additional predictive value in a classifier that receives
+the forecast state and its change. However, the latter comparison also
+changes classifier width and pooling, so it cannot attribute the difference
+exclusively to a more accurate latent forecast. The supplementary mean-
+pooling control narrows the pooling question but exhibits only a small mean
+AUROC difference.
+    This distinction also changes how the model should be described. The
+main experiments do not reconstruct future MRI for classification and do
+not establish that an imagined image reproduces a patient’s future anatomy.
+Rather, an auxiliary latent objective regularizes a representation, and the full
+classifier reads a predicted embedding. Moreover, the direct control named
+NoJEPA retains the common fusion backbone and its transition queries. It
+is an ablation of future-state supervision, not proof that every world-model-
+related architectural component has been removed. Describing the actual
+information paths is more informative than relying on the experiment labels
+alone.
+
+7.2. Longitudinal prediction and the role of treatment context
+    The full model’s AUROC increased across T0–T2 in the selected seed,
+and the larger differences relative to the direct control occurred at later
+landmarks. One plausible explanation is that an observed response trajectory
+helps condition later-state forecasts. Another is that the additional forecast
+features or classifier capacity suit the later-prefix distribution. The current
+experiments do not distinguish these explanations. Forecast-quality analysis,
+frozen-forecast controls, parameter-matched direct classifiers, and prospective
+landmark-specific validation would help determine the mechanism.
+    Treatment is represented as an assigned-arm scenario assumed known at
+baseline. In the source protocol, T0 MRI preceded randomization; therefore,
+using the eventual assignment with T0 MRI is a retrospective conditional
+analysis and cannot be interpreted as a deployable prediction before allocation.
+The input does not encode the patient’s verified delivered dose, dose reductions,
+actual cycle timing, adherence, or later treatment changes. Consequently, the
+framework should be interpreted as response prediction conditional on an
+encoded assignment, not as a simulator for treatment intervention. Comparing
+predictions under different assigned-arm tokens would not estimate causal
+
+
+                                       20
+treatment effects without additional assumptions, appropriate treatment data,
+and a separate causal analysis.
+
+7.3. Discrimination is not calibrated clinical utility
+    The forecast-attention model’s improved AUROC and AP coexisted with
+lower mean F1 than auxiliary-supervised direct readout and worse NLL, Brier
+score, and ECE than the control without future-state supervision. These
+discrepancies are expected to matter if probabilities are used to support
+decisions. AUROC measures ranking over thresholds, while F1 at 0.5 depends
+on a particular operating point; neither alone certifies useful clinical risk
+estimates. The model was selected by validation F1, not by a prespecified
+utility function. Independent assessment of calibration, clinically motivated
+operating points, and decision consequences is needed before suggesting a role
+in patient management. The attention maps also require separate validation
+before being interpreted as anatomical explanations.
+
+7.4. Limitations and requirements for a confirmatory study
+    The most immediate limitation is retrospective seed selection. Seed44 was
+chosen for manuscript presentation after multiple-seed results were available,
+including holdout results. A matched seed does not make this selection
+prospective. Patient bootstrapping quantifies variation in the evaluated
+patient sample conditional on the trained models, but cannot account for
+selection among seeds or the randomness of retraining. All reported model
+comparisons and intervals should therefore be considered exploratory. A
+confirmatory study should lock the model, seed policy, endpoints, and analysis
+before evaluating new patients.
+    The second limitation concerns the evaluation cohort and upstream in-
+dependence. The holdout is an internal downstream split, not an external
+institution or independent prospective cohort. Twenty-nine of its patients had
+belonged to a development split in an earlier experimental lineage. Current
+supervised training uses the new patient-disjoint folds and does not warm-start
+from those earlier pCR models. Nevertheless, the patient-level overlap of the
+pretrained codec and localization-segmentation development data with the
+current holdout has not been fully established. This unresolved provenance
+prevents a claim that the complete pipeline has been assessed on entirely
+unseen patients at every stage.
+    Third, the fixed crop and preprocessing introduce constraints. A T0-
+derived localization window is used for all visits, and some predicted lesion
+
+                                      21
+components extend beyond the fixed field of view. Geometry and array-
+consistency checks do not substitute for anatomical review of segmentation
+or registration. The spatial window may underrepresent multifocal disease,
+chest-wall extent, or changes outside the crop. Complete T0–T2 availability
+is also required for holdout inclusion, whereas the development set retains
+incomplete histories. Performance may therefore differ for patients with
+missing interim MRI, and the missingness process may itself be associated
+with clinical factors.
+    Fourth, the present empirical comparison comprises matched internal
+variants. It does not yet establish performance against clinical-only models,
+conventional imaging biomarkers, independent longitudinal architectures, or
+contemporary published methods under the same split. Patient-subgroup
+analysis, scanner and site stratification, subtype-specific sensitivity, and the
+relationship between forecast error and classification error are also incomplete.
+The relatively small holdout, with 56 positive outcomes, limits the precision
+of those analyses and the principal paired estimates.
+    Finally, several reporting details still require confirmation from original
+clinical documentation: the exact pCR pathology definition and assessment
+workflow, actual patient-level acquisition intervals and treatment exposure,
+clinical-data adjudication, and the applicable ethics determination. The
+nominal stage timing is documented, but adherence and interval distributions
+have not yet been audited. These are explicit outstanding items in this draft
+rather than assumptions filled from common practice. Independent external
+validation, complete pretraining provenance, suitable external baselines, and
+a prespecified analysis would materially strengthen the evidence for a final
+Medical Image Analysis submission.
+
+8. Conclusion
+    We investigated a latent forecasting framework for longitudinal pCR
+prediction from breast MRI using matched direct and forecast-based controls.
+In the retrospectively selected seed44 analysis, forecast-attention readout
+produced the highest mean AUROC and AP among the principal variants,
+while auxiliary-supervised direct readout retained the highest mean F1. The
+complete model’s calibration was worse, and paired patient-bootstrap intervals
+included zero for the principal differences. The findings motivate further study
+of future-state supervision and forecast-based readout, with prospective model
+
+
+                                       22
+selection, stronger baselines, complete upstream provenance, and independent
+validation required before a confirmatory or clinical-use claim.
+
+Data and code availability
+   Source imaging collections are available through The Cancer Imaging
+Archive, subject to their applicable access conditions and licenses. The present
+derived manifests, processing lineage, and evaluation outputs are retained
+locally. [TO COMPLETE: Specify the public repository, versioned release,
+permitted derived-data artifacts, and access mechanism before submission;
+no public code-release claim is made in this draft.]
+
+Ethics approval and consent
+    [TO COMPLETE: Provide the original studies’ ethics and consent state-
+ments and the local institutional determination for this secondary analysis,
+including an approval or exemption identifier where applicable. Public avail-
+ability alone is not an ethics approval.]
+
+Funding
+   [TO COMPLETE: Provide grant numbers and the funders’ roles, or
+confirm that no specific funding was received.]
+
+Declaration of competing interest
+   [TO COMPLETE: Obtain and insert the actual declarations from every
+author.]
+
+CRediT authorship contribution statement
+   [TO COMPLETE: Provide author names and agreed contributions; no
+authorship or contributions have been inferred.]
+
+
+
+
+                                      23
+Table A.4: Supplementary pooling comparison using seed44. ForecastMean and Forecas-
+tAttention share forecast-based pCR readout and future-state supervision, and differ in
+spatial pooling.
+         Model                   Landmark      AUROC           AP        F1
+         ForecastMean            T0              0.7317 0.5812 0.5446
+         ForecastMean            T1              0.7367 0.5869 0.5523
+         ForecastMean            T2              0.7361 0.5856 0.5405
+         ForecastMean            Macro           0.7348 0.5845 0.5458
+         ForecastAttention       T0              0.7294 0.5924 0.5334
+         ForecastAttention       T1              0.7381 0.6012 0.5563
+         ForecastAttention       T2              0.7421 0.6033 0.5510
+         ForecastAttention       Macro           0.7365 0.5990 0.5469
+
+
+Declaration of generative AI and AI-assisted technologies in the
+manuscript preparation process
+   During preparation of this initial draft, OpenAI Codex was used to
+organize source evidence, generate reproducible aggregate tables and figures,
+and assist with English drafting. [TO COMPLETE: All authors must review
+and edit the manuscript, verify every statement and reference, and finalize
+the disclosure under the journal’s current policy before submission.]
+
+Appendix A. Supplementary pooling and uncertainty analyses
+    The supplementary ForecastMean uses the same seed44, folds,
+observed-history protocol, future-state objective, and forecast classifier
+feature groups as ForecastAttention, replacing spatial attention with
+mean pooling. It is reported separately from the three principal variants
+requested for the main analysis.
+
+Appendix B. Reproducibility and reporting items to complete
+   The accompanying source package includes aggregate result CSV files,
+source-report hashes, the bootstrap procedure, figure-generation code, and a
+build script. It does not include patient identifiers, patient-level prediction
+rows, MRI volumes, or model checkpoints. All four model variants in this
+
+
+                                          24
+Table A.5: Exploratory paired patient-bootstrap intervals for three-landmark mean dif-
+ferences (2,000 shared patient resamples). Intervals condition on the fixed seed44 models;
+they exclude retraining and seed-selection uncertainty.
+   Comparison                               Metric         Difference [95% interval]
+   DirectReadout – NoJEPA                   AUROC       +0.0084 [-0.0051, +0.0219]
+   DirectReadout – NoJEPA                   AP          +0.0097 [-0.0128, +0.0315]
+   DirectReadout – NoJEPA                   F1          +0.0102 [-0.0118, +0.0325]
+   ForecastAttention – NoJEPA               AUROC       +0.0146 [-0.0062, +0.0369]
+   ForecastAttention – NoJEPA               AP          +0.0198 [-0.0161, +0.0597]
+   ForecastAttention – NoJEPA               F1          +0.0032 [-0.0339, +0.0398]
+   ForecastAttention – DirectReadout        AUROC       +0.0062 [-0.0129, +0.0268]
+   ForecastAttention – DirectReadout        AP          +0.0101 [-0.0244, +0.0482]
+   ForecastAttention – DirectReadout        F1           -0.0070 [-0.0396, +0.0237]
+
+
+package use training seed44; the bootstrap random-number seed controls
+patient resampling only.
+    [TO COMPLETE: Before submission, complete the author and ethics
+statements; verify the pCR endpoint and visit timing; document codec and
+segmentation training-patient provenance; add matched external baselines
+and the locked multi-seed sensitivity analysis; audit external-cohort inde-
+pendence; and confirm the journal’s current submission and anonymization
+requirements.]
+
+References
+Assran, M., Duval, Q., Misra, I., Bojanowski, P., Vincent, P., Rabbat, M.,
+  LeCun, Y., Ballas, N., 2023. Self-Supervised Learning from Images with a
+  Joint-Embedding Predictive Architecture, in: 2023 IEEE/CVF Conference
+  on Computer Vision and Pattern Recognition (CVPR), pp. 15619–15629.
+  URL: https://doi.org/10.1109/cvpr52729.2023.01499, doi:10.1109/
+  cvpr52729.2023.01499.
+Cortazar, P., Zhang, L., Untch, M., Mehta, K., Costantino, J.P., Wolmark, N.,
+  Bonnefoi, H., Cameron, D., Gianni, L., Valagussa, P., Swain, S.M., Prowell,
+  T., Loibl, S., Wickerham, D.L., Bogaerts, J., Baselga, J., Perou, C., Blumen-
+  thal, G., Blohmer, J., Mamounas, E.P., Bergh, J., Semiglazov, V., Justice,
+  R., Eidtmann, H., Paik, S., Piccart, M., Sridhara, R., Fasching, P.A., Slaets,
+  L., Tang, S., Gerber, B., Geyer, C.E., Pazdur, R., Ditsch, N., Rastogi, P.,
+
+                                           25
+                                                                                                                                          0.65
+              0.800                                                          0.70
+
+              0.775                                                                                                                       0.60
+                                                                             0.65
+Macro AUROC
+
+
+
+
+              0.750
+
+
+
+
+                                                                  Macro AP
+
+
+
+
+                                                                                                                               Macro F1
+                                                                             0.60                                                         0.55
+              0.725
+
+              0.700                                                          0.55
+                                                                                                                                          0.50
+              0.675                                                          0.50
+
+              0.650                                                                                                                       0.45
+                                                                             0.45
+                     PA               ut                   tion                   PA               ut                   tion                     PA               ut                      ion
+                NoJE              ad o                 tten                  NoJE              ad o                 tten                  NoJE                ad o                    ent
+                              ctRe                 astA                                    ctRe                 astA                                      ctRe             c as
+                                                                                                                                                                               tAtt
+                          Dire                 c                                       Dire                 c                                         Dire
+                                           Fore                                                         Fore                                                           Fore
+
+
+
+
+Figure A.3: Three-landmark mean metrics with exploratory 95% percentile patient-
+bootstrap intervals. All 2,000 resamples preserve pairing across models, folds, and land-
+marks. Intervals describe patient-sampling uncertainty conditional on the trained seed44
+models and do not account for seed selection or retraining.
+
+
+              Eiermann, W., von Minckwitz, G., 2014. Pathological complete response
+              and long-term clinical benefit in breast cancer: the CTNeoBC pooled anal-
+              ysis. Lancet (London, England) 384, 164–172. URL: https://doi.org/10.
+              1016/S0140-6736(13)62422-8, doi:10.1016/S0140-6736(13)62422-8.
+
+Du, S., Xie, W., Gao, S., Zhao, R., Wang, H., Tian, J., Liu, J., Liu, Z.,
+ Zhang, L., 2025. Early prediction of neoadjuvant therapy response in
+ breast cancer using MRI-based neural networks: data from the ACRIN
+ 6698 trial and a prospective Chinese cohort. Breast cancer research : BCR
+ 27, 52. URL: https://doi.org/10.1186/s13058-025-02009-6, doi:10.
+ 1186/s13058-025-02009-6.
+
+Esser, P., Rombach, R., Ommer, B., 2021. Taming Transformers for High-
+  Resolution Image Synthesis, in: Proceedings of the IEEE/CVF Conference
+  on Computer Vision and Pattern Recognition, pp. 12873–12883. URL:
+  https://openaccess.thecvf.com/content/CVPR2021/html/Esser_
+  Taming_Transformers_for_High-Resolution_Image_Synthesis_CVPR_
+  2021_paper.html.
+
+Garrucho, L., Kushibar, K., Reidel, C.A., Joshi, S., Osuala, R., Tsirikoglou,
+ A., Bobowicz, M., Del Riego, J., Catanese, A., Gwoździewicz, K., Cosaka,
+ M.L., Abo-Elhoda, P.M., Tantawy, S.W., Sakrana, S.S., Shawky-Abdelfatah,
+ N.O., Salem, A.M.A., Kozana, A., Divjak, E., Ivanac, G., Nikiforaki, K.,
+ Klontzas, M.E., García-Dosdá, R., Gulsun-Akpinar, M., Lafcı, O., Mann,
+ R., Martín-Isla, C., Prior, F., Marias, K., Starmans, M.P.A., Strand, F.,
+
+                                                                                             26
+  Díaz, O., Igual, L., Lekadir, K., 2025. A large-scale multicenter breast
+  cancer DCE-MRI benchmark dataset with expert segmentations. Scientific
+  data 12, 453. URL: https://doi.org/10.1038/s41597-025-04707-4,
+  doi:10.1038/s41597-025-04707-4.
+
+Han, L., Tan, T., Zhang, T., Huang, Y., Wang, X., Gao, Y., Teuwen, J.,
+ Mann, R., 2024. Synthesis-based imaging-differentiation representation
+ learning for multi-sequence 3D/4D MRI. Medical image analysis 92, 103044.
+ URL: https://doi.org/10.1016/j.media.2023.103044, doi:10.1016/j.
+ media.2023.103044.
+
+Hylton, N.M., Blume, J.D., Bernreuter, W.K., Pisano, E.D., Rosen, M.A.,
+ Morris, E.A., Weatherall, P.T., Lehman, C.D., Newstead, G.M., Polin, S.,
+ Marques, H.S., Esserman, L.J., Schnall, M.D., 2012. Locally advanced
+ breast cancer: MR imaging for prediction of response to neoadjuvant
+ chemotherapy–results from ACRIN 6657/I-SPY TRIAL. Radiology 263, 663–
+ 672. URL: https://doi.org/10.1148/radiol.12110748, doi:10.1148/
+ radiol.12110748.
+
+Hylton, N.M., Gatsonis, C.A., Rosen, M.A., Lehman, C.D., Newitt, D.C.,
+ Partridge, S.C., Bernreuter, W.K., Pisano, E.D., Morris, E.A., Weatherall,
+ P.T., Polin, S.M., Newstead, G.M., Marques, H.S., Esserman, L.J., Schnall,
+ M.D., 2016. Neoadjuvant Chemotherapy for Breast Cancer: Functional
+ Tumor Volume by MR Imaging Predicts Recurrence-free Survival-Results
+ from the ACRIN 6657/CALGB 150007 I-SPY 1 TRIAL. Radiology 279, 44–
+ 55. URL: https://doi.org/10.1148/radiol.2015150013, doi:10.1148/
+ radiol.2015150013.
+
+Li, W., Newitt, D.C., Gibbs, J., Wilmes, L.J., Jones, E.F., Arasu, V.A.,
+  et al., 2022. I-SPY 2 Breast Dynamic Contrast Enhanced MRI Trial
+  (ISPY2), Version 1. URL: https://doi.org/10.7937/TCIA.D8Z0-9T85,
+  doi:10.7937/TCIA.D8Z0-9T85. data set.
+
+Loshchilov, I., Hutter, F., 2019. Decoupled Weight Decay Regularization,
+  in: International Conference on Learning Representations. URL: https:
+  //arxiv.org/abs/1711.05101.
+
+Newitt, D.C., Partridge, S.C., Zhang, Z., Gibbs, J., Chenevert, T., Rosen, M.,
+  et al., 2021. ACRIN 6698/I-SPY2 Breast DWI. URL: https://doi.org/
+  10.7937/TCIA.KK02-6D95, doi:10.7937/TCIA.KK02-6D95. data set.
+
+                                     27
+Partridge, S.C., Zhang, Z., Newitt, D.C., Gibbs, J.E., Chenevert, T.L.,
+  Rosen, M.A., Bolan, P.J., Marques, H.S., Romanoff, J., Cimino, L., Joe,
+  B.N., Umphrey, H.R., Ojeda-Fournier, H., Dogan, B., Oh, K., Abe, H.,
+  Drukteinis, J.S., Esserman, L.J., Hylton, N.M., 2018. Diffusion-weighted
+  MRI Findings Predict Pathologic Response in Neoadjuvant Treatment
+  of Breast Cancer: The ACRIN 6698 Multicenter Trial. Radiology 289,
+  618–627. URL: https://doi.org/10.1148/radiol.2018180273, doi:10.
+  1148/radiol.2018180273.
+
+Tang, W., Jin, C., Kong, Q., Liu, C., Chen, S., Ding, S., Liu, B., Feng,
+  Z., Li, Y., Dai, Y., Zhang, L., Chen, Y., Han, X., Liu, S., Chen, D.,
+  Weng, Z., Liu, W., Wei, X., Jiang, X., Zhou, Q., Mao, N., Guo, Y., 2025.
+  Development and validation of an MRI spatiotemporal interaction model
+  for early noninvasive prediction of neoadjuvant chemotherapy response
+  in breast cancer: a multicentre study. EClinicalMedicine 85, 103298.
+  URL: https://doi.org/10.1016/j.eclinm.2025.103298, doi:10.1016/
+  j.eclinm.2025.103298.
+
+Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A.N.,
+  Kaiser, L., Polosukhin, I., 2017. Attention Is All You Need, in: Advances in
+  Neural Information Processing Systems. URL: https://arxiv.org/abs/
+  1706.03762.
+
+
+
+
+                                     28
+

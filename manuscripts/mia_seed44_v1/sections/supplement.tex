@@ -1,0 +1,15 @@
+\section{Supplementary pooling and uncertainty analyses}
+\label{sec:supplement}
+The supplementary \meanmodel{} uses the same seed44, folds, observed-history protocol, future-state objective, and forecast classifier feature groups as \fullmodel{}, replacing spatial attention with mean pooling. It is reported separately from the three principal variants requested for the main analysis.
+\input{tables/pooling}
+\input{tables/bootstrap}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/patient_bootstrap.pdf}
+\caption{Three-landmark mean metrics with exploratory 95\% percentile patient-bootstrap intervals. All 2,000 resamples preserve pairing across models, folds, and landmarks. Intervals describe patient-sampling uncertainty conditional on the trained seed44 models and do not account for seed selection or retraining.}
+\label{fig:bootstrap}
+\end{figure}
+\section{Reproducibility and reporting items to complete}
+The accompanying source package includes aggregate result CSV files, source-report hashes, the bootstrap procedure, figure-generation code, and a build script. It does not include patient identifiers, patient-level prediction rows, MRI volumes, or model checkpoints. All four model variants in this package use training seed44; the bootstrap random-number seed controls patient resampling only.
+
+\todo{Before submission, complete the author and ethics statements; verify the pCR endpoint and visit timing; document codec and segmentation training-patient provenance; add matched external baselines and the locked multi-seed sensitivity analysis; audit external-cohort independence; and confirm the journal's current submission and anonymization requirements.}

@@ -1,0 +1,88 @@
+ZHAO ET AL.: CORE-WM FOR LONGITUDINAL TREATMENT-RESPONSE PREDICTION                                                                5
+
+
+
+geometry estimate q̂t+1 . A separate response head decodes          The primary signal Lpred is the layer-normalized mean squared
+a predicted response vector r̂t+1 ∈ RDr and a scalar response       error between predicted and target latents, summed over all
+score ρ̂t+1 from ŝt+1 .                                            T −1 transitions with a decaying weight schedule that em-
+   These predictions are supervised by an Image-derived Re-         phasizes earlier steps. A distributional regularizer LSIGReg (SI-
+sponse Guidance (IRG) loss LIRG constructed entirely from           GReg [36]) prevents representational collapse by encouraging
+observed imaging, without reference to the clinical outcome         the latent distribution to remain well-spread.
+y. At each transition, two outcome-free targets are extracted:         The imaging response guidance LIRG , defined in Section III-
+a response vector rt+1 that concatenates baseline-relative and      D, supervises the factorized response pathway using outcome-
+previous-visit-relative changes in lesion volume, shape, and        free targets derived from inter-visit changes in lesion geometry
+enhancement intensity, and a scalar response score ρt+1 that        and imaging intensity.
+aggregates key response components with treatment-category-
+level standardization. The loss is                                  F. Frozen Linear Readout
+       LIRG = ℓH (q̂t+1 , qt+1 ) + ℓH (r̂t+1 , rt+1 )                  After pretraining, all model weights are frozen and outcome
+               + λrank
+                          X
+                                 max 0, m − (ρ̂i − ρ̂j )
+                                                                   labels y are introduced exclusively at this stage. At each
+                                                                    decision point, visits up to timepoint k have been observed.
+                       (i,j): ρi >ρj
+                                                                    The response pathway processes these visits and produces
+                + λctr Lctr (ŝ, r)                          (4)    future response states ŝ1 , . . . , ŝk+1 , from which a feature
+where ℓH denotes smooth-L1 loss, the third term is a pairwise       vector is constructed by concatenating summary statistics of
+margin ranking loss that preserves the ordinal structure of         the observed prefix (initial state, current state, prefix mean,
+response magnitude across patients within each batch, and           recent revision, cumulative displacement). A single class-
+Lctr is a contrastive loss that pulls response states of patients   balanced logistic regression is trained on the pooled features
+with similar imaging changes together in the latent space.          from all patients and all decision points to predict y. As
+The geometry estimate q̂t+1 also serves as input to the latent      more visits are observed, the readout receives a longer state
+correction described below.                                         prefix, allowing the prediction to be progressively refined with
+   2) Latent Correction: The response pathway contributes a         additional treatment-response information.
+learned correction to the conditioned state transition through
+a latent adapter. The adapter concatenates the future response                            IV. E XPERIMENTS
+state ŝt+1 with the geometry estimate q̂t+1 produced by the        A. Datasets and Evaluation Protocol
+response Transformer and projects this to the image latent
+                                                                       Study cohorts. We used DCE-MRI and clinical data from
+dimension:
+                                                                    the I-SPY2 (808 patients, 275 pCR) and I-SPY1 (156 patients,
+               ∆zresp
+                                                   
+                  t+1 = αz · Adapt [ŝt+1 ; q̂t+1 ]           (5)   41 pCR) neoadjuvant breast cancer trials [13], [22]. Both trials
+                                                                    acquired MRI at four treatment timepoints (T0–T3). Prediction
+with a small scaling factor αz and zero-initialized output
+                                                                    was evaluated at T0, T0–T1, and T0–T2; T3 was used only
+weights. This ensures the response correction is negligible at
+                                                                    during outcome-free pretraining.
+the start of training, preventing the response pathway from
+                                                                       DCE-MRI preprocessing. Each visit was represented by
+interfering with the conditioned state transition before either
+                                                                    an eight-channel volume comprising precontrast, early post-
+component has learned useful representations. As training
+                                                                    contrast, late postcontrast, two subtraction, peak enhancement,
+proceeds, the adapter learns to communicate response-state in-
+                                                                    washout, and binary lesion-region channels. Phase selection
+formation to the image prediction in a complementary fashion.
+                                                                    followed the BreastDCEDL adaptive protocol [23]. Lesion re-
+                                                                    gions were derived from the released functional-tumor-volume
+E. Joint Prediction and Pretraining Objective
+                                                                    analysis masks; automatic enhancement-based localization was
+  The final predicted next-visit latent is the sum of the two       used when a compatible mask was unavailable. All image
+pathway outputs:                                                    channels were robustly normalized per visit, and each volume
+                     ẑt+1 = ẑpred    resp
+                               t+1 + ∆zt+1                   (6)    was cropped or padded to 32 × 96 × 96 voxels centered on
+                                                                    the T0 lesion. A nine-dimensional geometry descriptor was
+and the prediction target is the EMA-encoded visit state:           extracted from each ROI mask.
+             ztar
+                                  
+               t+1 = gϕ fϕ (It+1 ) + hϕ (qt+1 ).          (7)          Five-fold evaluation. Five disjoint patient-level folds were
+                                                                    created, stratified by pCR status and HR/HER2 subtype. In
+Because the target includes both appearance and geometry,
+                                                                    each fold, approximately 525 I-SPY2 patients were used for
+the joint prediction accounts for both modalities. The state
+                                                                    training, 121 for validation, and 162 for testing; the same fold
+transition carries the dominant appearance prediction, and the
+                                                                    manifest was used for all methods. Reported metrics are fold
+response-state correction allows the factorized response path-
+                                                                    mean ± standard deviation, quantifying partition variability.
+way to refine the forecast when lesion-dynamics information
+                                                                    Within each fold, the four non-test partitions were split into
+provides complementary evidence.
+                                                                    training and validation sets; hyperparameters, checkpoints, and
+   The total pretraining loss is a weighted combination of three
+                                                                    classification thresholds were selected on the validation set.
+groups of terms:
+                                                                       Cross-cohort transfer. Each source-fold model, pCR read-
+             L = λpred Lpred + λsig LSIGReg + LIRG .         (8)    out, and operating threshold was fitted using I-SPY2 only, and

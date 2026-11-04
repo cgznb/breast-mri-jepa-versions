@@ -1,0 +1,26 @@
+\begin{table}[t]
+\centering
+\caption{Seed44 performance on the fixed 175-patient internal holdout. Values are means of five separately evaluated fold models; AP denotes average precision and F1 uses a threshold of 0.5. Macro averages the three landmarks. These are not probability-ensemble scores.}
+\label{tab:main}
+\small
+\begin{tabular}{llrrr}
+\toprule
+Model & Landmark & AUROC & AP & F1 \\
+\midrule
+NoJEPA & T0 & 0.7209 & 0.5749 & 0.5441 \\
+NoJEPA & T1 & 0.7219 & 0.5815 & 0.5458 \\
+NoJEPA & T2 & 0.7230 & 0.5812 & 0.5411 \\
+NoJEPA & Macro & 0.7219 & 0.5792 & 0.5437 \\
+\midrule
+DirectReadout & T0 & 0.7304 & 0.5854 & 0.5447 \\
+DirectReadout & T1 & 0.7306 & 0.5891 & 0.5485 \\
+DirectReadout & T2 & 0.7299 & 0.5920 & 0.5685 \\
+DirectReadout & Macro & 0.7303 & 0.5888 & 0.5539 \\
+\midrule
+ForecastAttention & T0 & 0.7294 & 0.5924 & 0.5334 \\
+ForecastAttention & T1 & 0.7381 & 0.6012 & 0.5563 \\
+ForecastAttention & T2 & 0.7421 & 0.6033 & 0.5510 \\
+ForecastAttention & Macro & 0.7365 & 0.5990 & 0.5469 \\
+\bottomrule
+\end{tabular}
+\end{table}

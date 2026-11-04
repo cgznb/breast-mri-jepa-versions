@@ -1,0 +1,37 @@
+\section{Supplementary pooling, metrics, and uncertainty}
+\label{sec:supplement}
+The supplementary \meanmodel{} uses the same training seed 44, five-fold probability-ensemble rule, observed-history protocol, future-state objective, and forecast classifier feature groups as \fullmodel{}, replacing spatial attention with mean pooling. Its metrics are computed from patient-wise mean probabilities, consistent with the main analysis.
+\input{tables/pooling}
+\input{tables/extended_macro_metrics}
+\input{tables/extended_threshold}
+
+\subsection{Paired significance checks}
+Table~\ref{tab:bootstrap} combines the principal Macro comparisons with their unadjusted 95\% patient-bootstrap intervals, raw two-sided $p$ values, and Holm-adjusted $p$ values for the nine-test principal family. AUROC uses paired DeLong tests; other metrics use approximate null-centered paired patient-bootstrap tests with 99,999 shared patient resamples. The secondary family comprises 81 tests, reported in Tables~\ref{tab:significance_landmarks}--\ref{tab:significance_longitudinal}. These use the same seed-44 ensemble predictions and the same 175 patients, retaining model and landmark dependence. A significance marker refers to its stated Holm-adjusted family; ns denotes $p_{\mathrm{Holm}}\geq0.05$. The existing unadjusted 2,000-resample percentile intervals are not exact inversions of these tests and do not establish significance after correction. The original score-swap tests are retained separately in the source package: they test the stronger score-exchangeability null and do not determine these markers. The main testing method was revised after inspecting initial score-swap results; all tests and reporting choices remain retrospective and exploratory.
+
+\input{tables/significance_landmarks}
+\input{tables/significance_extended}
+\input{tables/significance_pooling}
+\input{tables/significance_longitudinal}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/landmark_performance.pdf}
+\caption{Six complementary landmark summaries: AUROC, AP, F1, sensitivity, specificity, and Brier score. All points are calculated from the seed-44 five-fold ensemble probabilities; shading is the conditional 95\% patient-bootstrap interval. The same 175 patients appear at every landmark. A trend in ranking can coexist with a different trend in calibration or error types.}
+\label{fig:longitudinal}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/outcome_score_changes.pdf}
+\caption{Outcome-conditioned changes in predicted pCR probability from T0 to T2. Panels separate models and outcome classes. Histograms are calculated directly from the seed-44 five-fold ensemble probability changes for each patient. Changes describe model scores and do not establish an individual treatment effect.}
+\label{fig:scorechanges}
+\end{figure*}
+
+\section{Supplementary subgroup and training-probe summaries}
+\input{tables/subgroup_results}
+\input{tables/subgroup_world_probe}
+
+\section{Reproducibility and reporting items to complete}
+The source package includes aggregate CSV files, source-report hashes, reproducible metric and figure scripts, the paired DeLong and patient-bootstrap procedures, score-swap sensitivity checks, and the official article class. The main significance CSV includes raw $p$ values, within-family Holm adjustment, and adjustment over all 90 tests as a sensitivity analysis. It contains no patient identifiers, patient-level prediction rows, original MRI volumes, or model checkpoints. The method figure includes only rendered, anonymous development-image slices. Each model uses training seed 44. Five fold probabilities are averaged per patient before computing pCR metrics. Individual-fold metrics are retained only for numerical audit; archived training diagnostics are summarized across fold models in their own latent coordinates.
+
+\todo{Before submission, complete author and ethics statements; verify the precise pCR pathology definition; document codec and segmentation patient-level pretraining provenance; add matched external baselines and a prospectively locked seed-selection policy; audit external-cohort independence; and confirm the journal's current submission and anonymization requirements.}

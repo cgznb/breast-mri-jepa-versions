@@ -1,0 +1,26 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Operating characteristics at threshold 0.5. Entries average metrics computed separately for five seed44 fold models; Macro first averages T0--T2 within each fold. No probabilities are averaged. The same 175 patients appear in every evaluation.}
+\label{tab:extended_operating}
+\begin{tabular}{llrrrrrr}
+\toprule
+Model & Landmark & Sens. & Spec. & PPV & NPV & BA & MCC \\
+\midrule
+NoJEPA & T0 & 0.614 & 0.701 & 0.491 & 0.796 & 0.658 & 0.301 \\
+NoJEPA & T1 & 0.614 & 0.703 & 0.492 & 0.796 & 0.658 & 0.302 \\
+NoJEPA & T2 & 0.600 & 0.711 & 0.494 & 0.791 & 0.655 & 0.298 \\
+NoJEPA & Macro & 0.610 & 0.705 & 0.492 & 0.794 & 0.657 & 0.300 \\
+\midrule
+DirectReadout & T0 & 0.625 & 0.686 & 0.485 & 0.796 & 0.655 & 0.296 \\
+DirectReadout & T1 & 0.625 & 0.692 & 0.492 & 0.798 & 0.659 & 0.303 \\
+DirectReadout & T2 & 0.657 & 0.694 & 0.504 & 0.813 & 0.676 & 0.334 \\
+DirectReadout & Macro & 0.636 & 0.691 & 0.494 & 0.802 & 0.663 & 0.311 \\
+\midrule
+ForecastAttention & T0 & 0.646 & 0.642 & 0.473 & 0.809 & 0.644 & 0.285 \\
+ForecastAttention & T1 & 0.750 & 0.556 & 0.455 & 0.836 & 0.653 & 0.298 \\
+ForecastAttention & T2 & 0.714 & 0.583 & 0.465 & 0.836 & 0.649 & 0.297 \\
+ForecastAttention & Macro & 0.704 & 0.594 & 0.464 & 0.827 & 0.649 & 0.293 \\
+\bottomrule
+\end{tabular}
+\end{table*}

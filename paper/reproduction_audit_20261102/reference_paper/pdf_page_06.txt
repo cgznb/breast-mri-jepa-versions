@@ -1,0 +1,66 @@
+6                                                                                          IEEE TRANSACTIONS ON MEDICAL IMAGING
+
+
+
+its probability was computed for every I-SPY1 patient. The        dual-task model of Jing and Wang [33] jointly optimized
+five source-fold probabilities were averaged for each patient,    pCR prediction and future-latent prediction from three-channel
+and the mean source-validation threshold was applied without      early-subtraction inputs with clinical variables. BSTNet [32]
+using I-SPY1 outcomes.                                            used temporal-order pretraining on peak-postcontrast volumes
+   Ethics statement. Both I-SPY1 and I-SPY2 are multi-            from all four visits; the pretrained encoder was retained and a
+center clinical trials approved by the institutional review       lightweight pCR head was retrained to accept T0–T2 prefixes.
+boards at each participating site; all participants provided      Reimplementations followed released architectures when code
+written informed consent prior to enrollment. The imaging and     was available and were selected without test-fold data.
+clinical data used in this study were obtained from publicly         2) Results: Table I shows that CoRe-WM produced the
+available, de-identified repositories [13], [22]. No additional   strongest discrimination at every prospective decision point. At
+ethics approval was required for this secondary analysis of       T0, its AUROC of 0.7337±0.0320 exceeded the ViT (0.5591±
+de-identified data.                                               0.0320), the two-stage fusion model (0.5950 ± 0.0130), and
+                                                                  the matched 3-D ResNet (0.5444 ± 0.0391). Once T1 became
+B. Implementation Details                                         available, CoRe-WM reached 0.7545 ± 0.0468, compared
+   Network configuration. The 3-D encoder used four resid-        with 0.6958 ± 0.0193 for the two-stage dual-task model. In
+ual stages (16, 32, 64, 128 channels), producing a 192-           pooled out-of-fold predictions, the AUROC difference between
+dimensional visit representation via global pooling and layer     these two methods at T0–T1 was 0.0673 (95% CI, 0.0344–
+normalization. The transition predictor had three Transformer     0.0995; p = 0.0004). The proposed model improved further
+blocks (4 heads, 512-dim feed-forward, dropout 0.1) condi-        to 0.7620 ± 0.0363 with T2, whereas PrefixGRU (0.5784 ±
+tioned on a 25-dimensional vector encoding visit position,        0.0668), temporal representation learning (0.5179 ± 0.0516),
+treatment, molecular profile, and age. The factorized response    and BSTNet (0.6578±0.0555) all remained substantially lower
+branch mapped the nine-dimensional lesion descriptor to a 64-     at the same T0–T2 decision point.
+dimensional response state.                                          The trajectory results also distinguish the contribution of
+   Optimization. Models were trained with AdamW (lr 5 ×           newly observed response from baseline prognostic informa-
+10−5 , weight decay 10−4 , batch size 32) for at most 100         tion. The mean AUROC increased by 0.0208 from T0 to T0–
+epochs with early stopping (patience 4). The target encoder       T1 and by a further 0.0075 from T0–T1 to T0–T2, while speci-
+used EMA momentum 0.996. Future-transition losses for T1,         ficity rose from 0.6325 to 0.7504. The conditioned trajectory
+T2, and T3 were weighted 2, 1, and 0.5. Loss weights were         adds discriminative information beyond pretreatment pheno-
+λpred = 1.0, λsig = 0.09, λrank = 1.0 (margin m = 0.1),           type while supporting sequential prediction from a common
+λctr = 0.02. The FiLM scaling factor was η = 0.1, and the         frozen state.
+response adapter scaling factor was αz = 0.05.
+   Readout and metrics. After pretraining, all parameters
+were frozen and a class-balanced logistic readout was fitted      D. Cross-Cohort Transfer to I-SPY1
+on frozen response states; penalty type and regularization
+                                                                     We examine cross-cohort robustness in I-SPY1 and Table II
+strength were selected on the validation fold. AUROC was
+                                                                  shows substantial variation in transfer performance. The two-
+the primary metric; thresholds were selected by maximizing
+                                                                  stage dual-task model achieved the highest early-treatment
+Youden’s index on validation data. Confidence intervals used
+                                                                  AUROC at 0.7635, while CoRe-WM achieved 0.7396 at
+patient-level bootstrap of pooled out-of-fold predictions.
+                                                                  T0 and 0.7321 at T0–T1. The paired AUROC difference
+                                                                  between CoRe-WM and the two-stage dual-task model at T0–
+C. Comparison with Other Methods                                  T1 was −0.0314 (95% CI, −0.1274–0.0606; p = 0.5167).
+   1) Compared Methods: We compared CoRe-WM with pub-             The 3-D ResNet reached 0.6738 at T0, PrefixGRU reached
+lished methods and matched baselines under the same five          0.6494 at T0–T2, and BSTNet reached 0.4390 at T0–T2.
+folds. For pretreatment methods, ViT [23] used the Breast-        Temporal representation learning reached 0.5548 at T0–T2.
+DCEDL MinCrop representation with a ViT-B/16 initialized          At T0, CoRe-WM exceeded the ViT, its two-stage fusion,
+from ImageNet masked-autoencoder weights, evaluated both          and temporal representation learning by 0.1812, 0.1646, and
+as a standalone image encoder and with its full two-stage         0.1922 AUROC, respectively (p = 0.0080, p = 0.0124,
+clinical–geometry fusion pipeline. 3-D ResNet was a matched       p = 0.0008). These results indicate that temporal capacity
+pretreatment baseline that encoded the T0 eight-channel vol-      alone did not ensure robustness across trial cohorts. Unlike
+ume with the same four-stage 3-D residual network (16,            its I-SPY2 trajectory, CoRe-WM did not improve as later
+32, 64, 128 channels) used in CoRe-WM and mapped its              I-SPY1 examinations were added: AUROC decreased from
+globally pooled representation directly to pCR. For longitu-      0.7396 at T0 to 0.7321 at T0–T1 and 0.7082 at T0–T2.
+dinal methods, PrefixGRU was a matched sequential baseline        The transferred operating points were imbalanced for the
+that applied a shared 3-D encoder to each available visit         two-stage dual-task model (high specificity, low sensitivity),
+and aggregated the ordered visit representations with a GRU       and BSTNet fell to near-chance AUROC (0.4390), indicating
+before pCR classification. Temporal representation learn-         that its temporal-order pretraining did not confer cross-cohort
+ing [34] used MIP-based inputs with reconstruction, temporal-     robustness. These results support cross-cohort feasibility and
+continuity, and responder-alignment objectives. The two-stage     robustness of CoRe-WM.

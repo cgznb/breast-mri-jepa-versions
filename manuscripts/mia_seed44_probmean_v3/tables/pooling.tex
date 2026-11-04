@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Supplementary pooling comparison using seed44 fivefold probability ensembles. ForecastMean and ForecastAttention share forecast readout and future-state supervision, differing in spatial pooling. Probabilities are averaged before metrics; Macro averages the three landmarks.}
+\label{tab:pooling}
+\begin{tabular}{llrrr}
+\toprule
+Model & Landmark & AUROC & AP & F1 \\
+\midrule
+ForecastMean & T0 & 0.7431 & 0.6088 & 0.5625 \\
+ForecastMean & T1 & 0.7494 & 0.6121 & 0.5865 \\
+ForecastMean & T2 & 0.7471 & 0.6209 & 0.5736 \\
+ForecastMean & Macro & 0.7465 & 0.6139 & 0.5742 \\
+ForecastAttention & T0 & 0.7450 & 0.6256 & 0.5736 \\
+ForecastAttention & T1 & 0.7521 & 0.6278 & 0.5442 \\
+ForecastAttention & T2 & 0.7550 & 0.6315 & 0.5634 \\
+ForecastAttention & Macro & 0.7507 & 0.6283 & 0.5604 \\
+\bottomrule
+\end{tabular}
+\end{table*}

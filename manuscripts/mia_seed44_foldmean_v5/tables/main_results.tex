@@ -1,0 +1,24 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Performance on the same fixed internal holdout (175 patients, 56 pCR positive). Entries are mean $\pm$ sample SD of metrics computed separately for the five seed44 fold models. Probabilities are not averaged. Macro first averages T0--T2 metrics within each fold. F1 uses threshold 0.5. Fold SD is descriptive; the five models share the holdout and overlapping training sets. Paired Macro differences are in Table~\ref{tab:bootstrap}.}
+\label{tab:main}
+\begin{tabular}{llrrr}
+\toprule
+Model & Landmark & AUROC & AP & F1 \\
+\midrule
+NoJEPA & T0 & 0.7209 $\pm$ 0.0117 & 0.5749 $\pm$ 0.0295 & 0.5441 $\pm$ 0.0378 \\
+NoJEPA & T1 & 0.7219 $\pm$ 0.0113 & 0.5815 $\pm$ 0.0185 & 0.5458 $\pm$ 0.0408 \\
+NoJEPA & T2 & 0.7230 $\pm$ 0.0112 & 0.5812 $\pm$ 0.0145 & 0.5411 $\pm$ 0.0409 \\
+NoJEPA & Macro & 0.7219 $\pm$ 0.0113 & 0.5792 $\pm$ 0.0202 & 0.5437 $\pm$ 0.0383 \\
+DirectReadout & T0 & 0.7304 $\pm$ 0.0135 & 0.5854 $\pm$ 0.0200 & 0.5447 $\pm$ 0.0302 \\
+DirectReadout & T1 & 0.7306 $\pm$ 0.0120 & 0.5891 $\pm$ 0.0226 & 0.5485 $\pm$ 0.0178 \\
+DirectReadout & T2 & 0.7299 $\pm$ 0.0116 & 0.5920 $\pm$ 0.0228 & 0.5685 $\pm$ 0.0329 \\
+DirectReadout & Macro & 0.7303 $\pm$ 0.0124 & 0.5888 $\pm$ 0.0214 & 0.5539 $\pm$ 0.0233 \\
+ForecastAttention & T0 & 0.7294 $\pm$ 0.0171 & 0.5924 $\pm$ 0.0124 & 0.5334 $\pm$ 0.0350 \\
+ForecastAttention & T1 & 0.7381 $\pm$ 0.0161 & 0.6012 $\pm$ 0.0156 & 0.5563 $\pm$ 0.0330 \\
+ForecastAttention & T2 & 0.7421 $\pm$ 0.0167 & 0.6033 $\pm$ 0.0191 & 0.5510 $\pm$ 0.0427 \\
+ForecastAttention & Macro & 0.7365 $\pm$ 0.0159 & 0.5990 $\pm$ 0.0151 & 0.5469 $\pm$ 0.0334 \\
+\bottomrule
+\end{tabular}
+\end{table*}

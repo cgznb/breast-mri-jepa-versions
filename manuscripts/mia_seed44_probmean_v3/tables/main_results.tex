@@ -1,0 +1,24 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Performance on the fixed internal holdout (175 patients, 56 pCR positive). For each patient and landmark, the five seed44 fold-model probabilities are averaged before computing any metric. Macro averages T0--T2 metrics. AP denotes average precision; F1 uses threshold 0.5. Entries are point estimates; paired differences, patient intervals, and multiplicity-adjusted significance are reported in Table~\ref{tab:bootstrap}.}
+\label{tab:main}
+\begin{tabular}{llrrr}
+\toprule
+Model & Landmark & AUROC & AP & F1 \\
+\midrule
+NoJEPA & T0 & 0.7275 & 0.5954 & 0.5354 \\
+NoJEPA & T1 & 0.7281 & 0.5981 & 0.5426 \\
+NoJEPA & T2 & 0.7281 & 0.5971 & 0.5469 \\
+NoJEPA & Macro & 0.7279 & 0.5968 & 0.5416 \\
+DirectReadout & T0 & 0.7372 & 0.6025 & 0.5669 \\
+DirectReadout & T1 & 0.7416 & 0.6115 & 0.5692 \\
+DirectReadout & T2 & 0.7410 & 0.6086 & 0.5672 \\
+DirectReadout & Macro & 0.7399 & 0.6075 & 0.5678 \\
+ForecastAttention & T0 & 0.7450 & 0.6256 & 0.5736 \\
+ForecastAttention & T1 & 0.7521 & 0.6278 & 0.5442 \\
+ForecastAttention & T2 & 0.7550 & 0.6315 & 0.5634 \\
+ForecastAttention & Macro & 0.7507 & 0.6283 & 0.5604 \\
+\bottomrule
+\end{tabular}
+\end{table*}

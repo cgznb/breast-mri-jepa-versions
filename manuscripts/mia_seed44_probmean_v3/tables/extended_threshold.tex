@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Operating-point sensitivity analysis for seed-44 test ensemble scores, shown as three-landmark metric means. The alternative threshold maximizes Youden index on concatenated, disjoint out-of-fold development predictions, separately at each landmark; the largest threshold breaks ties. Each development patient contributes one score from a model that did not train on that patient. OOF scores arise from single fold models, whereas test scores average five model probabilities: this distribution mismatch makes this a sensitivity analysis, not validated ensemble calibration. No test labels select thresholds.}
+\label{tab:extended_threshold}
+\begin{tabular}{llrrrr}
+\toprule
+Model & Policy & F1 & Sens. & Spec. & MCC \\
+\midrule
+NoJEPA & 0.5 & 0.542 & 0.619 & 0.686 & 0.289 \\
+NoJEPA & OOF validation Youden & 0.547 & 0.655 & 0.653 & 0.289 \\
+\midrule
+DirectReadout & 0.5 & 0.568 & 0.661 & 0.686 & 0.328 \\
+DirectReadout & OOF validation Youden & 0.571 & 0.655 & 0.700 & 0.336 \\
+\midrule
+ForecastAttention & 0.5 & 0.560 & 0.696 & 0.627 & 0.304 \\
+ForecastAttention & OOF validation Youden & 0.563 & 0.720 & 0.605 & 0.304 \\
+\bottomrule
+\end{tabular}
+\end{table*}

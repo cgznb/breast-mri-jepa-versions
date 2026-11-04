@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Supplementary spatial pooling comparison, mean $\pm$ sample SD over seeds 42,44,2026. Within-seed fivefold probabilities are averaged before metrics, then seed metrics are averaged. ForecastMean and ForecastAttention share forecast readout and future-state supervision.}
+\label{tab:pooling}
+\begin{tabular}{llrrr}
+\toprule
+Model & Landmark & AUROC & AP & F1 \\
+\midrule
+ForecastMean & T0 & 0.7451 $\pm$ 0.0040 & 0.6093 $\pm$ 0.0093 & 0.5677 $\pm$ 0.0047 \\
+ForecastMean & T1 & 0.7465 $\pm$ 0.0051 & 0.6137 $\pm$ 0.0028 & 0.5785 $\pm$ 0.0161 \\
+ForecastMean & T2 & 0.7446 $\pm$ 0.0049 & 0.6166 $\pm$ 0.0044 & 0.5707 $\pm$ 0.0033 \\
+ForecastMean & Macro & 0.7454 $\pm$ 0.0043 & 0.6132 $\pm$ 0.0048 & 0.5723 $\pm$ 0.0048 \\
+ForecastAttention & T0 & 0.7437 $\pm$ 0.0025 & 0.6166 $\pm$ 0.0079 & 0.5547 $\pm$ 0.0185 \\
+ForecastAttention & T1 & 0.7460 $\pm$ 0.0053 & 0.6170 $\pm$ 0.0101 & 0.5507 $\pm$ 0.0141 \\
+ForecastAttention & T2 & 0.7464 $\pm$ 0.0074 & 0.6170 $\pm$ 0.0127 & 0.5615 $\pm$ 0.0197 \\
+ForecastAttention & Macro & 0.7454 $\pm$ 0.0047 & 0.6169 $\pm$ 0.0102 & 0.5556 $\pm$ 0.0143 \\
+\bottomrule
+\end{tabular}
+\end{table*}

@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Exploratory subgroup discrimination for the seed44 fivefold probability ensemble. Each patient\textquotesingle s probabilities are averaged over five fold models before computing AUROC; Macro then averages T0--T2 AUROCs. Intervals are paired patient-bootstrap intervals for ForecastAttention minus NoJEPA, conditional on the fitted ensemble. Age 50 is an exploratory reporting cutpoint. Namespace groups are parts of one clinical release, not external cohorts.}
+\label{tab:subgroups}
+\begin{tabular}{lrrr}
+\toprule
+Subgroup ($n$/pCR+) & NoJEPA & Full & $\Delta$ AUROC [95\% interval] \\
+\midrule
+HR+/HER2- (68/11) & 0.687 & 0.716 & +0.029 [-0.032, +0.091] \\
+HR+/HER2+ (31/12) & 0.618 & 0.649 & +0.031 [-0.075, +0.132] \\
+HR-/HER2+ (14/7) & 0.837 & 0.912 & +0.075 [-0.025, +0.250] \\
+HR-/HER2- (62/26) & 0.642 & 0.675 & +0.033 [-0.013, +0.084] \\
+Age $<$50 (90/29) & 0.673 & 0.687 & +0.014 [-0.015, +0.042] \\
+Age $\geq$50 (85/27) & 0.785 & 0.817 & +0.031 [-0.004, +0.073] \\
+ISPY2 namespace (125/39) & 0.680 & 0.702 & +0.022 [-0.008, +0.054] \\
+ACRIN-6698 namespace (50/17) & 0.846 & 0.876 & +0.031 [-0.014, +0.082] \\
+\bottomrule
+\end{tabular}
+\end{table*}

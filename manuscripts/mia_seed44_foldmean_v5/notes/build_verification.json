@@ -1,0 +1,367 @@
+{
+  "verified_at_utc": "2026-11-03T14:57:10.455859+00:00",
+  "training_seed": 44,
+  "folds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "reporting_estimand": "Compute each fold metric separately on the same 175-patient internal holdout, then equal fold mean and sample SD ddof1. Macro is equal T0/T1/T2 metric mean within fold. No prediction-probability averaging.",
+  "pdf": {
+    "path": "main.pdf",
+    "pages": 27,
+    "bytes": 924849,
+    "sha256": "051351e9abfb08c9e4e073cd40ef9901d23d213aa3e969d74be595c61118c827"
+  },
+  "source_audit": {
+    "receipt": "notes/source_audit.json",
+    "sha256": "809548c9c0fb4d3f4f3fda2af4902e467f27d8d3c8d0ba094d2fb5d34e0cb5d0",
+    "source_runs": 20,
+    "registered_reports_verified": 60
+  },
+  "numerical_verification": {
+    "receipt": "notes/numerical_verification.json",
+    "sha256": "3324aae92d90f31ec3ca0589a66bf7f4bb7642cef493caa9513902dac3fee0c0",
+    "all_checks_passed": true
+  },
+  "typesetting_warning_counts": {
+    "undefined_references": 0,
+    "undefined_citations": 0,
+    "missing_characters": 0,
+    "overfull_boxes": 0,
+    "multiply_defined_labels": 0,
+    "float_too_large": 0
+  },
+  "visual_checks": {
+    "all_eight_figure_contact_sheet": "passed",
+    "page_11_main_results_table": "passed",
+    "page_12_principal_significance_table": "passed",
+    "page_21_forecast_individual_fold_table": "passed"
+  },
+  "scientific_review": {
+    "status": "passed",
+    "reviewer": "independent source-audit agent",
+    "scope": "Aggregation, unfavorable findings, significance, threshold policy, subgroup scope, table references"
+  },
+  "significance": {
+    "family_holm": {
+      "principal_macro_9": {
+        "tests": 9,
+        "significant_at_0.05": 0
+      },
+      "secondary_81": {
+        "tests": 81,
+        "significant_at_0.05": 3
+      }
+    },
+    "all_90_holm": {
+      "tests": 90,
+      "significant_at_0.05": 3
+    }
+  },
+  "privacy_export_audit": {
+    "status": "passed",
+    "checked_at_utc": "2026-11-03T14:55:08.801436+00:00",
+    "reviewer": "independent source-audit agent",
+    "package_selection_reproduced_from_script": true,
+    "snapshot_export_files_before_build_receipt_and_manifest": 165,
+    "snapshot_text_files_checked": 138,
+    "holdout_identifiers_checked": 175,
+    "patient_identifier_matches": 0,
+    "rendered_figure_assets_checked": 16,
+    "figure_binary_and_pdf_text_identifier_matches": 0,
+    "csv_files_checked": 21,
+    "csv_rows_checked": 12857,
+    "csv_seed_values": [
+      "44"
+    ],
+    "csv_policies": [
+      "fixed_0.5",
+      "fold_validation_youden"
+    ],
+    "forbidden_patient_csv_fields_found": 0,
+    "forbidden_patient_asset_extensions_found": 0,
+    "old_result_export_filenames_found": 0,
+    "source_provenance_seed44_only": true,
+    "source_provenance_runs": 20,
+    "source_provenance_suite_count": 1,
+    "patient_level_predictions_exported": false,
+    "anonymous_development_mri_renderings_retained": true
+  },
+  "independent_package_build": {
+    "status": "passed",
+    "built_at_utc": "2026-11-03T14:56:10.179314+00:00",
+    "method": "Extract packaged sources into new temporary directory; bash build.sh using bundled inputs",
+    "pdf_pages": 27,
+    "pdf_sha256": "271de4288c016f3eb732ec7e80767d5314dfbd1195c0de2089bdf3ff531e48cf",
+    "pdftotext_layout_byte_identical_to_working_pdf": true,
+    "extracted_pdf_text_sha256": "57645d95e7bf5df34f94d1a839b243ffd93f64301846808613046cf6f6322835",
+    "typesetting_inputs_compared": 63,
+    "typesetting_input_sha256_all_match": true,
+    "typesetting_inputs": [
+      {
+        "path": "build.sh",
+        "sha256": "e545ae4bdeba648cd3af49684de96c8a95a957870fee897a15ca3bcefd3f28fd"
+      },
+      {
+        "path": "elsarticle-harv.bst",
+        "sha256": "f1f4e7503b7e9e225b0b4c7be370a82a34f4f9b0b7fe99c32bb5c7aa91b8da34"
+      },
+      {
+        "path": "elsarticle.cls",
+        "sha256": "01addb492c5d075b320636ac3a30d8a5762fa937220dea07a5e107042d25384d"
+      },
+      {
+        "path": "figures/calibration_utility.pdf",
+        "sha256": "3b6258574885cf2cef1e9c83e5eb69c2fc1eadcd7fb6c3b96ace31ebb51efae2"
+      },
+      {
+        "path": "figures/calibration_utility.png",
+        "sha256": "1f6409fca3580dc76aa5875c6dfd0fd72652239c81622b7ef68ec30a0896cbcc"
+      },
+      {
+        "path": "figures/discrimination.pdf",
+        "sha256": "6cf5ad3c57acb38c7de49b60692cecd966593c830a97deb4c3adfb5e2804f413"
+      },
+      {
+        "path": "figures/discrimination.png",
+        "sha256": "9644725585d201926bec3bab9fa547987dbbcad7cca607741255aa1e60809beb"
+      },
+      {
+        "path": "figures/forecast_mechanism.pdf",
+        "sha256": "34a8cc104ceea6841c47446ddbee62ba80e4b4c582f919c0aab4af540e315159"
+      },
+      {
+        "path": "figures/forecast_mechanism.png",
+        "sha256": "b32561a26109d95b7b490ac5211924e62cdc8197757a8b65363018bc5fe130c8"
+      },
+      {
+        "path": "figures/framework.pdf",
+        "sha256": "a74f7c015dd3c72f88ce16e7e83326e76cf748e0e0cc09fbba282202619cf7bd"
+      },
+      {
+        "path": "figures/framework.png",
+        "sha256": "75ce610292fc93f4b6fb00dbd9bc2acb8744c5b814c3ac85f5c6645df268ed9b"
+      },
+      {
+        "path": "figures/framework.tex",
+        "sha256": "3dee949413e1b978ff101f7bd5f072b6d1ff78289c0a05e255ba0ff1f848e849"
+      },
+      {
+        "path": "figures/landmark_performance.pdf",
+        "sha256": "fc6195cc260c028140eab41675d6fc83763db107c2241f5e0dc28c69b1d05b1d"
+      },
+      {
+        "path": "figures/landmark_performance.png",
+        "sha256": "fe9acbac37d3237cd8c75f194d5e2c82b64cc2132b63afea44d1f450d74412a7"
+      },
+      {
+        "path": "figures/outcome_score_changes.pdf",
+        "sha256": "ddbf24849452a0a4e3083ff367142cc0781a39ce25bd3c9707dfa3272a735d16"
+      },
+      {
+        "path": "figures/outcome_score_changes.png",
+        "sha256": "b8757f66ee290abd760bcf8454e9dfbb071ecb4c15d31766c5f278581dbca1c5"
+      },
+      {
+        "path": "figures/paired_comparisons.pdf",
+        "sha256": "299ff20820c29225b3b14940e4b9e3a3aba5bace78b1b6a2c54c5d7e4b9cfe92"
+      },
+      {
+        "path": "figures/paired_comparisons.png",
+        "sha256": "02ce3a9bd1cdeb0cdb59655a30bad2d10fcdb0de7fc59b2f3066ce684f613d7e"
+      },
+      {
+        "path": "figures/subgroup_operating.pdf",
+        "sha256": "b26f50592a013714c428651dcaa94088d1f4e8a38b327dcf63f7faeeb7256f34"
+      },
+      {
+        "path": "figures/subgroup_operating.png",
+        "sha256": "d37426b087f870970047585750f11779ca7f0b4c2dff39c7dbdd38f85d6be21c"
+      },
+      {
+        "path": "main.tex",
+        "sha256": "51d609421e12d055b799d3a9b2a9cf3465d815c3fffc0d3063f6c4821e994105"
+      },
+      {
+        "path": "references.bib",
+        "sha256": "ff668a26f3ad29cd87941c48e8b3176e418b9e7ff2779c257005000d27b942c4"
+      },
+      {
+        "path": "sections/conclusion.tex",
+        "sha256": "6a6a83f99b895ed3afce028244a5dc9577bfecd0069c8489ebb105072b087bce"
+      },
+      {
+        "path": "sections/dataset.tex",
+        "sha256": "4313d104e8f5f95876278deed817a3e1de5ca6346ba0d5ea91e677dd989bea25"
+      },
+      {
+        "path": "sections/discussion.tex",
+        "sha256": "9e618d5e6a52939325c51c0a6235d061c8a85db595b6dd4fc62c1510951a6e6e"
+      },
+      {
+        "path": "sections/experiments.tex",
+        "sha256": "a4ac65af6ade9a3e52b441873155e79960c4b34dce75c9261c7b2aaa0dbf12ce"
+      },
+      {
+        "path": "sections/introduction.tex",
+        "sha256": "d1291e37861cf75b0f6d00c9f85615b174ca8143b19791e76485ee8bf0da050f"
+      },
+      {
+        "path": "sections/methods.tex",
+        "sha256": "11b83fb7033ed61c3dc4145038a7646ad02af6c700c4e45800e0d835776087e8"
+      },
+      {
+        "path": "sections/related_work.tex",
+        "sha256": "76cabadce3b506d10c00e32fd0f2501ec4bb683ed56454a6cc5ebe4ae9440bdf"
+      },
+      {
+        "path": "sections/results.tex",
+        "sha256": "2d89cdf769517900eb845b8cad3824904140993201cde5b6293e2025a8b7cdc8"
+      },
+      {
+        "path": "sections/supplement.tex",
+        "sha256": "5a28e4e98076774c1960048d69efdc12cd6316dac502263a92c0323f986243cd"
+      },
+      {
+        "path": "tables/bootstrap.tex",
+        "sha256": "76603cfccb0c27dd914f5e553fdffc57010ba1d8ae1e2f66148c35ba113eb035"
+      },
+      {
+        "path": "tables/calibration.tex",
+        "sha256": "59468b56921b0fc389418e3ae3a7438fa68a880c1bbfd292d1acec2a3c740970"
+      },
+      {
+        "path": "tables/extended_macro_metrics.tex",
+        "sha256": "80c3f3ab0d6425e4aafc4983c39a261eee310e1d70b0d536e346044beadf8584"
+      },
+      {
+        "path": "tables/extended_operating.tex",
+        "sha256": "cc51005a06a898da88bf69e393c5212286d09b822663b9c914476f41450a1af3"
+      },
+      {
+        "path": "tables/extended_threshold.tex",
+        "sha256": "df32639ca93e828befb0ad69899a2e77e34f462626e79ee8bcc0059285ba3fef"
+      },
+      {
+        "path": "tables/fold_results.tex",
+        "sha256": "63bcae3016a9a1de7698d7adf9eb3e983555bbf87dddad079452010c51897eb5"
+      },
+      {
+        "path": "tables/fold_results_forecast.tex",
+        "sha256": "27f37702b0a7333896d95348084686417c43c381e3fe71541ec19f9e340f64c0"
+      },
+      {
+        "path": "tables/main_results.tex",
+        "sha256": "1fda26c2e45c901991cd7d08ebe554f01e017b9862d1864c527e305b7efcc253"
+      },
+      {
+        "path": "tables/pooling.tex",
+        "sha256": "c2e3259f82a6d17201f81d068b74c1a7bd972f59bbac12effa437eaa26523ceb"
+      },
+      {
+        "path": "tables/significance_extended.tex",
+        "sha256": "359d76aa4fc0f06cfeabc6719d11de51315504548adae51bda90f679518e04d2"
+      },
+      {
+        "path": "tables/significance_landmarks.tex",
+        "sha256": "a593c346428ef8c95e7aaf2026bcd2a8b095b88547c5d675f505038db4c6d2d4"
+      },
+      {
+        "path": "tables/significance_longitudinal.tex",
+        "sha256": "85f4404fc4d9578cd919af9e05333fd58daee7a21d05d0e010225b0784c69ea5"
+      },
+      {
+        "path": "tables/significance_pooling.tex",
+        "sha256": "7fa82f20e5c7be21d13484027cc515f7a19c2ea88c77ebaf964a87a231144651"
+      },
+      {
+        "path": "tables/subgroup_results.tex",
+        "sha256": "d0d4c6c05607201e06565523dc5b4314440c8ec3589dc26436b75641c08d5ebd"
+      },
+      {
+        "path": "tables/subgroup_world_probe.tex",
+        "sha256": "eb545e09488bfd16cdb2d3911353f3eb42f72e44662e62b35621c0aba1252be1"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/1pseperateaug.pdf",
+        "sha256": "61e73d5472464c1b7eef57699e9e0866bd25ca95ee0ca7fc5d1774ecfd8f4918"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/1psingleauthorgroup.pdf",
+        "sha256": "105450d45d83e5169c8b49c8feb06a06b6c5827328e01645a7a675d900fac770"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elsdoc.pdf",
+        "sha256": "9019ceb0c6ae7e082192b5f6ebcd548bd819d9a772b1ebec8ab34012c4e8172c"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elsdoc.tex",
+        "sha256": "5f397d4418159fa2e7159f1422ab2566a268071b54c20b58a067f95ab5057c7f"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-1p.pdf",
+        "sha256": "30365ffa871fb4ff7d2e84bc2e5f41ab104ed469b57b9676ecb4ee073130a91f"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-1pdoubleblind.pdf",
+        "sha256": "02359c8daeeb0b1f5d18d26074dffd6b658a776a10df37d5b9b4c5c71ccfb1e9"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-3p.pdf",
+        "sha256": "15867ffd741871fee443c97ac695f7808523af5f420453f46db3e104f2d9bfeb"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-3pd.pdf",
+        "sha256": "6ebd18300706ba4c9c6aa8195dad1a7d9d2e37a8e51cbb5ca861b87e69566b3e"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-5p.pdf",
+        "sha256": "47641df5dd96df7b8f036f379df2a5ae3138c64be88335e8de802ea2bd1fe572"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/jfigs.pdf",
+        "sha256": "1c9cbfe1bed0b5f00e003b5768eb58e064561b62e2ab61d6fd652e904095ed6a"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-harv.bst",
+        "sha256": "f1f4e7503b7e9e225b0b4c7be370a82a34f4f9b0b7fe99c32bb5c7aa91b8da34"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-num-names.bst",
+        "sha256": "e7ce499923c323d537c6d2b3860d747f261261921e3735a64b8f8234e4961cdb"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-num.bst",
+        "sha256": "0db2e53b2378cbe5815e436c1afe9dcac67123a32406fa8f11fad7978808e202"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-template-harv.tex",
+        "sha256": "f38d90a86c045a026c29e0fc08dc630447047475db9f43157feb84afab17b5be"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-template-num-names.tex",
+        "sha256": "59c721067d692a5f534bade43f7b7f64fe28e64df4246012c4d9bf1b7067e504"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-template-num.tex",
+        "sha256": "cbd7247fd453f458056f59070c84b275d53b8d97cb05140bd610b5efbd0d47a8"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle.cls",
+        "sha256": "01addb492c5d075b320636ac3a30d8a5762fa937220dea07a5e107042d25384d"
+      }
+    ],
+    "typesetting_warning_counts": {
+      "undefined_references": 0,
+      "undefined_citations": 0,
+      "missing_characters": 0,
+      "overfull_boxes": 0,
+      "multiply_defined_labels": 0,
+      "float_too_large": 0
+    }
+  },
+  "limitations": "Manuscript draft; author, ethics, pCR definition and provenance items remain marked TO COMPLETE. Internal holdout, single training seed, exploratory post-hoc analysis."
+}

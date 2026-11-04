@@ -1,0 +1,108 @@
+{
+  "schema": "pcr_reproduction_candidate_plan_v1",
+  "created_at_utc": "2026-11-02T13:50:24.886592+00:00",
+  "status": "literature_source_and_data_audited; implementations_and_training_not_started",
+  "data_protocol": "frozen_data_protocol.json",
+  "implementation_readiness": "local_readiness/LOCAL_READINESS_ZH.md",
+  "reference_audit": "reference_paper/AUDIT_ZH.md",
+  "selection_reason": "Complement strong clinical and supervised longitudinal controls with recent breast-pCR temporal learning and a later habitat-interaction model. No selection based on new holdout performance.",
+  "first_batch": [
+    {
+      "method": "clinical_logistic",
+      "variants": [
+        "four_baseline_covariates",
+        "same_covariates_plus_assigned_arm"
+      ],
+      "question": "How much discrimination is attributable to baseline context alone?",
+      "status": "selected_not_implemented"
+    },
+    {
+      "method": "resnet3d_clinical",
+      "question": "What do MRI features add to the same clinical information?",
+      "status": "selected_not_implemented"
+    },
+    {
+      "method": "prefix_gru_clinical",
+      "question": "Are directly observed longitudinal histories sufficient without forecasting?",
+      "status": "selected_not_implemented"
+    },
+    {
+      "method": "bstnet_prefix_adapted",
+      "source": {
+        "url": "https://github.com/XmySz/BreastPCRClassification_Github",
+        "commit": "723a09ef114240b2f78638b893d89dd2227b6b4c",
+        "branch": "master",
+        "evidence": "paper/reproduction_audit_20261102/recent_literature/XmySz__BreastPCRClassification_Github/fetch_receipt.json"
+      },
+      "question": "Compare temporal-order learning with explicit future-state forecasting.",
+      "status": "selected_requires_paper_guided_reimplementation",
+      "required_corrections": [
+        "patient-time axes and batch-independent inference",
+        "legal-prefix and missing-visit support",
+        "validation-only checkpoint selection",
+        "evaluate all validation/test patients",
+        "document paper/source architectural differences"
+      ]
+    },
+    {
+      "method": "temporal_art_prefix_adapted",
+      "source": {
+        "url": "https://github.com/cirmuw/temporal-representation-learning",
+        "commit": "07ffd8b652105291d9bc49e877f9b0ebff501930",
+        "branch": "master",
+        "evidence": "paper/reproduction_audit_20261102/recent_literature/cirmuw__temporal-representation-learning/fetch_receipt.json"
+      },
+      "question": "Compare phenotype-trajectory representation learning with forecast-aware readout.",
+      "status": "selected_requires_input_adapter_and_downstream_linear_readout",
+      "required_corrections": [
+        "audit PE/SER or label matched-three-phase-MIP adaptation",
+        "fit pretraining on train patients only",
+        "document use of train pCR labels in ART loss",
+        "restrict downstream readout to legal observed prefixes"
+      ]
+    }
+  ],
+  "second_batch": [
+    {
+      "method": "sti_prefix_adapted",
+      "source": {
+        "url": "https://github.com/JBnoJB/STIModel",
+        "commit": "7d24ba6f7635089ed9533f0f1eb4bab918d43343",
+        "branch": "master",
+        "evidence": "paper/reproduction_audit_20261102/recent_literature/JBnoJB__STIModel/fetch_receipt.json"
+      },
+      "status": "habitat_masks_elapsed_time_and_pretraining_pending",
+      "required_corrections": [
+        "patient split before train-only oversampling",
+        "device condition",
+        "discrete habitat-mask processing",
+        "training/validation/test isolation"
+      ]
+    }
+  ],
+  "mechanism_supplement": {
+    "method": "seq2seq_pcr_adapted",
+    "source": {
+      "url": "https://github.com/fiy2W/mri_seq2seq",
+      "commit": "0414c0766678719b0f5c50bfb1ad67e71b218770",
+      "branch": "main",
+      "evidence": "paper/reproduction_audit_20261102/recent_literature/fiy2W__mri_seq2seq/fetch_receipt.json"
+    },
+    "source_subdirectory": "publications/src/seq2seq",
+    "status": "breast_pcr_downstream_missing; supplementary_candidate"
+  },
+  "deferred": [
+    "GNN_pCR: full training code not released",
+    "LMF: current repository is a stub",
+    "CoRe-WM: official full code and dynamic geometry not verified",
+    "MESN: extra modalities and code gap"
+  ],
+  "reproduction_labels": [
+    "official_recipe_reproduction only when original input/training/evaluation are preserved and verifiable",
+    "paper_guided_reimplementation when source is incomplete or incorrect",
+    "adapted_common_protocol when inputs/prefixes/clinical features/splits differ"
+  ],
+  "test_selection_policy": "Patient-disjoint frozen manifests; train-only resampling and preprocessing fitting; all tuning/checkpoint selection on validation; fixed holdout only for final evaluation. Existing seed44 and five-model probability ensemble retained.",
+  "statistics": "Reuse 14-metric evaluation; define new comparison families for newly added methods before inspecting new holdout comparisons, rather than reusing old nine-test Holm adjustment unchanged.",
+  "next_phase": "Implement adapters and method cards, validate CPU forward/gradients/temporal masking/batch independence, then profile resources and freeze executable training recipes before formal runs."
+}

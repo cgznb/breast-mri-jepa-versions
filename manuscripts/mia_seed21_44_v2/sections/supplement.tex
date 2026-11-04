@@ -1,0 +1,30 @@
+\section{Supplementary pooling, metrics, and uncertainty}
+\label{sec:supplement}
+The supplementary \meanmodel{} uses the same training seeds 21/44, folds, observed-history protocol, future-state objective, and forecast classifier feature groups as \fullmodel{}, replacing spatial attention with mean pooling. Only the equal two-seed aggregate is presented, consistent with the main analysis.
+\input{tables/pooling}
+\input{tables/extended_macro_metrics}
+\input{tables/bootstrap}
+\input{tables/extended_threshold}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/landmark_performance.pdf}
+\caption{Six complementary landmark summaries: AUROC, AP, F1, sensitivity, specificity, and Brier score. All points use fold-then-seed aggregation; shading is the conditional 95\% patient-bootstrap interval. The same 175 patients appear at every landmark. A trend in ranking can coexist with a different trend in calibration or error types.}
+\label{fig:longitudinal}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/outcome_score_changes.pdf}
+\caption{Outcome-conditioned changes in predicted pCR probability from T0 to T2. Panels separate models and outcome classes. Histograms are computed within each fitted model and then averaged over folds and seeds; they are not histograms of probability-ensemble predictions. Changes describe model scores and do not establish an individual treatment effect.}
+\label{fig:scorechanges}
+\end{figure*}
+
+\section{Supplementary subgroup and training-probe summaries}
+\input{tables/subgroup_results}
+\input{tables/subgroup_world_probe}
+
+\section{Reproducibility and reporting items to complete}
+The source package includes aggregate CSV files, source-report hashes, reproducible metric and figure scripts, the bootstrap procedure, and the official article class. It contains no patient identifiers, patient-level prediction rows, original MRI volumes, or model checkpoints. The method figure includes only rendered, anonymous development-image slices. Training seeds 21 and 44 are averaged equally after within-seed fold aggregation. Seed-specific aggregates are retained for numerical audit but are not separate manuscript results.
+
+\todo{Before submission, complete author and ethics statements; verify the precise pCR pathology definition; document codec and segmentation patient-level pretraining provenance; add matched external baselines and a prospectively locked seed-selection policy; audit external-cohort independence; and confirm the journal's current submission and anonymization requirements.}
