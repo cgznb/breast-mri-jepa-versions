@@ -1,0 +1,24 @@
+{
+  "completed": true,
+  "checked_at_utc": "2026-11-05T05:56:11.585276+00:00",
+  "source_runs": 60,
+  "registered_reports": 180,
+  "copied_source_sha256_checks": 420,
+  "test_patient_label_alignment_checks": 180,
+  "validation_test_exclusion_checks": 180,
+  "oof_unique_patient_label_alignment_checks": 36,
+  "patients": 175,
+  "positives": 56,
+  "policies": [
+    "fixed_0.5",
+    "oof_validation_youden"
+  ],
+  "numeric_comparisons": 2664,
+  "maximum_absolute_error": 2.220446049250313e-16,
+  "absolute_tolerance": 1e-12,
+  "aggregation": "within-seed fivefold probability mean -> metric; Macro mean of T0/T1/T2; four-seed metric mean and sample SD (ddof=1)",
+  "source_access": "bundle-local copied result JSON/CSV only; no source-project paths, manifests, MRI/training inputs, checkpoint loads or GPU",
+  "patient_level_outputs_written": false,
+  "scope": "point metrics, validation thresholds and seed SD; frozen bootstrap intervals/p-values are included in manuscript/data but not rerun here",
+  "audit_limit": "report-level patient/label alignment and validation/test exclusion only; original training-cohort manifest membership is not re-audited"
+}

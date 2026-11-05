@@ -1,0 +1,48 @@
+{
+  "schema": "raw_mri_normalization_v2",
+  "fit_split": "train",
+  "clinical_features": [
+    "age_at_screening",
+    "hr_positive",
+    "her2_positive",
+    "mammaprint_binary"
+  ],
+  "clinical_mean": [
+    48.51017214397496,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "clinical_std": [
+    10.647406605343186,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "clinical_counts": [
+    639,
+    641,
+    641,
+    641
+  ],
+  "image_preprocessing": {
+    "mode": "preprocessed_roi32_raw"
+  },
+  "intensity": "Raw ROI32 storage; fold training DCE0 foreground scale applied once to every phase, preserving zero background",
+  "image_normalization": {
+    "mean": 205.29409072292268,
+    "std": 258.2215549392282,
+    "fit_split": "train",
+    "scope": "unique_fold_train_actual_visits_DCE0_nonzero_crop_foreground_voxel_population",
+    "background_policy": "preserve_zero",
+    "already_normalized": true,
+    "normalization_policy": "Shared raw NPZ storage; the paired runtime applies this train-only scalar once to explicit foreground of all three phases. Background/padding stay zero; no per-patient or per-phase zscore. already_normalized describes RawMRIStore output."
+  },
+  "storage_image_normalization": {
+    "schema": "roi32_raw_storage_v1",
+    "normalization": "none",
+    "foreground_key": "foreground",
+    "support_key": "support",
+    "background_policy": "preserve_zero"
+  }
+}

@@ -1,0 +1,3950 @@
+{
+  "protocol": "direct_pcr_t0_t2_observed",
+  "landmarks": "t0_t2",
+  "checkpoint_landmarks": "t0_t2",
+  "selection_protocol": "patient_equal_prefix_f1",
+  "split": "test",
+  "independent_test": false,
+  "downstream_holdout": true,
+  "independence_scope": "unspecified",
+  "synthetic": false,
+  "clinical_validation": null,
+  "selection_metric": "patient_equal_prefix_f1",
+  "metric_name": "f1",
+  "selection_mode": "max",
+  "f1_threshold": 0.5,
+  "selection_score": 0.5799086757990869,
+  "metrics": {
+    "n": 175,
+    "positives": 56,
+    "auroc": 0.7359943977591016,
+    "auprc": 0.5905380515464451,
+    "brier": 0.21659930831727228,
+    "nll": 0.6225044649184447,
+    "f1": 0.5799086757990869,
+    "f1_threshold": 0.5,
+    "tp": 42.33333333333334,
+    "fp": 47.66666666666666,
+    "fn": 13.666666666666666,
+    "ece_10_equal_width": 0.16900731566406435,
+    "reliability_bins": [
+      {
+        "count": 9,
+        "mean_probability": 0.18679307401180267,
+        "event_rate": 0.1111111111111111
+      },
+      {
+        "count": 62,
+        "mean_probability": 0.2545283364672815,
+        "event_rate": 0.09677419354838714
+      },
+      {
+        "count": 83,
+        "mean_probability": 0.358794399772782,
+        "event_rate": 0.2048192771084337
+      },
+      {
+        "count": 101,
+        "mean_probability": 0.4450669306339602,
+        "event_rate": 0.16831683168316824
+      },
+      {
+        "count": 131,
+        "mean_probability": 0.5569624764318686,
+        "event_rate": 0.36641221374045807
+      },
+      {
+        "count": 116,
+        "mean_probability": 0.6397761980007433,
+        "event_rate": 0.5344827586206895
+      },
+      {
+        "count": 23,
+        "mean_probability": 0.7235161895337316,
+        "event_rate": 0.7391304347826088
+      }
+    ],
+    "patients": 175,
+    "prefixes": 525,
+    "missing_label_patients": 0
+  },
+  "per_landmark": {
+    "T0": {
+      "n": 175,
+      "positives": 56,
+      "auroc": 0.7357442977190876,
+      "auprc": 0.6110117822621575,
+      "brier": 0.22201256930139315,
+      "nll": 0.633714471726538,
+      "f1": 0.5771812080536913,
+      "f1_threshold": 0.5,
+      "tp": 43.0,
+      "fp": 50.0,
+      "fn": 13.0,
+      "ece_10_equal_width": 0.18441205518586296,
+      "reliability_bins": [
+        {
+          "count": 23,
+          "mean_probability": 0.24904952619386755,
+          "event_rate": 0.08695652173913043
+        },
+        {
+          "count": 26,
+          "mean_probability": 0.3647531924339441,
+          "event_rate": 0.23076923076923078
+        },
+        {
+          "count": 33,
+          "mean_probability": 0.4466019904974735,
+          "event_rate": 0.15151515151515152
+        },
+        {
+          "count": 29,
+          "mean_probability": 0.5537932391824394,
+          "event_rate": 0.3103448275862069
+        },
+        {
+          "count": 48,
+          "mean_probability": 0.6381537442406019,
+          "event_rate": 0.4791666666666667
+        },
+        {
+          "count": 16,
+          "mean_probability": 0.7269461378455162,
+          "event_rate": 0.6875
+        }
+      ],
+      "missing_labels": 0
+    },
+    "T1": {
+      "n": 175,
+      "positives": 56,
+      "auroc": 0.743547418967587,
+      "auprc": 0.6122679216689998,
+      "brier": 0.2068797758647368,
+      "nll": 0.6020240272379119,
+      "f1": 0.5942028985507246,
+      "f1_threshold": 0.5,
+      "tp": 41.0,
+      "fp": 41.0,
+      "fn": 15.0,
+      "ece_10_equal_width": 0.1459550226586206,
+      "reliability_bins": [
+        {
+          "count": 9,
+          "mean_probability": 0.18679307401180267,
+          "event_rate": 0.1111111111111111
+        },
+        {
+          "count": 19,
+          "mean_probability": 0.2598197664085187,
+          "event_rate": 0.15789473684210525
+        },
+        {
+          "count": 34,
+          "mean_probability": 0.356496876653503,
+          "event_rate": 0.17647058823529413
+        },
+        {
+          "count": 31,
+          "mean_probability": 0.44135499961914554,
+          "event_rate": 0.16129032258064516
+        },
+        {
+          "count": 55,
+          "mean_probability": 0.5554162708195773,
+          "event_rate": 0.41818181818181815
+        },
+        {
+          "count": 26,
+          "mean_probability": 0.6432773333329421,
+          "event_rate": 0.6538461538461539
+        },
+        {
+          "count": 1,
+          "mean_probability": 0.7011672854423523,
+          "event_rate": 1.0
+        }
+      ],
+      "missing_labels": 0
+    },
+    "T2": {
+      "n": 175,
+      "positives": 56,
+      "auroc": 0.7412965186074428,
+      "auprc": 0.611246375906302,
+      "brier": 0.22090557978568695,
+      "nll": 0.6317748957908839,
+      "f1": 0.5695364238410596,
+      "f1_threshold": 0.5,
+      "tp": 43.0,
+      "fp": 52.0,
+      "fn": 13.0,
+      "ece_10_equal_width": 0.18700832673481532,
+      "reliability_bins": [
+        {
+          "count": 20,
+          "mean_probability": 0.25580210983753204,
+          "event_rate": 0.05
+        },
+        {
+          "count": 23,
+          "mean_probability": 0.3554547118104022,
+          "event_rate": 0.21739130434782608
+        },
+        {
+          "count": 37,
+          "mean_probability": 0.44680781944378,
+          "event_rate": 0.1891891891891892
+        },
+        {
+          "count": 47,
+          "mean_probability": 0.5607273527916442,
+          "event_rate": 0.3404255319148936
+        },
+        {
+          "count": 42,
+          "mean_probability": 0.6394630613781157,
+          "event_rate": 0.5238095238095238
+        },
+        {
+          "count": 6,
+          "mean_probability": 0.7180944780508677,
+          "event_rate": 0.8333333333333334
+        }
+      ],
+      "missing_labels": 0
+    }
+  },
+  "patient_equal_metrics": {
+    "n": 175,
+    "positives": 56,
+    "auroc": 0.7359943977591016,
+    "auprc": 0.5905380515464451,
+    "brier": 0.21659930831727228,
+    "nll": 0.6225044649184447,
+    "f1": 0.5799086757990869,
+    "f1_threshold": 0.5,
+    "tp": 42.33333333333334,
+    "fp": 47.66666666666666,
+    "fn": 13.666666666666666,
+    "ece_10_equal_width": 0.16900731566406435,
+    "reliability_bins": [
+      {
+        "count": 9,
+        "mean_probability": 0.18679307401180267,
+        "event_rate": 0.1111111111111111
+      },
+      {
+        "count": 62,
+        "mean_probability": 0.2545283364672815,
+        "event_rate": 0.09677419354838714
+      },
+      {
+        "count": 83,
+        "mean_probability": 0.358794399772782,
+        "event_rate": 0.2048192771084337
+      },
+      {
+        "count": 101,
+        "mean_probability": 0.4450669306339602,
+        "event_rate": 0.16831683168316824
+      },
+      {
+        "count": 131,
+        "mean_probability": 0.5569624764318686,
+        "event_rate": 0.36641221374045807
+      },
+      {
+        "count": 116,
+        "mean_probability": 0.6397761980007433,
+        "event_rate": 0.5344827586206895
+      },
+      {
+        "count": 23,
+        "mean_probability": 0.7235161895337316,
+        "event_rate": 0.7391304347826088
+      }
+    ],
+    "patients": 175,
+    "prefixes": 525,
+    "missing_label_patients": 0
+  },
+  "rows": [
+    {
+      "patient_key": "ISPY2-102212",
+      "landmark": 0,
+      "pcr_probability": 0.5523030161857605,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-102212",
+      "landmark": 1,
+      "pcr_probability": 0.4992823302745819,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-102212",
+      "landmark": 2,
+      "pcr_probability": 0.5423054695129395,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-103693",
+      "landmark": 0,
+      "pcr_probability": 0.5680325627326965,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-103693",
+      "landmark": 1,
+      "pcr_probability": 0.5225989818572998,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-103693",
+      "landmark": 2,
+      "pcr_probability": 0.5661113262176514,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-109623",
+      "landmark": 0,
+      "pcr_probability": 0.3370837867259979,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-109623",
+      "landmark": 1,
+      "pcr_probability": 0.2984801232814789,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-109623",
+      "landmark": 2,
+      "pcr_probability": 0.3377072215080261,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-109874",
+      "landmark": 0,
+      "pcr_probability": 0.6236169934272766,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-109874",
+      "landmark": 1,
+      "pcr_probability": 0.5673999190330505,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-109874",
+      "landmark": 2,
+      "pcr_probability": 0.5964608788490295,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-111674",
+      "landmark": 0,
+      "pcr_probability": 0.6632967591285706,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-111674",
+      "landmark": 1,
+      "pcr_probability": 0.5977123975753784,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-111674",
+      "landmark": 2,
+      "pcr_probability": 0.6439604163169861,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-112606",
+      "landmark": 0,
+      "pcr_probability": 0.46511325240135193,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-112606",
+      "landmark": 1,
+      "pcr_probability": 0.4153229296207428,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-112606",
+      "landmark": 2,
+      "pcr_probability": 0.4591479003429413,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-115638",
+      "landmark": 0,
+      "pcr_probability": 0.5228013396263123,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-115638",
+      "landmark": 1,
+      "pcr_probability": 0.4909304976463318,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-115638",
+      "landmark": 2,
+      "pcr_probability": 0.524223268032074,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-123660",
+      "landmark": 0,
+      "pcr_probability": 0.6173178553581238,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-123660",
+      "landmark": 1,
+      "pcr_probability": 0.568159818649292,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-123660",
+      "landmark": 2,
+      "pcr_probability": 0.610630214214325,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-136536",
+      "landmark": 0,
+      "pcr_probability": 0.4041893780231476,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-136536",
+      "landmark": 1,
+      "pcr_probability": 0.39065513014793396,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-136536",
+      "landmark": 2,
+      "pcr_probability": 0.4270618259906769,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-142688",
+      "landmark": 0,
+      "pcr_probability": 0.4200630187988281,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-142688",
+      "landmark": 1,
+      "pcr_probability": 0.39807283878326416,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-142688",
+      "landmark": 2,
+      "pcr_probability": 0.43822169303894043,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-145513",
+      "landmark": 0,
+      "pcr_probability": 0.6520546078681946,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-145513",
+      "landmark": 1,
+      "pcr_probability": 0.5975199937820435,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-145513",
+      "landmark": 2,
+      "pcr_probability": 0.6383050084114075,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-148357",
+      "landmark": 0,
+      "pcr_probability": 0.2756574749946594,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-148357",
+      "landmark": 1,
+      "pcr_probability": 0.24793092906475067,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-148357",
+      "landmark": 2,
+      "pcr_probability": 0.2858092784881592,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-150547",
+      "landmark": 0,
+      "pcr_probability": 0.4238373041152954,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-150547",
+      "landmark": 1,
+      "pcr_probability": 0.3710915148258209,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-150547",
+      "landmark": 2,
+      "pcr_probability": 0.4177672564983368,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-155171",
+      "landmark": 0,
+      "pcr_probability": 0.48089471459388733,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-155171",
+      "landmark": 1,
+      "pcr_probability": 0.4094984233379364,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-155171",
+      "landmark": 2,
+      "pcr_probability": 0.46078139543533325,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-159284",
+      "landmark": 0,
+      "pcr_probability": 0.3051593601703644,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-159284",
+      "landmark": 1,
+      "pcr_probability": 0.2825653553009033,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-159284",
+      "landmark": 2,
+      "pcr_probability": 0.33041906356811523,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-162562",
+      "landmark": 0,
+      "pcr_probability": 0.6698448657989502,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-162562",
+      "landmark": 1,
+      "pcr_probability": 0.6077527403831482,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-162562",
+      "landmark": 2,
+      "pcr_probability": 0.6369171738624573,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-166412",
+      "landmark": 0,
+      "pcr_probability": 0.494547039270401,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-166412",
+      "landmark": 1,
+      "pcr_probability": 0.44743844866752625,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-166412",
+      "landmark": 2,
+      "pcr_probability": 0.4954507350921631,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-178649",
+      "landmark": 0,
+      "pcr_probability": 0.6728647351264954,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-178649",
+      "landmark": 1,
+      "pcr_probability": 0.6013006567955017,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-178649",
+      "landmark": 2,
+      "pcr_probability": 0.6323655247688293,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-178815",
+      "landmark": 0,
+      "pcr_probability": 0.43178221583366394,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-178815",
+      "landmark": 1,
+      "pcr_probability": 0.401930570602417,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-178815",
+      "landmark": 2,
+      "pcr_probability": 0.4449770748615265,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-180663",
+      "landmark": 0,
+      "pcr_probability": 0.513092577457428,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-180663",
+      "landmark": 1,
+      "pcr_probability": 0.4596373736858368,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-180663",
+      "landmark": 2,
+      "pcr_probability": 0.5086970925331116,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-181442",
+      "landmark": 0,
+      "pcr_probability": 0.4065952003002167,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-181442",
+      "landmark": 1,
+      "pcr_probability": 0.3859504759311676,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-181442",
+      "landmark": 2,
+      "pcr_probability": 0.429226815700531,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-201831",
+      "landmark": 0,
+      "pcr_probability": 0.6243924498558044,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-201831",
+      "landmark": 1,
+      "pcr_probability": 0.5684429407119751,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-201831",
+      "landmark": 2,
+      "pcr_probability": 0.5964590907096863,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-202956",
+      "landmark": 0,
+      "pcr_probability": 0.6551138758659363,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-202956",
+      "landmark": 1,
+      "pcr_probability": 0.5789044499397278,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-202956",
+      "landmark": 2,
+      "pcr_probability": 0.6095788478851318,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-208265",
+      "landmark": 0,
+      "pcr_probability": 0.6319535374641418,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-208265",
+      "landmark": 1,
+      "pcr_probability": 0.5644928216934204,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-208265",
+      "landmark": 2,
+      "pcr_probability": 0.6146627068519592,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-208303",
+      "landmark": 0,
+      "pcr_probability": 0.5966160893440247,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-208303",
+      "landmark": 1,
+      "pcr_probability": 0.5594100952148438,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-208303",
+      "landmark": 2,
+      "pcr_probability": 0.5961118340492249,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-209397",
+      "landmark": 0,
+      "pcr_probability": 0.5785881876945496,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-209397",
+      "landmark": 1,
+      "pcr_probability": 0.5314859747886658,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-209397",
+      "landmark": 2,
+      "pcr_probability": 0.5729432702064514,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-223526",
+      "landmark": 0,
+      "pcr_probability": 0.40153440833091736,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-223526",
+      "landmark": 1,
+      "pcr_probability": 0.36024928092956543,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-223526",
+      "landmark": 2,
+      "pcr_probability": 0.3990311324596405,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-227055",
+      "landmark": 0,
+      "pcr_probability": 0.4826800227165222,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-227055",
+      "landmark": 1,
+      "pcr_probability": 0.4424895942211151,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-227055",
+      "landmark": 2,
+      "pcr_probability": 0.5072574615478516,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-227881",
+      "landmark": 0,
+      "pcr_probability": 0.4727635085582733,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-227881",
+      "landmark": 1,
+      "pcr_probability": 0.4373437464237213,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-227881",
+      "landmark": 2,
+      "pcr_probability": 0.4802802801132202,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-229328",
+      "landmark": 0,
+      "pcr_probability": 0.29929953813552856,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-229328",
+      "landmark": 1,
+      "pcr_probability": 0.27456313371658325,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-229328",
+      "landmark": 2,
+      "pcr_probability": 0.31261324882507324,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-234723",
+      "landmark": 0,
+      "pcr_probability": 0.6282193660736084,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-234723",
+      "landmark": 1,
+      "pcr_probability": 0.56863933801651,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-234723",
+      "landmark": 2,
+      "pcr_probability": 0.6015608310699463,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-235995",
+      "landmark": 0,
+      "pcr_probability": 0.6194261312484741,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-235995",
+      "landmark": 1,
+      "pcr_probability": 0.5695672631263733,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-235995",
+      "landmark": 2,
+      "pcr_probability": 0.6084678769111633,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-241998",
+      "landmark": 0,
+      "pcr_probability": 0.20548000931739807,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-241998",
+      "landmark": 1,
+      "pcr_probability": 0.1850428283214569,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-241998",
+      "landmark": 2,
+      "pcr_probability": 0.22151976823806763,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-243836",
+      "landmark": 0,
+      "pcr_probability": 0.5740498900413513,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-243836",
+      "landmark": 1,
+      "pcr_probability": 0.510155975818634,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-243836",
+      "landmark": 2,
+      "pcr_probability": 0.5533233880996704,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-250274",
+      "landmark": 0,
+      "pcr_probability": 0.6442404389381409,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-250274",
+      "landmark": 1,
+      "pcr_probability": 0.5884657502174377,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-250274",
+      "landmark": 2,
+      "pcr_probability": 0.6266354322433472,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-253531",
+      "landmark": 0,
+      "pcr_probability": 0.6300600171089172,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-253531",
+      "landmark": 1,
+      "pcr_probability": 0.5758264660835266,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-253531",
+      "landmark": 2,
+      "pcr_probability": 0.6160902380943298,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-255388",
+      "landmark": 0,
+      "pcr_probability": 0.7511557936668396,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-255388",
+      "landmark": 1,
+      "pcr_probability": 0.6905585527420044,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-255388",
+      "landmark": 2,
+      "pcr_probability": 0.7195994257926941,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-261304",
+      "landmark": 0,
+      "pcr_probability": 0.2776257395744324,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-261304",
+      "landmark": 1,
+      "pcr_probability": 0.24997863173484802,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-261304",
+      "landmark": 2,
+      "pcr_probability": 0.28734204173088074,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-273745",
+      "landmark": 0,
+      "pcr_probability": 0.20897968113422394,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-273745",
+      "landmark": 1,
+      "pcr_probability": 0.1880003958940506,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-273745",
+      "landmark": 2,
+      "pcr_probability": 0.22326558828353882,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-275626",
+      "landmark": 0,
+      "pcr_probability": 0.6239946484565735,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-275626",
+      "landmark": 1,
+      "pcr_probability": 0.5669377446174622,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-275626",
+      "landmark": 2,
+      "pcr_probability": 0.597079873085022,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-284355",
+      "landmark": 0,
+      "pcr_probability": 0.7061411738395691,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-284355",
+      "landmark": 1,
+      "pcr_probability": 0.640332043170929,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-284355",
+      "landmark": 2,
+      "pcr_probability": 0.6723973155021667,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-285339",
+      "landmark": 0,
+      "pcr_probability": 0.7403244972229004,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-285339",
+      "landmark": 1,
+      "pcr_probability": 0.6812678575515747,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-285339",
+      "landmark": 2,
+      "pcr_probability": 0.7103265523910522,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-291515",
+      "landmark": 0,
+      "pcr_probability": 0.7036259770393372,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-291515",
+      "landmark": 1,
+      "pcr_probability": 0.6407332420349121,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-291515",
+      "landmark": 2,
+      "pcr_probability": 0.6699411273002625,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-294739",
+      "landmark": 0,
+      "pcr_probability": 0.29242950677871704,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-294739",
+      "landmark": 1,
+      "pcr_probability": 0.2606883943080902,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-294739",
+      "landmark": 2,
+      "pcr_probability": 0.3081435263156891,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-301665",
+      "landmark": 0,
+      "pcr_probability": 0.36753490567207336,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-301665",
+      "landmark": 1,
+      "pcr_probability": 0.32391488552093506,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-301665",
+      "landmark": 2,
+      "pcr_probability": 0.3673169016838074,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-303685",
+      "landmark": 0,
+      "pcr_probability": 0.7129752039909363,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-303685",
+      "landmark": 1,
+      "pcr_probability": 0.6585929989814758,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-303685",
+      "landmark": 2,
+      "pcr_probability": 0.6913643479347229,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-311316",
+      "landmark": 0,
+      "pcr_probability": 0.6355539560317993,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-311316",
+      "landmark": 1,
+      "pcr_probability": 0.580303966999054,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-311316",
+      "landmark": 2,
+      "pcr_probability": 0.6194783449172974,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-313243",
+      "landmark": 0,
+      "pcr_probability": 0.30440255999565125,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-313243",
+      "landmark": 1,
+      "pcr_probability": 0.2769203782081604,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-313243",
+      "landmark": 2,
+      "pcr_probability": 0.32580670714378357,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-316996",
+      "landmark": 0,
+      "pcr_probability": 0.6058270931243896,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-316996",
+      "landmark": 1,
+      "pcr_probability": 0.5473596453666687,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-316996",
+      "landmark": 2,
+      "pcr_probability": 0.5747674107551575,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-317131",
+      "landmark": 0,
+      "pcr_probability": 0.3726520836353302,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-317131",
+      "landmark": 1,
+      "pcr_probability": 0.3482745587825775,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-317131",
+      "landmark": 2,
+      "pcr_probability": 0.4006909728050232,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-318569",
+      "landmark": 0,
+      "pcr_probability": 0.5050368309020996,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-318569",
+      "landmark": 1,
+      "pcr_probability": 0.46417295932769775,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-318569",
+      "landmark": 2,
+      "pcr_probability": 0.5044028162956238,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-342142",
+      "landmark": 0,
+      "pcr_probability": 0.591591477394104,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-342142",
+      "landmark": 1,
+      "pcr_probability": 0.5530579686164856,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-342142",
+      "landmark": 2,
+      "pcr_probability": 0.5785468220710754,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-345574",
+      "landmark": 0,
+      "pcr_probability": 0.7088309526443481,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-345574",
+      "landmark": 1,
+      "pcr_probability": 0.642520546913147,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-345574",
+      "landmark": 2,
+      "pcr_probability": 0.6758372783660889,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-349225",
+      "landmark": 0,
+      "pcr_probability": 0.3980737328529358,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-349225",
+      "landmark": 1,
+      "pcr_probability": 0.3859194815158844,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-349225",
+      "landmark": 2,
+      "pcr_probability": 0.4201328158378601,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-355942",
+      "landmark": 0,
+      "pcr_probability": 0.2057485282421112,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-355942",
+      "landmark": 1,
+      "pcr_probability": 0.18534353375434875,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-355942",
+      "landmark": 2,
+      "pcr_probability": 0.22095578908920288,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-360937",
+      "landmark": 0,
+      "pcr_probability": 0.47720643877983093,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-360937",
+      "landmark": 1,
+      "pcr_probability": 0.4075258672237396,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-360937",
+      "landmark": 2,
+      "pcr_probability": 0.45853719115257263,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-361701",
+      "landmark": 0,
+      "pcr_probability": 0.3678285479545593,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-361701",
+      "landmark": 1,
+      "pcr_probability": 0.3211800754070282,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-361701",
+      "landmark": 2,
+      "pcr_probability": 0.37331482768058777,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-378885",
+      "landmark": 0,
+      "pcr_probability": 0.4117315411567688,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-378885",
+      "landmark": 1,
+      "pcr_probability": 0.36733531951904297,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-378885",
+      "landmark": 2,
+      "pcr_probability": 0.42577892541885376,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-386664",
+      "landmark": 0,
+      "pcr_probability": 0.38049080967903137,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-386664",
+      "landmark": 1,
+      "pcr_probability": 0.3325594663619995,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-386664",
+      "landmark": 2,
+      "pcr_probability": 0.3792645335197449,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-388581",
+      "landmark": 0,
+      "pcr_probability": 0.4746595025062561,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-388581",
+      "landmark": 1,
+      "pcr_probability": 0.4394398629665375,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-388581",
+      "landmark": 2,
+      "pcr_probability": 0.4822613298892975,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-408692",
+      "landmark": 0,
+      "pcr_probability": 0.4019119143486023,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-408692",
+      "landmark": 1,
+      "pcr_probability": 0.38245972990989685,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-408692",
+      "landmark": 2,
+      "pcr_probability": 0.4202117323875427,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-410083",
+      "landmark": 0,
+      "pcr_probability": 0.687206506729126,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-410083",
+      "landmark": 1,
+      "pcr_probability": 0.6372418999671936,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-410083",
+      "landmark": 2,
+      "pcr_probability": 0.6614194512367249,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-411950",
+      "landmark": 0,
+      "pcr_probability": 0.3631126582622528,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-411950",
+      "landmark": 1,
+      "pcr_probability": 0.340360552072525,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-411950",
+      "landmark": 2,
+      "pcr_probability": 0.3841705322265625,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-412772",
+      "landmark": 0,
+      "pcr_probability": 0.5361294746398926,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-412772",
+      "landmark": 1,
+      "pcr_probability": 0.5318113565444946,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-412772",
+      "landmark": 2,
+      "pcr_probability": 0.5594609379768372,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-414844",
+      "landmark": 0,
+      "pcr_probability": 0.27936020493507385,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-414844",
+      "landmark": 1,
+      "pcr_probability": 0.24752463400363922,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-414844",
+      "landmark": 2,
+      "pcr_probability": 0.29052790999412537,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-417474",
+      "landmark": 0,
+      "pcr_probability": 0.5337689518928528,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-417474",
+      "landmark": 1,
+      "pcr_probability": 0.5301839113235474,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-417474",
+      "landmark": 2,
+      "pcr_probability": 0.558498203754425,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-421829",
+      "landmark": 0,
+      "pcr_probability": 0.4240880310535431,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-421829",
+      "landmark": 1,
+      "pcr_probability": 0.39980632066726685,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-421829",
+      "landmark": 2,
+      "pcr_probability": 0.439966082572937,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-422013",
+      "landmark": 0,
+      "pcr_probability": 0.5342577695846558,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-422013",
+      "landmark": 1,
+      "pcr_probability": 0.48473164439201355,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-422013",
+      "landmark": 2,
+      "pcr_probability": 0.5250980257987976,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-423979",
+      "landmark": 0,
+      "pcr_probability": 0.20552463829517365,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-423979",
+      "landmark": 1,
+      "pcr_probability": 0.18508628010749817,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-423979",
+      "landmark": 2,
+      "pcr_probability": 0.22162587940692902,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-425173",
+      "landmark": 0,
+      "pcr_probability": 0.5656732320785522,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-425173",
+      "landmark": 1,
+      "pcr_probability": 0.5203658938407898,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-425173",
+      "landmark": 2,
+      "pcr_probability": 0.5639986991882324,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-437162",
+      "landmark": 0,
+      "pcr_probability": 0.6399732232093811,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-437162",
+      "landmark": 1,
+      "pcr_probability": 0.5843864679336548,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-437162",
+      "landmark": 2,
+      "pcr_probability": 0.622772753238678,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-442669",
+      "landmark": 0,
+      "pcr_probability": 0.5825798511505127,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-442669",
+      "landmark": 1,
+      "pcr_probability": 0.5479052662849426,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-442669",
+      "landmark": 2,
+      "pcr_probability": 0.5707074999809265,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-443444",
+      "landmark": 0,
+      "pcr_probability": 0.6761569976806641,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-443444",
+      "landmark": 1,
+      "pcr_probability": 0.607266902923584,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-443444",
+      "landmark": 2,
+      "pcr_probability": 0.6362634897232056,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-456506",
+      "landmark": 0,
+      "pcr_probability": 0.5738539695739746,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-456506",
+      "landmark": 1,
+      "pcr_probability": 0.5272635221481323,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-456506",
+      "landmark": 2,
+      "pcr_probability": 0.5691017508506775,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-458196",
+      "landmark": 0,
+      "pcr_probability": 0.21192365884780884,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-458196",
+      "landmark": 1,
+      "pcr_probability": 0.1906278431415558,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-458196",
+      "landmark": 2,
+      "pcr_probability": 0.22566154599189758,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-459311",
+      "landmark": 0,
+      "pcr_probability": 0.4213223159313202,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-459311",
+      "landmark": 1,
+      "pcr_probability": 0.36922550201416016,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-459311",
+      "landmark": 2,
+      "pcr_probability": 0.4150612950325012,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-460642",
+      "landmark": 0,
+      "pcr_probability": 0.28400006890296936,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-460642",
+      "landmark": 1,
+      "pcr_probability": 0.25681084394454956,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-460642",
+      "landmark": 2,
+      "pcr_probability": 0.2941335141658783,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-462582",
+      "landmark": 0,
+      "pcr_probability": 0.2055831402540207,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-462582",
+      "landmark": 1,
+      "pcr_probability": 0.18524867296218872,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-462582",
+      "landmark": 2,
+      "pcr_probability": 0.22183407843112946,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-467686",
+      "landmark": 0,
+      "pcr_probability": 0.39147478342056274,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-467686",
+      "landmark": 1,
+      "pcr_probability": 0.3772658407688141,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-467686",
+      "landmark": 2,
+      "pcr_probability": 0.4297703206539154,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-473365",
+      "landmark": 0,
+      "pcr_probability": 0.5733303427696228,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-473365",
+      "landmark": 1,
+      "pcr_probability": 0.5277754664421082,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-473365",
+      "landmark": 2,
+      "pcr_probability": 0.5710691213607788,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-473468",
+      "landmark": 0,
+      "pcr_probability": 0.5913540720939636,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-473468",
+      "landmark": 1,
+      "pcr_probability": 0.5529834032058716,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-473468",
+      "landmark": 2,
+      "pcr_probability": 0.5786132216453552,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-477994",
+      "landmark": 0,
+      "pcr_probability": 0.6781413555145264,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-477994",
+      "landmark": 1,
+      "pcr_probability": 0.6174939274787903,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-477994",
+      "landmark": 2,
+      "pcr_probability": 0.6525357365608215,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-478484",
+      "landmark": 0,
+      "pcr_probability": 0.6048614382743835,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-478484",
+      "landmark": 1,
+      "pcr_probability": 0.5451905131340027,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-478484",
+      "landmark": 2,
+      "pcr_probability": 0.5933263301849365,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-478655",
+      "landmark": 0,
+      "pcr_probability": 0.748141884803772,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-478655",
+      "landmark": 1,
+      "pcr_probability": 0.6852301359176636,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-478655",
+      "landmark": 2,
+      "pcr_probability": 0.7124113440513611,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-484867",
+      "landmark": 0,
+      "pcr_probability": 0.4699876308441162,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-484867",
+      "landmark": 1,
+      "pcr_probability": 0.43362700939178467,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-484867",
+      "landmark": 2,
+      "pcr_probability": 0.4774862229824066,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-493472",
+      "landmark": 0,
+      "pcr_probability": 0.34567034244537354,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-493472",
+      "landmark": 1,
+      "pcr_probability": 0.307841956615448,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-493472",
+      "landmark": 2,
+      "pcr_probability": 0.34993696212768555,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-493519",
+      "landmark": 0,
+      "pcr_probability": 0.22487841546535492,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-493519",
+      "landmark": 1,
+      "pcr_probability": 0.2025652974843979,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-493519",
+      "landmark": 2,
+      "pcr_probability": 0.23808681964874268,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-507198",
+      "landmark": 0,
+      "pcr_probability": 0.41476720571517944,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-507198",
+      "landmark": 1,
+      "pcr_probability": 0.3957405090332031,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-507198",
+      "landmark": 2,
+      "pcr_probability": 0.4350582957267761,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-519738",
+      "landmark": 0,
+      "pcr_probability": 0.6475960612297058,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-519738",
+      "landmark": 1,
+      "pcr_probability": 0.5834457278251648,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-519738",
+      "landmark": 2,
+      "pcr_probability": 0.6190975308418274,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-520471",
+      "landmark": 0,
+      "pcr_probability": 0.3965444266796112,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-520471",
+      "landmark": 1,
+      "pcr_probability": 0.3846486806869507,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-520471",
+      "landmark": 2,
+      "pcr_probability": 0.4357556402683258,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-553141",
+      "landmark": 0,
+      "pcr_probability": 0.659161388874054,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-553141",
+      "landmark": 1,
+      "pcr_probability": 0.5882251262664795,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-553141",
+      "landmark": 2,
+      "pcr_probability": 0.6388688683509827,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-559263",
+      "landmark": 0,
+      "pcr_probability": 0.4051564037799835,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-559263",
+      "landmark": 1,
+      "pcr_probability": 0.38397639989852905,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-559263",
+      "landmark": 2,
+      "pcr_probability": 0.42904403805732727,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-567907",
+      "landmark": 0,
+      "pcr_probability": 0.2754840552806854,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-567907",
+      "landmark": 1,
+      "pcr_probability": 0.2477421909570694,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-567907",
+      "landmark": 2,
+      "pcr_probability": 0.2852320075035095,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-568331",
+      "landmark": 0,
+      "pcr_probability": 0.4911954700946808,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-568331",
+      "landmark": 1,
+      "pcr_probability": 0.4424075484275818,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-568331",
+      "landmark": 2,
+      "pcr_probability": 0.5016272664070129,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-570380",
+      "landmark": 0,
+      "pcr_probability": 0.6285396218299866,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-570380",
+      "landmark": 1,
+      "pcr_probability": 0.561044454574585,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-570380",
+      "landmark": 2,
+      "pcr_probability": 0.5911239385604858,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-571276",
+      "landmark": 0,
+      "pcr_probability": 0.563657283782959,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-571276",
+      "landmark": 1,
+      "pcr_probability": 0.524694561958313,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-571276",
+      "landmark": 2,
+      "pcr_probability": 0.551123857498169,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-573881",
+      "landmark": 0,
+      "pcr_probability": 0.39834901690483093,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-573881",
+      "landmark": 1,
+      "pcr_probability": 0.35891005396842957,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-573881",
+      "landmark": 2,
+      "pcr_probability": 0.39907607436180115,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-574091",
+      "landmark": 0,
+      "pcr_probability": 0.7556242346763611,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-574091",
+      "landmark": 1,
+      "pcr_probability": 0.6962598562240601,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-574091",
+      "landmark": 2,
+      "pcr_probability": 0.7258465886116028,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-590299",
+      "landmark": 0,
+      "pcr_probability": 0.6250904202461243,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-590299",
+      "landmark": 1,
+      "pcr_probability": 0.5692410469055176,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-590299",
+      "landmark": 2,
+      "pcr_probability": 0.5975964069366455,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-604326",
+      "landmark": 0,
+      "pcr_probability": 0.6176728010177612,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-604326",
+      "landmark": 1,
+      "pcr_probability": 0.5692557692527771,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-604326",
+      "landmark": 2,
+      "pcr_probability": 0.609107494354248,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-605713",
+      "landmark": 0,
+      "pcr_probability": 0.5192824602127075,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-605713",
+      "landmark": 1,
+      "pcr_probability": 0.44538578391075134,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-605713",
+      "landmark": 2,
+      "pcr_probability": 0.5042814612388611,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-613188",
+      "landmark": 0,
+      "pcr_probability": 0.4894683361053467,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-613188",
+      "landmark": 1,
+      "pcr_probability": 0.4403400421142578,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-613188",
+      "landmark": 2,
+      "pcr_probability": 0.49861767888069153,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-650589",
+      "landmark": 0,
+      "pcr_probability": 0.4900828003883362,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-650589",
+      "landmark": 1,
+      "pcr_probability": 0.44085946679115295,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-650589",
+      "landmark": 2,
+      "pcr_probability": 0.49979349970817566,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-652480",
+      "landmark": 0,
+      "pcr_probability": 0.6285231709480286,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-652480",
+      "landmark": 1,
+      "pcr_probability": 0.5685238242149353,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-652480",
+      "landmark": 2,
+      "pcr_probability": 0.6013592481613159,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-653325",
+      "landmark": 0,
+      "pcr_probability": 0.41661590337753296,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-653325",
+      "landmark": 1,
+      "pcr_probability": 0.373552531003952,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-653325",
+      "landmark": 2,
+      "pcr_probability": 0.43382689356803894,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-654956",
+      "landmark": 0,
+      "pcr_probability": 0.6819466948509216,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-654956",
+      "landmark": 1,
+      "pcr_probability": 0.6100092530250549,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-654956",
+      "landmark": 2,
+      "pcr_probability": 0.6394984126091003,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-661730",
+      "landmark": 0,
+      "pcr_probability": 0.6259564757347107,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-661730",
+      "landmark": 1,
+      "pcr_probability": 0.5669324994087219,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-661730",
+      "landmark": 2,
+      "pcr_probability": 0.5988721251487732,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-663144",
+      "landmark": 0,
+      "pcr_probability": 0.3689287602901459,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-663144",
+      "landmark": 1,
+      "pcr_probability": 0.3438135087490082,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-663144",
+      "landmark": 2,
+      "pcr_probability": 0.3948962688446045,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-663197",
+      "landmark": 0,
+      "pcr_probability": 0.7063164114952087,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-663197",
+      "landmark": 1,
+      "pcr_probability": 0.6488427519798279,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-663197",
+      "landmark": 2,
+      "pcr_probability": 0.6761167049407959,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-674897",
+      "landmark": 0,
+      "pcr_probability": 0.42632535099983215,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-674897",
+      "landmark": 1,
+      "pcr_probability": 0.402496874332428,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-674897",
+      "landmark": 2,
+      "pcr_probability": 0.44276443123817444,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-679787",
+      "landmark": 0,
+      "pcr_probability": 0.3990613520145416,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-679787",
+      "landmark": 1,
+      "pcr_probability": 0.3797098696231842,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-679787",
+      "landmark": 2,
+      "pcr_probability": 0.415632426738739,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-687733",
+      "landmark": 0,
+      "pcr_probability": 0.3400286138057709,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-687733",
+      "landmark": 1,
+      "pcr_probability": 0.3012158274650574,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-687733",
+      "landmark": 2,
+      "pcr_probability": 0.3406476378440857,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-688291",
+      "landmark": 0,
+      "pcr_probability": 0.36454108357429504,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-688291",
+      "landmark": 1,
+      "pcr_probability": 0.3171732723712921,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-688291",
+      "landmark": 2,
+      "pcr_probability": 0.36147502064704895,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-689076",
+      "landmark": 0,
+      "pcr_probability": 0.2479298710823059,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-689076",
+      "landmark": 1,
+      "pcr_probability": 0.22482198476791382,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-689076",
+      "landmark": 2,
+      "pcr_probability": 0.26214176416397095,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-690410",
+      "landmark": 0,
+      "pcr_probability": 0.3533072769641876,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-690410",
+      "landmark": 1,
+      "pcr_probability": 0.3153610825538635,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-690410",
+      "landmark": 2,
+      "pcr_probability": 0.35792919993400574,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-697871",
+      "landmark": 0,
+      "pcr_probability": 0.7086855173110962,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-697871",
+      "landmark": 1,
+      "pcr_probability": 0.6423725485801697,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-697871",
+      "landmark": 2,
+      "pcr_probability": 0.6756124496459961,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-698094",
+      "landmark": 0,
+      "pcr_probability": 0.20559225976467133,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-698094",
+      "landmark": 1,
+      "pcr_probability": 0.18510884046554565,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-698094",
+      "landmark": 2,
+      "pcr_probability": 0.22136114537715912,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-700549",
+      "landmark": 0,
+      "pcr_probability": 0.41856154799461365,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-700549",
+      "landmark": 1,
+      "pcr_probability": 0.37166905403137207,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-700549",
+      "landmark": 2,
+      "pcr_probability": 0.434274286031723,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-712785",
+      "landmark": 0,
+      "pcr_probability": 0.42631208896636963,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-712785",
+      "landmark": 1,
+      "pcr_probability": 0.40248143672943115,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-712785",
+      "landmark": 2,
+      "pcr_probability": 0.44272491335868835,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-720065",
+      "landmark": 0,
+      "pcr_probability": 0.46405473351478577,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-720065",
+      "landmark": 1,
+      "pcr_probability": 0.41389235854148865,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-720065",
+      "landmark": 2,
+      "pcr_probability": 0.4579088091850281,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-723918",
+      "landmark": 0,
+      "pcr_probability": 0.5224038362503052,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-723918",
+      "landmark": 1,
+      "pcr_probability": 0.4760322570800781,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-723918",
+      "landmark": 2,
+      "pcr_probability": 0.5160741209983826,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-726381",
+      "landmark": 0,
+      "pcr_probability": 0.4730411469936371,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-726381",
+      "landmark": 1,
+      "pcr_probability": 0.42443642020225525,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-726381",
+      "landmark": 2,
+      "pcr_probability": 0.46761196851730347,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-727804",
+      "landmark": 0,
+      "pcr_probability": 0.6034846305847168,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-727804",
+      "landmark": 1,
+      "pcr_probability": 0.5348770022392273,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-727804",
+      "landmark": 2,
+      "pcr_probability": 0.5726919174194336,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-728287",
+      "landmark": 0,
+      "pcr_probability": 0.37964484095573425,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-728287",
+      "landmark": 1,
+      "pcr_probability": 0.34215348958969116,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-728287",
+      "landmark": 2,
+      "pcr_probability": 0.3832770884037018,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-732137",
+      "landmark": 0,
+      "pcr_probability": 0.6337409615516663,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-732137",
+      "landmark": 1,
+      "pcr_probability": 0.5577109456062317,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-732137",
+      "landmark": 2,
+      "pcr_probability": 0.5900646448135376,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-738041",
+      "landmark": 0,
+      "pcr_probability": 0.6959487795829773,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-738041",
+      "landmark": 1,
+      "pcr_probability": 0.6375378370285034,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-738041",
+      "landmark": 2,
+      "pcr_probability": 0.671638011932373,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-746265",
+      "landmark": 0,
+      "pcr_probability": 0.4542897939682007,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-746265",
+      "landmark": 1,
+      "pcr_probability": 0.42398566007614136,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-746265",
+      "landmark": 2,
+      "pcr_probability": 0.46607598662376404,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-748583",
+      "landmark": 0,
+      "pcr_probability": 0.39869391918182373,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-748583",
+      "landmark": 1,
+      "pcr_probability": 0.3525882065296173,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-748583",
+      "landmark": 2,
+      "pcr_probability": 0.4046805202960968,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-748611",
+      "landmark": 0,
+      "pcr_probability": 0.28302672505378723,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-748611",
+      "landmark": 1,
+      "pcr_probability": 0.2643660306930542,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-748611",
+      "landmark": 2,
+      "pcr_probability": 0.30111366510391235,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-753109",
+      "landmark": 0,
+      "pcr_probability": 0.6325429081916809,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-753109",
+      "landmark": 1,
+      "pcr_probability": 0.5730336904525757,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-753109",
+      "landmark": 2,
+      "pcr_probability": 0.609168291091919,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-755914",
+      "landmark": 0,
+      "pcr_probability": 0.5998203158378601,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-755914",
+      "landmark": 1,
+      "pcr_probability": 0.5332767963409424,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-755914",
+      "landmark": 2,
+      "pcr_probability": 0.5681671500205994,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-760901",
+      "landmark": 0,
+      "pcr_probability": 0.5140817165374756,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-760901",
+      "landmark": 1,
+      "pcr_probability": 0.4941924214363098,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-760901",
+      "landmark": 2,
+      "pcr_probability": 0.5161933898925781,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-767081",
+      "landmark": 0,
+      "pcr_probability": 0.7303885817527771,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-767081",
+      "landmark": 1,
+      "pcr_probability": 0.671920657157898,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-767081",
+      "landmark": 2,
+      "pcr_probability": 0.6851765513420105,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-771443",
+      "landmark": 0,
+      "pcr_probability": 0.6119143962860107,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-771443",
+      "landmark": 1,
+      "pcr_probability": 0.5559938549995422,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-771443",
+      "landmark": 2,
+      "pcr_probability": 0.600849449634552,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-778020",
+      "landmark": 0,
+      "pcr_probability": 0.5260482430458069,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-778020",
+      "landmark": 1,
+      "pcr_probability": 0.4711727499961853,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-778020",
+      "landmark": 2,
+      "pcr_probability": 0.5127550363540649,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-779739",
+      "landmark": 0,
+      "pcr_probability": 0.6174643039703369,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-779739",
+      "landmark": 1,
+      "pcr_probability": 0.5604414939880371,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-779739",
+      "landmark": 2,
+      "pcr_probability": 0.6053197979927063,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-781642",
+      "landmark": 0,
+      "pcr_probability": 0.6016045212745667,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-781642",
+      "landmark": 1,
+      "pcr_probability": 0.5630366206169128,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-781642",
+      "landmark": 2,
+      "pcr_probability": 0.5978800058364868,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-782334",
+      "landmark": 0,
+      "pcr_probability": 0.21187137067317963,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-782334",
+      "landmark": 1,
+      "pcr_probability": 0.1905340999364853,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-782334",
+      "landmark": 2,
+      "pcr_probability": 0.225662961602211,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-783764",
+      "landmark": 0,
+      "pcr_probability": 0.27532875537872314,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-783764",
+      "landmark": 1,
+      "pcr_probability": 0.24760249257087708,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-783764",
+      "landmark": 2,
+      "pcr_probability": 0.28532642126083374,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-786003",
+      "landmark": 0,
+      "pcr_probability": 0.6842529773712158,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-786003",
+      "landmark": 1,
+      "pcr_probability": 0.6247094869613647,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-786003",
+      "landmark": 2,
+      "pcr_probability": 0.658178985118866,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-787415",
+      "landmark": 0,
+      "pcr_probability": 0.6623737812042236,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-787415",
+      "landmark": 1,
+      "pcr_probability": 0.6049410700798035,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-787415",
+      "landmark": 2,
+      "pcr_probability": 0.6364182829856873,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-789497",
+      "landmark": 0,
+      "pcr_probability": 0.3628472685813904,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-789497",
+      "landmark": 1,
+      "pcr_probability": 0.31544339656829834,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-789497",
+      "landmark": 2,
+      "pcr_probability": 0.3593796193599701,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-790722",
+      "landmark": 0,
+      "pcr_probability": 0.7296708226203918,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-790722",
+      "landmark": 1,
+      "pcr_probability": 0.6670464873313904,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-790722",
+      "landmark": 2,
+      "pcr_probability": 0.6986943483352661,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-795996",
+      "landmark": 0,
+      "pcr_probability": 0.6823769211769104,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-795996",
+      "landmark": 1,
+      "pcr_probability": 0.6229375004768372,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-795996",
+      "landmark": 2,
+      "pcr_probability": 0.6574772000312805,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-803677",
+      "landmark": 0,
+      "pcr_probability": 0.6264580488204956,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-803677",
+      "landmark": 1,
+      "pcr_probability": 0.5523345470428467,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-803677",
+      "landmark": 2,
+      "pcr_probability": 0.5829905271530151,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-804233",
+      "landmark": 0,
+      "pcr_probability": 0.7071399092674255,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-804233",
+      "landmark": 1,
+      "pcr_probability": 0.6549018025398254,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-804233",
+      "landmark": 2,
+      "pcr_probability": 0.6774365901947021,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-808714",
+      "landmark": 0,
+      "pcr_probability": 0.39763325452804565,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-808714",
+      "landmark": 1,
+      "pcr_probability": 0.3761090338230133,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-808714",
+      "landmark": 2,
+      "pcr_probability": 0.4233546555042267,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-820348",
+      "landmark": 0,
+      "pcr_probability": 0.31046003103256226,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-820348",
+      "landmark": 1,
+      "pcr_probability": 0.28603047132492065,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-820348",
+      "landmark": 2,
+      "pcr_probability": 0.33496353030204773,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-824350",
+      "landmark": 0,
+      "pcr_probability": 0.774657666683197,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-824350",
+      "landmark": 1,
+      "pcr_probability": 0.7011672854423523,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-824350",
+      "landmark": 2,
+      "pcr_probability": 0.7322394251823425,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-831702",
+      "landmark": 0,
+      "pcr_probability": 0.6462091207504272,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-831702",
+      "landmark": 1,
+      "pcr_probability": 0.5905001759529114,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-831702",
+      "landmark": 2,
+      "pcr_probability": 0.6284248232841492,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-833536",
+      "landmark": 0,
+      "pcr_probability": 0.6002705097198486,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-833536",
+      "landmark": 1,
+      "pcr_probability": 0.5298892855644226,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-833536",
+      "landmark": 2,
+      "pcr_probability": 0.591621994972229,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-836114",
+      "landmark": 0,
+      "pcr_probability": 0.5025701522827148,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-836114",
+      "landmark": 1,
+      "pcr_probability": 0.4566360414028168,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-836114",
+      "landmark": 2,
+      "pcr_probability": 0.5148045420646667,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-840501",
+      "landmark": 0,
+      "pcr_probability": 0.5511013269424438,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-840501",
+      "landmark": 1,
+      "pcr_probability": 0.5122807621955872,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-840501",
+      "landmark": 2,
+      "pcr_probability": 0.5524706244468689,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-848003",
+      "landmark": 0,
+      "pcr_probability": 0.661379337310791,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-848003",
+      "landmark": 1,
+      "pcr_probability": 0.6053982973098755,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-848003",
+      "landmark": 2,
+      "pcr_probability": 0.6368293762207031,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-851488",
+      "landmark": 0,
+      "pcr_probability": 0.28563234210014343,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-851488",
+      "landmark": 1,
+      "pcr_probability": 0.2580639123916626,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-851488",
+      "landmark": 2,
+      "pcr_probability": 0.2984386086463928,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-856159",
+      "landmark": 0,
+      "pcr_probability": 0.4705295264720917,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-856159",
+      "landmark": 1,
+      "pcr_probability": 0.4198770523071289,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-856159",
+      "landmark": 2,
+      "pcr_probability": 0.46532297134399414,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-873686",
+      "landmark": 0,
+      "pcr_probability": 0.5691606402397156,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-873686",
+      "landmark": 1,
+      "pcr_probability": 0.5237002968788147,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-873686",
+      "landmark": 2,
+      "pcr_probability": 0.5671260952949524,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-876511",
+      "landmark": 0,
+      "pcr_probability": 0.6317430734634399,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-876511",
+      "landmark": 1,
+      "pcr_probability": 0.56266188621521,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-876511",
+      "landmark": 2,
+      "pcr_probability": 0.5965867042541504,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-882553",
+      "landmark": 0,
+      "pcr_probability": 0.36895233392715454,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-882553",
+      "landmark": 1,
+      "pcr_probability": 0.3209184408187866,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-882553",
+      "landmark": 2,
+      "pcr_probability": 0.3656519949436188,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-889049",
+      "landmark": 0,
+      "pcr_probability": 0.5975118279457092,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-889049",
+      "landmark": 1,
+      "pcr_probability": 0.5396660566329956,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-889049",
+      "landmark": 2,
+      "pcr_probability": 0.5776771306991577,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-891645",
+      "landmark": 0,
+      "pcr_probability": 0.6086803078651428,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-891645",
+      "landmark": 1,
+      "pcr_probability": 0.540992259979248,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-891645",
+      "landmark": 2,
+      "pcr_probability": 0.579163670539856,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-894491",
+      "landmark": 0,
+      "pcr_probability": 0.6205688714981079,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-894491",
+      "landmark": 1,
+      "pcr_probability": 0.5520423650741577,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-894491",
+      "landmark": 2,
+      "pcr_probability": 0.605492115020752,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-905264",
+      "landmark": 0,
+      "pcr_probability": 0.7305681109428406,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-905264",
+      "landmark": 1,
+      "pcr_probability": 0.6765453219413757,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-905264",
+      "landmark": 2,
+      "pcr_probability": 0.7081435322761536,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-913225",
+      "landmark": 0,
+      "pcr_probability": 0.47006163001060486,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-913225",
+      "landmark": 1,
+      "pcr_probability": 0.43358027935028076,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-913225",
+      "landmark": 2,
+      "pcr_probability": 0.4774435758590698,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-914968",
+      "landmark": 0,
+      "pcr_probability": 0.5847411751747131,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-914968",
+      "landmark": 1,
+      "pcr_probability": 0.5342379212379456,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-914968",
+      "landmark": 2,
+      "pcr_probability": 0.5710550546646118,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-916645",
+      "landmark": 0,
+      "pcr_probability": 0.20688462257385254,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-916645",
+      "landmark": 1,
+      "pcr_probability": 0.18614517152309418,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-916645",
+      "landmark": 2,
+      "pcr_probability": 0.22175002098083496,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-924868",
+      "landmark": 0,
+      "pcr_probability": 0.6022405624389648,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-924868",
+      "landmark": 1,
+      "pcr_probability": 0.56023108959198,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-924868",
+      "landmark": 2,
+      "pcr_probability": 0.5917631983757019,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-930853",
+      "landmark": 0,
+      "pcr_probability": 0.37398600578308105,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-930853",
+      "landmark": 1,
+      "pcr_probability": 0.3257475197315216,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-930853",
+      "landmark": 2,
+      "pcr_probability": 0.37129852175712585,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-940186",
+      "landmark": 0,
+      "pcr_probability": 0.33712124824523926,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-940186",
+      "landmark": 1,
+      "pcr_probability": 0.298689603805542,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-940186",
+      "landmark": 2,
+      "pcr_probability": 0.3380250930786133,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-944419",
+      "landmark": 0,
+      "pcr_probability": 0.5165653228759766,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-944419",
+      "landmark": 1,
+      "pcr_probability": 0.44403931498527527,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-944419",
+      "landmark": 2,
+      "pcr_probability": 0.501910924911499,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-960963",
+      "landmark": 0,
+      "pcr_probability": 0.6095222234725952,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-960963",
+      "landmark": 1,
+      "pcr_probability": 0.5553175210952759,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-960963",
+      "landmark": 2,
+      "pcr_probability": 0.6001296639442444,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-962153",
+      "landmark": 0,
+      "pcr_probability": 0.4624963104724884,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-962153",
+      "landmark": 1,
+      "pcr_probability": 0.4168180227279663,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-962153",
+      "landmark": 2,
+      "pcr_probability": 0.47918686270713806,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-970839",
+      "landmark": 0,
+      "pcr_probability": 0.2795364260673523,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-970839",
+      "landmark": 1,
+      "pcr_probability": 0.25840461254119873,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-970839",
+      "landmark": 2,
+      "pcr_probability": 0.29525020718574524,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-973837",
+      "landmark": 0,
+      "pcr_probability": 0.280362069606781,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-973837",
+      "landmark": 1,
+      "pcr_probability": 0.2528265416622162,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-973837",
+      "landmark": 2,
+      "pcr_probability": 0.2901168465614319,
+      "pcr": 0.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-997702",
+      "landmark": 0,
+      "pcr_probability": 0.7168914675712585,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-997702",
+      "landmark": 1,
+      "pcr_probability": 0.6514962911605835,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    },
+    {
+      "patient_key": "ISPY2-997702",
+      "landmark": 2,
+      "pcr_probability": 0.6853702664375305,
+      "pcr": 1.0,
+      "arm_semantics": "assigned_arm_scenario"
+    }
+  ]
+}

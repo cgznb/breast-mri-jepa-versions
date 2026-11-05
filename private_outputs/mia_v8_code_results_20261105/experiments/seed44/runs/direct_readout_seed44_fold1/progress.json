@@ -1,0 +1,814 @@
+{
+  "status": "completed",
+  "training_unit": "epochs",
+  "completed_steps": 2960,
+  "total_steps": 8000,
+  "completed_epochs": 74,
+  "current_epoch": 75,
+  "max_epochs": 200,
+  "batch_in_epoch": 0,
+  "batches_per_epoch": 40,
+  "patients_seen_in_epoch": 0,
+  "bad_epochs": 50,
+  "early_stopping_patience": 50,
+  "lr_scheduler": "warmup_cosine",
+  "current_lr": 1.999072895888789e-05,
+  "learning_rates": {
+    "network": 1.999072895888789e-05,
+    "pretrained_encoder": 1.999072895888789e-05
+  },
+  "encoder_type": "vq_encoder",
+  "encoder_training": "finetune",
+  "encoder_frozen": false,
+  "pretrained_encoder_trainable": true,
+  "pretrained_encoder_frozen": false,
+  "best_validation_nll": 0.6865298469281073,
+  "best_selection_score": 0.5558441558441558,
+  "best_validation_f1": 0.5558441558441558,
+  "selection_metric": "f1",
+  "best_epoch": 24,
+  "best_step": 960,
+  "selection_mode": "max",
+  "f1_threshold": 0.5,
+  "prediction_training": "hybrid",
+  "last_epoch": {
+    "epoch": 74,
+    "completed_steps": 2960,
+    "patients": 640,
+    "batches": 40,
+    "lr": 2.0024756971379916e-05,
+    "next_lr": 1.999072895888789e-05,
+    "learning_rates": {
+      "network": 2.0024756971379916e-05,
+      "pretrained_encoder": 2.0024756971379916e-05
+    },
+    "next_learning_rates": {
+      "network": 1.999072895888789e-05,
+      "pretrained_encoder": 1.999072895888789e-05
+    },
+    "encoder_type": "vq_encoder",
+    "encoder_training": "finetune",
+    "encoder_frozen": false,
+    "pretrained_encoder_trainable": true,
+    "pretrained_encoder_frozen": false,
+    "lr_reduced": true,
+    "lr_scheduler": "warmup_cosine",
+    "training": {
+      "loss": 0.5853528581559658,
+      "task": 0.46322293430566785,
+      "jepa": 0.0,
+      "world_model": 0.0,
+      "rollout": 0.24425984416157007,
+      "flow": 0.0,
+      "reconstruction": 0.0,
+      "variance": 0.0,
+      "label_count": 640.0,
+      "future_count": 1141.0,
+      "pair_count": 0.0,
+      "rollout_count": 1141.0,
+      "gradient_norm": 6.972769027948379,
+      "gradient_clip_fraction": 1.0
+    },
+    "validation": {
+      "selection_metric": "patient_equal_prefix_f1",
+      "metric_name": "f1",
+      "selection_mode": "max",
+      "f1_threshold": 0.5,
+      "selection_score": 0.48680351906158353,
+      "metrics": {
+        "n": 161,
+        "positives": 53,
+        "auroc": 0.6247670626601423,
+        "auprc": 0.4223360257723457,
+        "brier": 0.26040716101370015,
+        "nll": 0.7962252063416441,
+        "f1": 0.48680351906158353,
+        "f1_threshold": 0.5,
+        "tp": 27.666666666666668,
+        "fp": 33.0,
+        "fn": 25.333333333333336,
+        "ece_10_equal_width": 0.20667929064403395,
+        "reliability_bins": [
+          {
+            "count": 114,
+            "mean_probability": 0.04971868918328407,
+            "event_rate": 0.2025316455696202
+          },
+          {
+            "count": 70,
+            "mean_probability": 0.1469094648859219,
+            "event_rate": 0.32894736842105265
+          },
+          {
+            "count": 44,
+            "mean_probability": 0.24880086408650617,
+            "event_rate": 0.31914893617021267
+          },
+          {
+            "count": 38,
+            "mean_probability": 0.3506345369599081,
+            "event_rate": 0.12987012987012983
+          },
+          {
+            "count": 21,
+            "mean_probability": 0.45161490780966634,
+            "event_rate": 0.33333333333333337
+          },
+          {
+            "count": 21,
+            "mean_probability": 0.5517375002736631,
+            "event_rate": 0.4347826086956523
+          },
+          {
+            "count": 43,
+            "mean_probability": 0.6497584961830302,
+            "event_rate": 0.42553191489361697
+          },
+          {
+            "count": 42,
+            "mean_probability": 0.7475751532448662,
+            "event_rate": 0.4666666666666667
+          },
+          {
+            "count": 30,
+            "mean_probability": 0.8445700494969474,
+            "event_rate": 0.5901639344262293
+          },
+          {
+            "count": 35,
+            "mean_probability": 0.9305287403603122,
+            "event_rate": 0.38356164383561636
+          }
+        ],
+        "patients": 161,
+        "prefixes": 458,
+        "missing_label_patients": 0
+      },
+      "per_landmark": {
+        "T0": {
+          "n": 161,
+          "positives": 53,
+          "auroc": 0.626659678546471,
+          "auprc": 0.4359963860997009,
+          "brier": 0.25773533940894156,
+          "nll": 0.7980783734982646,
+          "f1": 0.49122807017543857,
+          "f1_threshold": 0.5,
+          "tp": 28.0,
+          "fp": 33.0,
+          "fn": 25.0,
+          "ece_10_equal_width": 0.20904137304931972,
+          "reliability_bins": [
+            {
+              "count": 42,
+              "mean_probability": 0.05043376752707575,
+              "event_rate": 0.21428571428571427
+            },
+            {
+              "count": 27,
+              "mean_probability": 0.14764426234695646,
+              "event_rate": 0.3333333333333333
+            },
+            {
+              "count": 13,
+              "mean_probability": 0.24457596357052142,
+              "event_rate": 0.3076923076923077
+            },
+            {
+              "count": 11,
+              "mean_probability": 0.35452525182203815,
+              "event_rate": 0.0
+            },
+            {
+              "count": 7,
+              "mean_probability": 0.44693335039275034,
+              "event_rate": 0.42857142857142855
+            },
+            {
+              "count": 10,
+              "mean_probability": 0.546142292022705,
+              "event_rate": 0.3
+            },
+            {
+              "count": 16,
+              "mean_probability": 0.645011942833662,
+              "event_rate": 0.5625
+            },
+            {
+              "count": 15,
+              "mean_probability": 0.749914534886678,
+              "event_rate": 0.4666666666666667
+            },
+            {
+              "count": 8,
+              "mean_probability": 0.8396266475319862,
+              "event_rate": 0.625
+            },
+            {
+              "count": 12,
+              "mean_probability": 0.9303421229124069,
+              "event_rate": 0.3333333333333333
+            }
+          ],
+          "missing_labels": 0
+        },
+        "T1": {
+          "n": 154,
+          "positives": 52,
+          "auroc": 0.6376319758672699,
+          "auprc": 0.4460953660734017,
+          "brier": 0.2545288879803449,
+          "nll": 0.761734307860359,
+          "f1": 0.509090909090909,
+          "f1_threshold": 0.5,
+          "tp": 28.0,
+          "fp": 30.0,
+          "fn": 24.0,
+          "ece_10_equal_width": 0.19526335092067915,
+          "reliability_bins": [
+            {
+              "count": 31,
+              "mean_probability": 0.05267201493223829,
+              "event_rate": 0.16129032258064516
+            },
+            {
+              "count": 26,
+              "mean_probability": 0.1437582720357638,
+              "event_rate": 0.3076923076923077
+            },
+            {
+              "count": 16,
+              "mean_probability": 0.25182595662772655,
+              "event_rate": 0.375
+            },
+            {
+              "count": 16,
+              "mean_probability": 0.34480568394064903,
+              "event_rate": 0.1875
+            },
+            {
+              "count": 7,
+              "mean_probability": 0.4510690612452371,
+              "event_rate": 0.2857142857142857
+            },
+            {
+              "count": 8,
+              "mean_probability": 0.5588474273681641,
+              "event_rate": 0.625
+            },
+            {
+              "count": 13,
+              "mean_probability": 0.6522350861476018,
+              "event_rate": 0.38461538461538464
+            },
+            {
+              "count": 14,
+              "mean_probability": 0.7446579848017011,
+              "event_rate": 0.5
+            },
+            {
+              "count": 12,
+              "mean_probability": 0.843706081310908,
+              "event_rate": 0.5
+            },
+            {
+              "count": 11,
+              "mean_probability": 0.9307257316329263,
+              "event_rate": 0.45454545454545453
+            }
+          ],
+          "missing_labels": 0
+        },
+        "T2": {
+          "n": 143,
+          "positives": 48,
+          "auroc": 0.6401315789473685,
+          "auprc": 0.4551282189339504,
+          "brier": 0.25590870487122835,
+          "nll": 0.7920746968999272,
+          "f1": 0.5,
+          "f1_threshold": 0.5,
+          "tp": 25.0,
+          "fp": 27.0,
+          "fn": 23.0,
+          "ece_10_equal_width": 0.20226698622296377,
+          "reliability_bins": [
+            {
+              "count": 41,
+              "mean_probability": 0.049498709299170024,
+              "event_rate": 0.21951219512195122
+            },
+            {
+              "count": 17,
+              "mean_probability": 0.14942584493580988,
+              "event_rate": 0.29411764705882354
+            },
+            {
+              "count": 15,
+              "mean_probability": 0.2507592886686325,
+              "event_rate": 0.3333333333333333
+            },
+            {
+              "count": 11,
+              "mean_probability": 0.35476594079624524,
+              "event_rate": 0.18181818181818182
+            },
+            {
+              "count": 7,
+              "mean_probability": 0.45684231179101126,
+              "event_rate": 0.2857142857142857
+            },
+            {
+              "count": 3,
+              "mean_probability": 0.5569723049799601,
+              "event_rate": 0.3333333333333333
+            },
+            {
+              "count": 14,
+              "mean_probability": 0.6529970126492637,
+              "event_rate": 0.42857142857142855
+            },
+            {
+              "count": 13,
+              "mean_probability": 0.7457400881327115,
+              "event_rate": 0.46153846153846156
+            },
+            {
+              "count": 10,
+              "mean_probability": 0.8469277858734131,
+              "event_rate": 0.7
+            },
+            {
+              "count": 12,
+              "mean_probability": 0.9315132647752762,
+              "event_rate": 0.4166666666666667
+            }
+          ],
+          "missing_labels": 0
+        }
+      },
+      "patient_equal_metrics": {
+        "n": 161,
+        "positives": 53,
+        "auroc": 0.6247670626601423,
+        "auprc": 0.4223360257723457,
+        "brier": 0.26040716101370015,
+        "nll": 0.7962252063416441,
+        "f1": 0.48680351906158353,
+        "f1_threshold": 0.5,
+        "tp": 27.666666666666668,
+        "fp": 33.0,
+        "fn": 25.333333333333336,
+        "ece_10_equal_width": 0.20667929064403395,
+        "reliability_bins": [
+          {
+            "count": 114,
+            "mean_probability": 0.04971868918328407,
+            "event_rate": 0.2025316455696202
+          },
+          {
+            "count": 70,
+            "mean_probability": 0.1469094648859219,
+            "event_rate": 0.32894736842105265
+          },
+          {
+            "count": 44,
+            "mean_probability": 0.24880086408650617,
+            "event_rate": 0.31914893617021267
+          },
+          {
+            "count": 38,
+            "mean_probability": 0.3506345369599081,
+            "event_rate": 0.12987012987012983
+          },
+          {
+            "count": 21,
+            "mean_probability": 0.45161490780966634,
+            "event_rate": 0.33333333333333337
+          },
+          {
+            "count": 21,
+            "mean_probability": 0.5517375002736631,
+            "event_rate": 0.4347826086956523
+          },
+          {
+            "count": 43,
+            "mean_probability": 0.6497584961830302,
+            "event_rate": 0.42553191489361697
+          },
+          {
+            "count": 42,
+            "mean_probability": 0.7475751532448662,
+            "event_rate": 0.4666666666666667
+          },
+          {
+            "count": 30,
+            "mean_probability": 0.8445700494969474,
+            "event_rate": 0.5901639344262293
+          },
+          {
+            "count": 35,
+            "mean_probability": 0.9305287403603122,
+            "event_rate": 0.38356164383561636
+          }
+        ],
+        "patients": 161,
+        "prefixes": 458,
+        "missing_label_patients": 0
+      }
+    },
+    "best_validation_nll": 0.6865298469281073,
+    "best_selection_score": 0.5558441558441558,
+    "best_validation_f1": 0.5558441558441558,
+    "selection_metric": "f1",
+    "selection_mode": "max",
+    "f1_threshold": 0.5,
+    "prediction_training": "hybrid",
+    "improved": false,
+    "bad_epochs": 50
+  },
+  "last_step": {
+    "step": 2960,
+    "phase": "joint",
+    "loss": 0.6624525785446167,
+    "task": 0.5071123242378235,
+    "jepa": 0.0,
+    "world_model": 0.0,
+    "rollout": 0.3106805086135864,
+    "flow": 0.0,
+    "reconstruction": 0.0,
+    "variance": 0.0,
+    "label_count": 16.0,
+    "future_count": 27.0,
+    "pair_count": 0.0,
+    "rollout_count": 27.0,
+    "gradient_norm": 2.5112063884735107,
+    "lr": 2.0024756971379916e-05,
+    "learning_rates": {
+      "network": 2.0024756971379916e-05,
+      "pretrained_encoder": 2.0024756971379916e-05
+    },
+    "encoder_type": "vq_encoder",
+    "encoder_training": "finetune",
+    "encoder_frozen": false,
+    "pretrained_encoder_trainable": true,
+    "pretrained_encoder_frozen": false,
+    "epoch": 74,
+    "batch_in_epoch": 40,
+    "batch_size": 16,
+    "validation": {
+      "selection_metric": "patient_equal_prefix_f1",
+      "metric_name": "f1",
+      "selection_mode": "max",
+      "f1_threshold": 0.5,
+      "selection_score": 0.48680351906158353,
+      "metrics": {
+        "n": 161,
+        "positives": 53,
+        "auroc": 0.6247670626601423,
+        "auprc": 0.4223360257723457,
+        "brier": 0.26040716101370015,
+        "nll": 0.7962252063416441,
+        "f1": 0.48680351906158353,
+        "f1_threshold": 0.5,
+        "tp": 27.666666666666668,
+        "fp": 33.0,
+        "fn": 25.333333333333336,
+        "ece_10_equal_width": 0.20667929064403395,
+        "reliability_bins": [
+          {
+            "count": 114,
+            "mean_probability": 0.04971868918328407,
+            "event_rate": 0.2025316455696202
+          },
+          {
+            "count": 70,
+            "mean_probability": 0.1469094648859219,
+            "event_rate": 0.32894736842105265
+          },
+          {
+            "count": 44,
+            "mean_probability": 0.24880086408650617,
+            "event_rate": 0.31914893617021267
+          },
+          {
+            "count": 38,
+            "mean_probability": 0.3506345369599081,
+            "event_rate": 0.12987012987012983
+          },
+          {
+            "count": 21,
+            "mean_probability": 0.45161490780966634,
+            "event_rate": 0.33333333333333337
+          },
+          {
+            "count": 21,
+            "mean_probability": 0.5517375002736631,
+            "event_rate": 0.4347826086956523
+          },
+          {
+            "count": 43,
+            "mean_probability": 0.6497584961830302,
+            "event_rate": 0.42553191489361697
+          },
+          {
+            "count": 42,
+            "mean_probability": 0.7475751532448662,
+            "event_rate": 0.4666666666666667
+          },
+          {
+            "count": 30,
+            "mean_probability": 0.8445700494969474,
+            "event_rate": 0.5901639344262293
+          },
+          {
+            "count": 35,
+            "mean_probability": 0.9305287403603122,
+            "event_rate": 0.38356164383561636
+          }
+        ],
+        "patients": 161,
+        "prefixes": 458,
+        "missing_label_patients": 0
+      },
+      "per_landmark": {
+        "T0": {
+          "n": 161,
+          "positives": 53,
+          "auroc": 0.626659678546471,
+          "auprc": 0.4359963860997009,
+          "brier": 0.25773533940894156,
+          "nll": 0.7980783734982646,
+          "f1": 0.49122807017543857,
+          "f1_threshold": 0.5,
+          "tp": 28.0,
+          "fp": 33.0,
+          "fn": 25.0,
+          "ece_10_equal_width": 0.20904137304931972,
+          "reliability_bins": [
+            {
+              "count": 42,
+              "mean_probability": 0.05043376752707575,
+              "event_rate": 0.21428571428571427
+            },
+            {
+              "count": 27,
+              "mean_probability": 0.14764426234695646,
+              "event_rate": 0.3333333333333333
+            },
+            {
+              "count": 13,
+              "mean_probability": 0.24457596357052142,
+              "event_rate": 0.3076923076923077
+            },
+            {
+              "count": 11,
+              "mean_probability": 0.35452525182203815,
+              "event_rate": 0.0
+            },
+            {
+              "count": 7,
+              "mean_probability": 0.44693335039275034,
+              "event_rate": 0.42857142857142855
+            },
+            {
+              "count": 10,
+              "mean_probability": 0.546142292022705,
+              "event_rate": 0.3
+            },
+            {
+              "count": 16,
+              "mean_probability": 0.645011942833662,
+              "event_rate": 0.5625
+            },
+            {
+              "count": 15,
+              "mean_probability": 0.749914534886678,
+              "event_rate": 0.4666666666666667
+            },
+            {
+              "count": 8,
+              "mean_probability": 0.8396266475319862,
+              "event_rate": 0.625
+            },
+            {
+              "count": 12,
+              "mean_probability": 0.9303421229124069,
+              "event_rate": 0.3333333333333333
+            }
+          ],
+          "missing_labels": 0
+        },
+        "T1": {
+          "n": 154,
+          "positives": 52,
+          "auroc": 0.6376319758672699,
+          "auprc": 0.4460953660734017,
+          "brier": 0.2545288879803449,
+          "nll": 0.761734307860359,
+          "f1": 0.509090909090909,
+          "f1_threshold": 0.5,
+          "tp": 28.0,
+          "fp": 30.0,
+          "fn": 24.0,
+          "ece_10_equal_width": 0.19526335092067915,
+          "reliability_bins": [
+            {
+              "count": 31,
+              "mean_probability": 0.05267201493223829,
+              "event_rate": 0.16129032258064516
+            },
+            {
+              "count": 26,
+              "mean_probability": 0.1437582720357638,
+              "event_rate": 0.3076923076923077
+            },
+            {
+              "count": 16,
+              "mean_probability": 0.25182595662772655,
+              "event_rate": 0.375
+            },
+            {
+              "count": 16,
+              "mean_probability": 0.34480568394064903,
+              "event_rate": 0.1875
+            },
+            {
+              "count": 7,
+              "mean_probability": 0.4510690612452371,
+              "event_rate": 0.2857142857142857
+            },
+            {
+              "count": 8,
+              "mean_probability": 0.5588474273681641,
+              "event_rate": 0.625
+            },
+            {
+              "count": 13,
+              "mean_probability": 0.6522350861476018,
+              "event_rate": 0.38461538461538464
+            },
+            {
+              "count": 14,
+              "mean_probability": 0.7446579848017011,
+              "event_rate": 0.5
+            },
+            {
+              "count": 12,
+              "mean_probability": 0.843706081310908,
+              "event_rate": 0.5
+            },
+            {
+              "count": 11,
+              "mean_probability": 0.9307257316329263,
+              "event_rate": 0.45454545454545453
+            }
+          ],
+          "missing_labels": 0
+        },
+        "T2": {
+          "n": 143,
+          "positives": 48,
+          "auroc": 0.6401315789473685,
+          "auprc": 0.4551282189339504,
+          "brier": 0.25590870487122835,
+          "nll": 0.7920746968999272,
+          "f1": 0.5,
+          "f1_threshold": 0.5,
+          "tp": 25.0,
+          "fp": 27.0,
+          "fn": 23.0,
+          "ece_10_equal_width": 0.20226698622296377,
+          "reliability_bins": [
+            {
+              "count": 41,
+              "mean_probability": 0.049498709299170024,
+              "event_rate": 0.21951219512195122
+            },
+            {
+              "count": 17,
+              "mean_probability": 0.14942584493580988,
+              "event_rate": 0.29411764705882354
+            },
+            {
+              "count": 15,
+              "mean_probability": 0.2507592886686325,
+              "event_rate": 0.3333333333333333
+            },
+            {
+              "count": 11,
+              "mean_probability": 0.35476594079624524,
+              "event_rate": 0.18181818181818182
+            },
+            {
+              "count": 7,
+              "mean_probability": 0.45684231179101126,
+              "event_rate": 0.2857142857142857
+            },
+            {
+              "count": 3,
+              "mean_probability": 0.5569723049799601,
+              "event_rate": 0.3333333333333333
+            },
+            {
+              "count": 14,
+              "mean_probability": 0.6529970126492637,
+              "event_rate": 0.42857142857142855
+            },
+            {
+              "count": 13,
+              "mean_probability": 0.7457400881327115,
+              "event_rate": 0.46153846153846156
+            },
+            {
+              "count": 10,
+              "mean_probability": 0.8469277858734131,
+              "event_rate": 0.7
+            },
+            {
+              "count": 12,
+              "mean_probability": 0.9315132647752762,
+              "event_rate": 0.4166666666666667
+            }
+          ],
+          "missing_labels": 0
+        }
+      },
+      "patient_equal_metrics": {
+        "n": 161,
+        "positives": 53,
+        "auroc": 0.6247670626601423,
+        "auprc": 0.4223360257723457,
+        "brier": 0.26040716101370015,
+        "nll": 0.7962252063416441,
+        "f1": 0.48680351906158353,
+        "f1_threshold": 0.5,
+        "tp": 27.666666666666668,
+        "fp": 33.0,
+        "fn": 25.333333333333336,
+        "ece_10_equal_width": 0.20667929064403395,
+        "reliability_bins": [
+          {
+            "count": 114,
+            "mean_probability": 0.04971868918328407,
+            "event_rate": 0.2025316455696202
+          },
+          {
+            "count": 70,
+            "mean_probability": 0.1469094648859219,
+            "event_rate": 0.32894736842105265
+          },
+          {
+            "count": 44,
+            "mean_probability": 0.24880086408650617,
+            "event_rate": 0.31914893617021267
+          },
+          {
+            "count": 38,
+            "mean_probability": 0.3506345369599081,
+            "event_rate": 0.12987012987012983
+          },
+          {
+            "count": 21,
+            "mean_probability": 0.45161490780966634,
+            "event_rate": 0.33333333333333337
+          },
+          {
+            "count": 21,
+            "mean_probability": 0.5517375002736631,
+            "event_rate": 0.4347826086956523
+          },
+          {
+            "count": 43,
+            "mean_probability": 0.6497584961830302,
+            "event_rate": 0.42553191489361697
+          },
+          {
+            "count": 42,
+            "mean_probability": 0.7475751532448662,
+            "event_rate": 0.4666666666666667
+          },
+          {
+            "count": 30,
+            "mean_probability": 0.8445700494969474,
+            "event_rate": 0.5901639344262293
+          },
+          {
+            "count": 35,
+            "mean_probability": 0.9305287403603122,
+            "event_rate": 0.38356164383561636
+          }
+        ],
+        "patients": 161,
+        "prefixes": 458,
+        "missing_label_patients": 0
+      }
+    },
+    "next_lr": 1.999072895888789e-05,
+    "next_learning_rates": {
+      "network": 1.999072895888789e-05,
+      "pretrained_encoder": 1.999072895888789e-05
+    }
+  },
+  "stop_reason": "early_stopping"
+}

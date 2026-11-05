@@ -1,0 +1,60 @@
+\documentclass[5p,twocolumn,authoryear]{elsarticle}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\setlength{\emergencystretch}{1em}
+\usepackage{amsmath,amssymb,booktabs,graphicx,array,microtype}
+\usepackage{xcolor,hyperref}
+\usepackage{dblfloatfix}
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\dbltopfraction}{0.95}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.75}
+\renewcommand{\dblfloatpagefraction}{0.75}
+\setcounter{dbltopnumber}{2}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black}
+\newcommand{\todo}[1]{\textcolor{red!70!black}{[TO COMPLETE: #1]}}
+\newcommand{\nojepa}{\textsc{NoJEPA}}
+\newcommand{\direct}{\textsc{DirectReadout}}
+\newcommand{\fullmodel}{\textsc{ForecastMean}}
+\journal{Medical Image Analysis}
+\begin{document}
+\begin{frontmatter}
+\title{Forecast-aware latent modeling for longitudinal prediction of pathological complete response from breast MRI}
+\author{Author information to be completed}
+\address{Affiliations and corresponding author to be completed}
+\begin{abstract}
+Longitudinal breast MRI can reveal treatment response, but endpoint classifiers do not explicitly model the future trajectory implied by an observed history. We investigate forecast-aware latent modeling for pathological complete response (pCR) prediction using three-phase dynamic contrast-enhanced MRI, baseline clinical variables, and assigned-arm scenarios. An autonomous predictor estimates future latent states. A mean readout combines spatial arithmetic means of the predicted terminal state and its change with direct history features. The cohort comprises 976 patients and 3,641 examinations, with 801 development patients and a fixed internal holdout of 175 patients, including 56 positive outcomes. Three principal models distinguish prediction without future-state supervision, auxiliary-supervised direct prediction, and explicit forecast-mean readout. We evaluate training seeds 42, 44, 71, and 2026, averaging five fold probabilities within each seed before computing metrics and then equally averaging seed-specific metrics. Forecast mean achieved T0/T1/T2 AUROCs of 0.7476/0.7494/0.7478 and Macro AUROC/AP/F1 of 0.7483/0.6197/0.5760, compared with 0.7258/0.5905/0.5382 for the control without future-state supervision. Its Macro AUROC sample seed standard deviation was 0.0067. The full-versus-control AUROC difference was +0.0225, with approximate paired-bootstrap $p=0.00050$, nine-test Holm $p=0.00450$, and all-78 Holm $p=0.03850$. Macro AP and F1 differences did not pass principal-family adjustment. The T2 AUROC all-test conclusion crossed the 0.05 threshold in a larger independent Monte Carlo sensitivity check. Forecast mean had higher sensitivity but lower specificity and worse probability-quality point estimates than auxiliary-supervised direct readout. The overall-model and seed choices were retrospective; these conditional internal findings require independent validation and prospectively fixed evaluation policies.
+\end{abstract}
+\begin{keyword}
+Breast MRI \sep Pathological complete response \sep Longitudinal imaging \sep Latent dynamics \sep Treatment response prediction
+\end{keyword}
+\end{frontmatter}
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/methods}
+\input{sections/dataset}
+\input{sections/experiments}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+\section*{Data and code availability}
+Source imaging collections are available through The Cancer Imaging Archive, subject to their applicable access conditions and licenses. The present derived manifests, processing lineage, and evaluation outputs are retained locally. \todo{Specify the public repository, versioned release, permitted derived-data artifacts, and access mechanism before submission; no public code-release claim is made in this draft.}
+\section*{Ethics approval and consent}
+\todo{Provide the original studies' ethics and consent statements and the local institutional determination for this secondary analysis, including an approval or exemption identifier where applicable. Public availability alone is not an ethics approval.}
+\section*{Funding}
+\todo{Provide grant numbers and the funders' roles, or confirm that no specific funding was received.}
+\section*{Declaration of competing interest}
+\todo{Obtain and insert the actual declarations from every author.}
+\section*{CRediT authorship contribution statement}
+\todo{Provide author names and agreed contributions; no authorship or contributions have been inferred.}
+\section*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
+During preparation of this initial draft, OpenAI Codex was used to organize source evidence, generate reproducible aggregate tables and figures, and assist with English drafting. \todo{All authors must review and edit the manuscript, verify every statement and reference, and finalize the disclosure under the journal's current policy before submission.}
+\clearpage
+\appendix
+\input{sections/supplement}
+\clearpage
+\bibliographystyle{elsarticle-harv}
+\bibliography{references}
+\end{document}

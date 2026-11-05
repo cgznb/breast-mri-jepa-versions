@@ -1,0 +1,45 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Exploratory Macro operating and probability-quality comparisons. Differences are first-named minus second-named model; negative Brier, NLL, or ECE differences favor the first model. All metrics use approximate, null-centered paired patient-bootstrap tests (99,999 shared draws across seeds, models, and landmarks). All $p$ values are two-sided. $p_{\mathrm{Holm}}$ adjusts jointly over the 69 secondary tests in Tables~\ref{tab:significance_landmarks}--\ref{tab:significance_longitudinal}. Direct and Mean abbreviate DirectReadout and ForecastMean. $^{*}p_{\mathrm{Holm}}<0.05$, $^{**}p_{\mathrm{Holm}}<0.01$, $^{***}p_{\mathrm{Holm}}<0.001$; ns, not significant after the stated correction. Intervals are unadjusted 95\% patient-bootstrap intervals (2,000 shared draws) and need not agree with adjusted test decisions. All analyses condition on the fixed, retrospectively selected seed42/44/71/2026 ensembles; seeds are not resampled.}
+\label{tab:significance_extended}
+\begin{tabular}{llrrrc}
+\toprule
+Comparison & Metric & Difference [95\% CI] & $p$ & $p_{\mathrm{Holm}}$ & Sig. \\
+\midrule
+Direct -- NoJEPA & Accuracy & +0.0067 [-0.0057, +0.0195] & 0.3164 & 1.0000 & ns \\
+Direct -- NoJEPA & Sensitivity & +0.0030 [-0.0176, +0.0212] & 0.7827 & 1.0000 & ns \\
+Direct -- NoJEPA & Specificity & +0.0084 [-0.0070, +0.0254] & 0.3236 & 1.0000 & ns \\
+Direct -- NoJEPA & PPV & +0.0092 [-0.0065, +0.0263] & 0.2611 & 1.0000 & ns \\
+Direct -- NoJEPA & NPV & +0.0033 [-0.0059, +0.0119] & 0.4468 & 1.0000 & ns \\
+Direct -- NoJEPA & Balanced accuracy & +0.0057 [-0.0068, +0.0183] & 0.3669 & 1.0000 & ns \\
+Direct -- NoJEPA & MCC & +0.0119 [-0.0126, +0.0368] & 0.3291 & 1.0000 & ns \\
+Direct -- NoJEPA & Youden index & +0.0114 [-0.0136, +0.0367] & 0.3669 & 1.0000 & ns \\
+Direct -- NoJEPA & Brier & -0.0016 [-0.0047, +0.0014] & 0.2913 & 1.0000 & ns \\
+Direct -- NoJEPA & NLL & -0.0041 [-0.0109, +0.0028] & 0.2416 & 1.0000 & ns \\
+Direct -- NoJEPA & ECE & +0.0050 [-0.0086, +0.0209] & 0.4434 & 1.0000 & ns \\
+Mean -- NoJEPA & Accuracy & +0.0057 [-0.0195, +0.0319] & 0.6755 & 1.0000 & ns \\
+Mean -- NoJEPA & Sensitivity & +0.0848 [+0.0396, +0.1398] & 0.0017 & 0.1096 & ns \\
+Mean -- NoJEPA & Specificity & -0.0315 [-0.0603, -0.0057] & 0.0258 & 1.0000 & ns \\
+Mean -- NoJEPA & PPV & +0.0067 [-0.0260, +0.0401] & 0.6776 & 1.0000 & ns \\
+Mean -- NoJEPA & NPV & +0.0295 [+0.0080, +0.0555] & 0.0133 & 0.7968 & ns \\
+Mean -- NoJEPA & Balanced accuracy & +0.0267 [+0.0005, +0.0566] & 0.0650 & 1.0000 & ns \\
+Mean -- NoJEPA & MCC & +0.0444 [-0.0053, +0.1028] & 0.1036 & 1.0000 & ns \\
+Mean -- NoJEPA & Youden index & +0.0533 [+0.0010, +0.1132] & 0.0650 & 1.0000 & ns \\
+Mean -- NoJEPA & Brier & +0.0007 [-0.0052, +0.0063] & 0.8226 & 1.0000 & ns \\
+Mean -- NoJEPA & NLL & +0.0017 [-0.0108, +0.0142] & 0.7867 & 1.0000 & ns \\
+Mean -- NoJEPA & ECE & +0.0249 [+0.0042, +0.0340] & 0.0104 & 0.6460 & ns \\
+Mean -- Direct & Accuracy & -0.0010 [-0.0248, +0.0238] & 0.9526 & 1.0000 & ns \\
+Mean -- Direct & Sensitivity & +0.0818 [+0.0404, +0.1327] & 0.0013 & 0.0851 & ns \\
+Mean -- Direct & Specificity & -0.0399 [-0.0663, -0.0165] & 0.0019 & 0.1241 & ns \\
+Mean -- Direct & PPV & -0.0025 [-0.0322, +0.0288] & 0.8708 & 1.0000 & ns \\
+Mean -- Direct & NPV & +0.0262 [+0.0066, +0.0503] & 0.0174 & 1.0000 & ns \\
+Mean -- Direct & Balanced accuracy & +0.0210 [-0.0041, +0.0486] & 0.1135 & 1.0000 & ns \\
+Mean -- Direct & MCC & +0.0325 [-0.0146, +0.0866] & 0.1939 & 1.0000 & ns \\
+Mean -- Direct & Youden index & +0.0419 [-0.0082, +0.0973] & 0.1135 & 1.0000 & ns \\
+Mean -- Direct & Brier & +0.0023 [-0.0020, +0.0068] & 0.3234 & 1.0000 & ns \\
+Mean -- Direct & NLL & +0.0059 [-0.0040, +0.0158] & 0.2551 & 1.0000 & ns \\
+Mean -- Direct & ECE & +0.0199 [-0.0039, +0.0282] & 0.0456 & 1.0000 & ns \\
+\bottomrule
+\end{tabular}
+\end{table*}

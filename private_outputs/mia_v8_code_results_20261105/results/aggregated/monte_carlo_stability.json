@@ -1,0 +1,41 @@
+{
+  "generated_at_utc": "2026-11-04T11:43:22.031811+00:00",
+  "training_seeds": [
+    42,
+    44,
+    71,
+    2026
+  ],
+  "models": [
+    "NoJEPA",
+    "DirectReadout",
+    "ForecastMean"
+  ],
+  "comparison": "ForecastMean minus NoJEPA",
+  "timepoint": "T2",
+  "metric": "auroc",
+  "delta": 0.022433973589435746,
+  "reason": "The uniform-table all-78 Holm p=0.04408 is close to 0.05 relative to its Monte Carlo uncertainty; repeat this same hypothesis in a larger independently seeded simulation.",
+  "primary_bootstrap_replicates": 99999,
+  "primary_p_raw": 0.00058,
+  "primary_p_holm_secondary": 0.03944,
+  "primary_p_holm_all_78": 0.04408,
+  "extra_bootstrap_replicates": 999999,
+  "extra_rng_seed": 20261104,
+  "extra_exceedances": 721,
+  "extra_p_raw": 0.000722,
+  "extra_p_monte_carlo_se": 2.686036927295374e-05,
+  "monte_carlo_probability_wilson95": [
+    0.0006702739900930103,
+    0.0007755635014151737
+  ],
+  "adjusted_p_with_only_this_entry_replaced": {
+    "secondary_69": 0.049096,
+    "all_78": 0.054872
+  },
+  "method": "Same approximate null-centered paired patient bootstrap; separately recompute each seed-specific T2 AUROC from its fivefold probability ensemble, then equally average the four seed differences; other 77 p-values held fixed for this sensitivity check.",
+  "reporting": "Separate numerical stability sensitivity, not a replacement for the uniformly generated 78-test table. All analyses and reporting families are exploratory.",
+  "source_significance_csv_sha256": "9c509c31b9994f1d16dc47e346a4551befdf5b02eb6e9b5d10d13c74c10d3f56",
+  "analysis_script_sha256": "b2d47232a5cd2fb77a5c408e56e0ffcecbddaba6667b051966e5dde9e3aa79cb",
+  "aggregate_only": true
+}

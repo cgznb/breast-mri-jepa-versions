@@ -1,0 +1,309 @@
+{
+  "source": "/personal_fast_storage/VLA-PCRV1/manuscripts/mia_mean_seed42_44_71_2026_probmean_v8/data/extended_summary.csv",
+  "source_sha256": "36f66e97358b59360b3e2d16aca1ca4838a77c6286aee25ea012df07441b02f9",
+  "filter": {
+    "seed": "42,44,71,2026",
+    "policy": "fixed_0.5",
+    "timepoint": "Macro"
+  },
+  "aggregation": "within-seed fivefold patient probability mean -> metric and equal T0/T1/T2 Macro -> equal mean of seed42/44/71/2026 metrics",
+  "interval_scope": "patient resampling conditional on fixed fitted ensembles; no refitting or retrospective selection uncertainty",
+  "model_count": 3,
+  "metric_rows": 14,
+  "reported_values": [
+    {
+      "model": "NoJEPA",
+      "metric": "auroc",
+      "estimate": 0.7258153261304522,
+      "ci_low": 0.6410435614508149,
+      "ci_high": 0.7999525298147733
+    },
+    {
+      "model": "DirectReadout",
+      "metric": "auroc",
+      "estimate": 0.7354191676670668,
+      "ci_low": 0.6504078373162628,
+      "ci_high": 0.8079302045166562
+    },
+    {
+      "model": "ForecastMean",
+      "metric": "auroc",
+      "estimate": 0.7482868147258903,
+      "ci_low": 0.6674953636183584,
+      "ci_high": 0.8193708905513658
+    },
+    {
+      "model": "NoJEPA",
+      "metric": "auprc",
+      "estimate": 0.5905247744985458,
+      "ci_low": 0.4682806946092328,
+      "ci_high": 0.7056987302881474
+    },
+    {
+      "model": "DirectReadout",
+      "metric": "auprc",
+      "estimate": 0.597240976094126,
+      "ci_low": 0.47522269607541295,
+      "ci_high": 0.7150444338544818
+    },
+    {
+      "model": "ForecastMean",
+      "metric": "auprc",
+      "estimate": 0.6197319002589121,
+      "ci_low": 0.49735859925447606,
+      "ci_high": 0.7351581181634311
+    },
+    {
+      "model": "NoJEPA",
+      "metric": "f1",
+      "estimate": 0.5382326459673693,
+      "ci_low": 0.42972138451675546,
+      "ci_high": 0.6323367956859773
+    },
+    {
+      "model": "DirectReadout",
+      "metric": "f1",
+      "estimate": 0.5445577108713472,
+      "ci_low": 0.43874498260560413,
+      "ci_high": 0.637758580021418
+    },
+    {
+      "model": "ForecastMean",
+      "metric": "f1",
+      "estimate": 0.5759778089842376,
+      "ci_low": 0.475483940182414,
+      "ci_high": 0.6657534205199087
+    },
+    {
+      "model": "NoJEPA",
+      "metric": "accuracy",
+      "estimate": 0.6747619047619048,
+      "ci_low": 0.6071309523809524,
+      "ci_high": 0.7371547619047619
+    },
+    {
+      "model": "DirectReadout",
+      "metric": "accuracy",
+      "estimate": 0.6814285714285714,
+      "ci_low": 0.6137976190476191,
+      "ci_high": 0.7433571428571428
+    },
+    {
+      "model": "ForecastMean",
+      "metric": "accuracy",
+      "estimate": 0.6804761904761906,
+      "ci_low": 0.6142738095238095,
+      "ci_high": 0.7442857142857142
+    },
+    {
+      "model": "NoJEPA",
+      "metric": "sensitivity",
+      "estimate": 0.59375,
+      "ci_low": 0.47470076345755696,
+      "ci_high": 0.7164117538005189
+    },
+    {
+      "model": "DirectReadout",
+      "metric": "sensitivity",
+      "estimate": 0.5967261904761906,
+      "ci_low": 0.4783935185185185,
+      "ci_high": 0.7155254852082156
+    },
+    {
+      "model": "ForecastMean",
+      "metric": "sensitivity",
+      "estimate": 0.6785714285714285,
+      "ci_low": 0.5590863375130617,
+      "ci_high": 0.7931649080086579
+    },
+    {
+      "model": "NoJEPA",
+      "metric": "specificity",
+      "estimate": 0.7128851540616246,
+      "ci_low": 0.6362092778397127,
+      "ci_high": 0.7872733297985154
+    },
+    {
+      "model": "DirectReadout",
+      "metric": "specificity",
+      "estimate": 0.7212885154061625,
+      "ci_low": 0.6436722724703222,
+      "ci_high": 0.795986860400445
+    },
+    {
+      "model": "ForecastMean",
+      "metric": "specificity",
+      "estimate": 0.6813725490196078,
+      "ci_low": 0.6010031936419707,
+      "ci_high": 0.7573781070167802
+    },
+    {
+      "model": "NoJEPA",
+      "metric": "ppv",
+      "estimate": 0.4941164464526859,
+      "ci_low": 0.3800164818453263,
+      "ci_high": 0.6059223524446178
+    },
+    {
+      "model": "DirectReadout",
+      "metric": "ppv",
+      "estimate": 0.5033029861637495,
+      "ci_low": 0.38793742076832266,
+      "ci_high": 0.6151858489905788
+    },
+    {
+      "model": "ForecastMean",
+      "metric": "ppv",
+      "estimate": 0.5008262963719186,
+      "ci_low": 0.3936819766085059,
+      "ci_high": 0.6073536487542107
+    },
+    {
+      "model": "NoJEPA",
+      "metric": "npv",
+      "estimate": 0.7891205475496605,
+      "ci_low": 0.7097200775422963,
+      "ci_high": 0.8642560873096333
+    },
+    {
+      "model": "DirectReadout",
+      "metric": "npv",
+      "estimate": 0.7923797006476869,
+      "ci_low": 0.7132335001785582,
+      "ci_high": 0.8645273622574604
+    },
+    {
+      "model": "ForecastMean",
+      "metric": "npv",
+      "estimate": 0.8186015342999491,
+      "ci_low": 0.7399658519227423,
+      "ci_high": 0.8891052001198836
+    },
+    {
+      "model": "NoJEPA",
+      "metric": "balanced_accuracy",
+      "estimate": 0.6533175770308124,
+      "ci_low": 0.5794620313162682,
+      "ci_high": 0.7249871778330244
+    },
+    {
+      "model": "DirectReadout",
+      "metric": "balanced_accuracy",
+      "estimate": 0.6590073529411765,
+      "ci_low": 0.5870031499264217,
+      "ci_high": 0.7298821115114743
+    },
+    {
+      "model": "ForecastMean",
+      "metric": "balanced_accuracy",
+      "estimate": 0.6799719887955182,
+      "ci_low": 0.6083664075986275,
+      "ci_high": 0.7474053658409543
+    },
+    {
+      "model": "NoJEPA",
+      "metric": "mcc",
+      "estimate": 0.29465875836394506,
+      "ci_low": 0.15051764995474934,
+      "ci_high": 0.43331419865634113
+    },
+    {
+      "model": "DirectReadout",
+      "metric": "mcc",
+      "estimate": 0.3065696403839933,
+      "ci_low": 0.16341722313427096,
+      "ci_high": 0.44354087430617756
+    },
+    {
+      "model": "ForecastMean",
+      "metric": "mcc",
+      "estimate": 0.3390756835676822,
+      "ci_low": 0.20136493074438294,
+      "ci_high": 0.46704684731923335
+    },
+    {
+      "model": "NoJEPA",
+      "metric": "youden_j",
+      "estimate": 0.30663515406162467,
+      "ci_low": 0.1589240626325361,
+      "ci_high": 0.44997435566604854
+    },
+    {
+      "model": "DirectReadout",
+      "metric": "youden_j",
+      "estimate": 0.3180147058823529,
+      "ci_low": 0.17400629985284335,
+      "ci_high": 0.4597642230229487
+    },
+    {
+      "model": "ForecastMean",
+      "metric": "youden_j",
+      "estimate": 0.35994397759103647,
+      "ci_low": 0.2167328151972548,
+      "ci_high": 0.4948107316819086
+    },
+    {
+      "model": "NoJEPA",
+      "metric": "nll",
+      "estimate": 0.5811903152418147,
+      "ci_low": 0.5273904289842108,
+      "ci_high": 0.6404812237165286
+    },
+    {
+      "model": "DirectReadout",
+      "metric": "nll",
+      "estimate": 0.5770722750154875,
+      "ci_low": 0.5217555671770508,
+      "ci_high": 0.6387143481948641
+    },
+    {
+      "model": "ForecastMean",
+      "metric": "nll",
+      "estimate": 0.5829270927845623,
+      "ci_low": 0.5304436280696297,
+      "ci_high": 0.6405390149617781
+    },
+    {
+      "model": "NoJEPA",
+      "metric": "brier",
+      "estimate": 0.19955704046949374,
+      "ci_low": 0.17538961020513258,
+      "ci_high": 0.22568682913971316
+    },
+    {
+      "model": "DirectReadout",
+      "metric": "brier",
+      "estimate": 0.19792053472941087,
+      "ci_low": 0.1730939742932538,
+      "ci_high": 0.22511582540206673
+    },
+    {
+      "model": "ForecastMean",
+      "metric": "brier",
+      "estimate": 0.2002077567929875,
+      "ci_low": 0.17652573557532195,
+      "ci_high": 0.22570374130548848
+    },
+    {
+      "model": "NoJEPA",
+      "metric": "ece_10_equal_width",
+      "estimate": 0.11565694931078527,
+      "ci_low": 0.08749957741979243,
+      "ci_high": 0.18198908892691215
+    },
+    {
+      "model": "DirectReadout",
+      "metric": "ece_10_equal_width",
+      "estimate": 0.12065239317768386,
+      "ci_low": 0.095288306365936,
+      "ci_high": 0.18413371852283314
+    },
+    {
+      "model": "ForecastMean",
+      "metric": "ece_10_equal_width",
+      "estimate": 0.14052950212725307,
+      "ci_low": 0.10673630603102502,
+      "ci_high": 0.2048060616340122
+    }
+  ]
+}

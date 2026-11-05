@@ -1,0 +1,39 @@
+{
+  "generated_at_utc": "2026-11-04T11:38:16.207975+00:00",
+  "training_seeds": [
+    42,
+    44,
+    71,
+    2026
+  ],
+  "patients": 175,
+  "positives": 56,
+  "folds_per_ensemble": 5,
+  "threshold": 0.5,
+  "bootstrap_replicates": 99999,
+  "rng_seed": 20261103,
+  "numpy_version": "2.5.1",
+  "batch_size": 1024,
+  "metric_test": "Two-sided null-centered paired patient bootstrap for all 14 metrics, including AUROC. Metric is recomputed separately for each seed then equally averaged; shared patient draws preserve seed/model/landmark dependence.",
+  "bootstrap_p_formula": "(1 + count(abs(bootstrap_delta - observed_delta) >= abs(observed_delta) - 1e-12)) / (99999 + 1)",
+  "null": "Difference in the mean population metric over these four fixed fitted seed-specific ensembles is zero.",
+  "macro": "Arithmetic mean of separately recomputed landmark metrics within seed, then equal mean over seeds; never pooled patient-landmark rows or cross-seed probability ensembles.",
+  "families": {
+    "principal_macro_9": "9: three principal model contrasts x Macro AUROC/AP/F1",
+    "secondary_69": "69: principal landmark metrics 27; other principal Macro metrics 33; principal T2-T0 9"
+  },
+  "multiplicity": "Holm within principal 9 and secondary 69 separately; additional Holm across all 78 exported as sensitivity analysis. Separate-family adjustment does not control the union of the two families.",
+  "intervals": "2000 shared patient-bootstrap percentile 95% intervals; unadjusted, not exact inversions of these tests.",
+  "interpretation": "All analyses, selected seed set, and reporting families are post-hoc/exploratory. Conditions on fixed selected-seed ensembles; excludes retraining and seed/aggregation/model selection uncertainty. No seeds resampled. Sample SD over four selected seeds is descriptive. Non-smooth metrics such as AP, F1, and ECE have finite-sample bootstrap limitations.",
+  "excluded": "No new tests of OOF thresholds, subgroups, DCA thresholds, or archived training probes.",
+  "exported_patient_data": false,
+  "source_provenance_sha256": "5ba95e3d2ac33b56830b7f980fbcf6386a0fa0213b0dd179eab5fb0c1e847b4a",
+  "analysis_script_sha256": "6f1a659911ae83bdc5cba0e01b8e10629719f4b195c57a2ff4923e790dcb1eb1",
+  "test_count": 78,
+  "family_significant_counts": {
+    "principal_macro_9": 1,
+    "secondary_69": 2
+  },
+  "global_significant_count": 3,
+  "fitted_model_source_count": 60
+}

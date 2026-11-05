@@ -1,0 +1,382 @@
+{
+  "verified_at_utc": "2026-11-04T11:51:52.820638+00:00",
+  "training_seeds": [
+    42,
+    44,
+    71,
+    2026
+  ],
+  "models": [
+    "NoJEPA",
+    "DirectReadout",
+    "ForecastMean"
+  ],
+  "overall_model": "ForecastMean",
+  "folds_per_seed": 5,
+  "reporting_estimand": "Within each training seed, average the five fold probabilities per patient and landmark before computing metrics; report equal mean and sample SD ddof1 over four seed-specific metrics. Macro is equal T0/T1/T2 metric mean within seed. Only NoJEPA, DirectReadout and ForecastMean are analyzed; no cross-seed prediction-probability ensemble.",
+  "patients": 175,
+  "positives": 56,
+  "test_split": "fixed internal downstream holdout",
+  "independent_test": false,
+  "pdf": {
+    "path": "main.pdf",
+    "pages": 26,
+    "bytes": 920326,
+    "sha256": "0922dd672f15ecf15593c9f7e98780d66fa53352ecc9f6229028cead5ac082c1"
+  },
+  "source_audit": {
+    "receipt": "notes/source_audit.json",
+    "sha256": "9b31cbe7251a39ba65a397f52d7ed4cbbfc4c1be9aaf00f6e4f6758f8b788782",
+    "source_runs": 60,
+    "registered_reports_verified": 180,
+    "mean_readout_verified": "Uniform means over 32 terminal and change tokens; mean of four pCR queries; concatenate three 768-vectors into 2304-feature classifier"
+  },
+  "numerical_verification": {
+    "receipt": "notes/numerical_verification.json",
+    "sha256": "7fa0c69705fd4371de4854db9e36e936476dbfae39386a4a406148b51823e15e",
+    "all_required_checks_passed": true,
+    "extra_mc_helper_reference_auc_checks": 256,
+    "extra_mc_full_million_exceedance_count_independently_recomputed": false
+  },
+  "subgroup_and_mechanism_verification": {
+    "receipt": "notes/subgroup_and_forecast.md",
+    "sha256": "8d27b9616123c2a49cda72661ca61e3d1236627546deb15a253e5d8c1f77dec1",
+    "subgroup_values_checked": 5616,
+    "mechanism_summary_values_checked": 576,
+    "max_absolute_error": 4.440892098500626e-16
+  },
+  "typesetting_warning_counts": {
+    "undefined_references": 0,
+    "undefined_citations": 0,
+    "missing_characters": 0,
+    "overfull_boxes": 0,
+    "multiply_defined_labels": 0,
+    "float_too_large": 0
+  },
+  "visual_checks": {
+    "all_eight_figure_contact_sheet": "passed",
+    "page_11_main_results_table": "passed",
+    "page_13_principal_significance_table": "passed",
+    "page_20_both_individual_seed_tables": "passed",
+    "page_21_extended_metrics_and_threshold_tables": "passed"
+  },
+  "scientific_review": {
+    "status": "passed",
+    "reviewer": "independent subgroup-figure agent",
+    "scope": "Mean readout architecture, four-seed and three-model scope, 78 tests, T2 Monte Carlo sensitivity, unfavorable findings, subgroup/mechanism limits, table references"
+  },
+  "significance": {
+    "uniform_99999_family_holm": {
+      "principal_macro_9": {
+        "tests": 9,
+        "significant_at_0.05": 1
+      },
+      "secondary_69": {
+        "tests": 69,
+        "significant_at_0.05": 2
+      }
+    },
+    "uniform_99999_all_78_holm": {
+      "tests": 78,
+      "significant_at_0.05": 3
+    },
+    "monte_carlo_stability_receipt": "data/monte_carlo_stability.json",
+    "monte_carlo_check_replaces_uniform_78_test_table": false,
+    "t2_auroc_extra_mc_raw_p": 0.000722,
+    "t2_auroc_extra_mc_holm_69": 0.049096,
+    "t2_auroc_extra_mc_holm_78": 0.054872,
+    "t2_all_78_decision_crosses_0.05_in_sensitivity": true,
+    "other_77_simulations_not_repeated": true
+  },
+  "privacy_export_audit": {
+    "status": "passed",
+    "independent_agent_selected_files_checked_before_build_receipt_and_manifest": 167,
+    "holdout_identifiers_checked": 175,
+    "patient_identifier_matches": 0,
+    "raw_bytes_and_all_pdf_text_checked": true,
+    "csv_files_checked": 23,
+    "csv_rows_checked": 14668,
+    "csv_seed_values": [
+      "2026",
+      "42",
+      "42,44,71,2026",
+      "44",
+      "71"
+    ],
+    "csv_model_values": [
+      "DirectReadout",
+      "ForecastMean",
+      "NoJEPA"
+    ],
+    "forbidden_patient_csv_fields_found": 0,
+    "old_result_export_files_found": 0,
+    "patient_level_predictions_exported": false,
+    "anonymous_development_mri_renderings_retained": true
+  },
+  "independent_package_build": {
+    "status": "passed",
+    "built_at_utc": "2026-11-04T11:51:52.822148+00:00",
+    "method": "Extract packaged sources into new temporary directory; bash build.sh using bundled inputs",
+    "pdf_pages": 26,
+    "pdf_sha256": "b1d703aa85ed2ea3b0ef270811d3838a7d596365aee44b6092eca7280ef65b8c",
+    "pdftotext_layout_byte_identical_to_working_pdf": true,
+    "extracted_pdf_text_sha256": "78af15ed8f049bc12d2fac344c28d99109daf4f0d842e2f27508ec0925480a9a",
+    "typesetting_inputs_compared": 61,
+    "typesetting_input_sha256_all_match": true,
+    "typesetting_inputs": [
+      {
+        "path": "build.sh",
+        "sha256": "e545ae4bdeba648cd3af49684de96c8a95a957870fee897a15ca3bcefd3f28fd"
+      },
+      {
+        "path": "elsarticle-harv.bst",
+        "sha256": "f1f4e7503b7e9e225b0b4c7be370a82a34f4f9b0b7fe99c32bb5c7aa91b8da34"
+      },
+      {
+        "path": "elsarticle.cls",
+        "sha256": "01addb492c5d075b320636ac3a30d8a5762fa937220dea07a5e107042d25384d"
+      },
+      {
+        "path": "figures/calibration_utility.pdf",
+        "sha256": "001b9ff51742fb526e108506217f607e3e15b7a43e52c76b40a1d49de6c09c81"
+      },
+      {
+        "path": "figures/calibration_utility.png",
+        "sha256": "b22e22543f6b96d7abfb5a612455bac623053219c4c9ea207d1075e5e3f03fa8"
+      },
+      {
+        "path": "figures/discrimination.pdf",
+        "sha256": "5ac8dd5df7a7a542407f68cca2f92cfeaac01a451597187f994c4054dfe1cd0d"
+      },
+      {
+        "path": "figures/discrimination.png",
+        "sha256": "fdc416e57a75dd275ed01adcc7fd87019bf19a0095de631b53a71f7061ea34a1"
+      },
+      {
+        "path": "figures/forecast_mechanism.pdf",
+        "sha256": "6c6bb61eee916d3a3322bf779f8f817f671ebbd586689b1369fda723aa3023e7"
+      },
+      {
+        "path": "figures/forecast_mechanism.png",
+        "sha256": "3072556cc76c081d67079b7f9da9328be42967d61a05cec2d28944bf5f028966"
+      },
+      {
+        "path": "figures/framework.pdf",
+        "sha256": "fbff0192753dd3e272e6f8468f9e8b99c9ffc91f18f275237d38840289672429"
+      },
+      {
+        "path": "figures/framework.png",
+        "sha256": "8ff1cb85339010f65e7e0c07cccc26aca02d8f6cb6feb50461af581fbc7e71e9"
+      },
+      {
+        "path": "figures/framework.tex",
+        "sha256": "c065af41dc8e793ca1ed7a970f31809a1dba0f914a9e9bed7694c79e826ecc2f"
+      },
+      {
+        "path": "figures/landmark_performance.pdf",
+        "sha256": "4d4ca5d59a5684bb08e70f1b8b6180326dc55c2cb0d1a59ab8dd49729010336b"
+      },
+      {
+        "path": "figures/landmark_performance.png",
+        "sha256": "bdbfcc880372593ff4fd0d92d8d539572216a3b8589bd9c5f29f911106f99aa3"
+      },
+      {
+        "path": "figures/outcome_score_changes.pdf",
+        "sha256": "41383905c5aa6acc2707f06efac052544d68ba3b2e49efb485cae29c829a8536"
+      },
+      {
+        "path": "figures/outcome_score_changes.png",
+        "sha256": "ec9479ac3846548c243a77b0412adb92bf1d15568d1dfec3de6ae05da54c0561"
+      },
+      {
+        "path": "figures/paired_comparisons.pdf",
+        "sha256": "f0b8a9665c6b78bf3584a45738dc5aa0a66be7ee444fa3ff28803347c2301464"
+      },
+      {
+        "path": "figures/paired_comparisons.png",
+        "sha256": "c81c91383e6c8a5f985277492663c75cfe81acdba54e77ca90b89c9cd7471795"
+      },
+      {
+        "path": "figures/subgroup_operating.pdf",
+        "sha256": "b1629871f0e0849255312149656b3d0b1bfa9d5520d95d47c51f5d6895aeabac"
+      },
+      {
+        "path": "figures/subgroup_operating.png",
+        "sha256": "71e4aa84aad6ea5611b87159ef41a761015f88daed55b575153f99a8d6f8756d"
+      },
+      {
+        "path": "main.tex",
+        "sha256": "fd2063385bf7cd4d9db8a140a6a3b3b23736f346de0adf200b96e978189f17dd"
+      },
+      {
+        "path": "references.bib",
+        "sha256": "df00a47bd5f628af808c4f11ce95e17f5d196f67cb8125a087e50a7f07c722d5"
+      },
+      {
+        "path": "sections/conclusion.tex",
+        "sha256": "a6f15874b621c1935651a1f9905a24e040a7e19d497f8622e8444412942cf99f"
+      },
+      {
+        "path": "sections/dataset.tex",
+        "sha256": "924f5966d67fb4c0c6e50b37a4bffa84e9d4c4d20d4ff8278ab19497c5f3889e"
+      },
+      {
+        "path": "sections/discussion.tex",
+        "sha256": "1c780d03344986a8db14b46d87c6aa86640a27578b7f815935bdd67966165802"
+      },
+      {
+        "path": "sections/experiments.tex",
+        "sha256": "69e56da953173b09729a1299a26dbe8bbe89d94932d41022b3d222488732b426"
+      },
+      {
+        "path": "sections/introduction.tex",
+        "sha256": "e3db65cdab46d1d1505d3d92b06a351a61c6fa6b798434cbd4b9721dd228aebb"
+      },
+      {
+        "path": "sections/methods.tex",
+        "sha256": "c36b4ce6661d45693fa74fca057cef59bbc3da9638939b34769a820ce977c213"
+      },
+      {
+        "path": "sections/related_work.tex",
+        "sha256": "76cabadce3b506d10c00e32fd0f2501ec4bb683ed56454a6cc5ebe4ae9440bdf"
+      },
+      {
+        "path": "sections/results.tex",
+        "sha256": "51fd374fcc06a370c34d3b5225db65e0d28d50a626b0f5ad61d4109b71aa31ba"
+      },
+      {
+        "path": "sections/supplement.tex",
+        "sha256": "c967880264ed3aa84726d6ac8c8e634595f59e08b1806063f5d0d925365f51f5"
+      },
+      {
+        "path": "tables/bootstrap.tex",
+        "sha256": "72e6547fe24f1213ad386dba3fca688ff044f0c10ae46c4713be4c47acf41dd6"
+      },
+      {
+        "path": "tables/calibration.tex",
+        "sha256": "1b1dade4d7c0c3fcd4503f37bbf884ab2cd93e42a7c49c7e0dc52125d02dd625"
+      },
+      {
+        "path": "tables/extended_macro_metrics.tex",
+        "sha256": "3c0e3d827ae695a65586fa4f0d12c11a9f45e9d2deef002760d4f8431762bfd9"
+      },
+      {
+        "path": "tables/extended_operating.tex",
+        "sha256": "c062c5b86bef5ff1e8faab70b466395911bf0ad29a4e228c74a9cbb1e7675a06"
+      },
+      {
+        "path": "tables/extended_threshold.tex",
+        "sha256": "c72f0f34f14b91243b888b44594666e10b7c521ffb445ad0f2419c285d369cf9"
+      },
+      {
+        "path": "tables/main_results.tex",
+        "sha256": "d31bfa79d19b5db7fcf9b8bcbbf508f1f5dc8bfc859b7f7eea3619e0d5e877fe"
+      },
+      {
+        "path": "tables/seed_results.tex",
+        "sha256": "6f54f6601bf85aad9921703e9d3e9c75fdc1c70faf80dae97316e79d35ad956e"
+      },
+      {
+        "path": "tables/seed_results_forecast.tex",
+        "sha256": "b3d7adc5a5aae7ba243a89d6ede54bafca4a4cb35ea2f258d0cd9eb19977c621"
+      },
+      {
+        "path": "tables/significance_extended.tex",
+        "sha256": "a7d67ff2336f3d1c9273f5049a37fa9a936f040e13381f16d1c25783a47bc884"
+      },
+      {
+        "path": "tables/significance_landmarks.tex",
+        "sha256": "e94b8240e0640f40f2107f7154df8cd435f6782756b538043a68b44c01b95180"
+      },
+      {
+        "path": "tables/significance_longitudinal.tex",
+        "sha256": "5443d18db3ae4f2c0ff4f7197349ad974f4592216fbd4ad167840573f0db1d29"
+      },
+      {
+        "path": "tables/subgroup_results.tex",
+        "sha256": "df2f4257ce2011159bd775dc88728ad681606306573b2aa5e8c7ad0f98c9493b"
+      },
+      {
+        "path": "tables/subgroup_world_probe.tex",
+        "sha256": "4d8eff98517f81e410f9454d426bc0ff7fde26524cb5df60580ad745798639f3"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/1pseperateaug.pdf",
+        "sha256": "61e73d5472464c1b7eef57699e9e0866bd25ca95ee0ca7fc5d1774ecfd8f4918"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/1psingleauthorgroup.pdf",
+        "sha256": "105450d45d83e5169c8b49c8feb06a06b6c5827328e01645a7a675d900fac770"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elsdoc.pdf",
+        "sha256": "9019ceb0c6ae7e082192b5f6ebcd548bd819d9a772b1ebec8ab34012c4e8172c"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elsdoc.tex",
+        "sha256": "5f397d4418159fa2e7159f1422ab2566a268071b54c20b58a067f95ab5057c7f"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-1p.pdf",
+        "sha256": "30365ffa871fb4ff7d2e84bc2e5f41ab104ed469b57b9676ecb4ee073130a91f"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-1pdoubleblind.pdf",
+        "sha256": "02359c8daeeb0b1f5d18d26074dffd6b658a776a10df37d5b9b4c5c71ccfb1e9"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-3p.pdf",
+        "sha256": "15867ffd741871fee443c97ac695f7808523af5f420453f46db3e104f2d9bfeb"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-3pd.pdf",
+        "sha256": "6ebd18300706ba4c9c6aa8195dad1a7d9d2e37a8e51cbb5ca861b87e69566b3e"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-5p.pdf",
+        "sha256": "47641df5dd96df7b8f036f379df2a5ae3138c64be88335e8de802ea2bd1fe572"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/jfigs.pdf",
+        "sha256": "1c9cbfe1bed0b5f00e003b5768eb58e064561b62e2ab61d6fd652e904095ed6a"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-harv.bst",
+        "sha256": "f1f4e7503b7e9e225b0b4c7be370a82a34f4f9b0b7fe99c32bb5c7aa91b8da34"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-num-names.bst",
+        "sha256": "e7ce499923c323d537c6d2b3860d747f261261921e3735a64b8f8234e4961cdb"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-num.bst",
+        "sha256": "0db2e53b2378cbe5815e436c1afe9dcac67123a32406fa8f11fad7978808e202"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-template-harv.tex",
+        "sha256": "f38d90a86c045a026c29e0fc08dc630447047475db9f43157feb84afab17b5be"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-template-num-names.tex",
+        "sha256": "59c721067d692a5f534bade43f7b7f64fe28e64df4246012c4d9bf1b7067e504"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-template-num.tex",
+        "sha256": "cbd7247fd453f458056f59070c84b275d53b8d97cb05140bd610b5efbd0d47a8"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle.cls",
+        "sha256": "01addb492c5d075b320636ac3a30d8a5762fa937220dea07a5e107042d25384d"
+      }
+    ],
+    "typesetting_warning_counts": {
+      "undefined_references": 0,
+      "undefined_citations": 0,
+      "missing_characters": 0,
+      "overfull_boxes": 0,
+      "multiply_defined_labels": 0,
+      "float_too_large": 0
+    }
+  },
+  "limitations": "Manuscript draft; author, ethics, pCR definition and upstream provenance items remain marked TO COMPLETE. Overall-model and seed choices are retrospective. Same internal holdout across seeds; fixed-model conditional inference. T2 all-test significance is numerically sensitive and is not described as robust."
+}

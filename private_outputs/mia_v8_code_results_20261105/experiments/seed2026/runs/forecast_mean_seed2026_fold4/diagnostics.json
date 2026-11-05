@@ -1,0 +1,5161 @@
+[
+  {
+    "epoch": 5,
+    "scope": "fixed training probe; not full validation or checkpoint selection",
+    "patients": 32,
+    "labelled_patients": 32,
+    "prefixes": 32,
+    "landmark_counts": {
+      "T0": 13,
+      "T1": 14,
+      "T2": 5
+    },
+    "eval_pcr_nll": 0.6718686344102025,
+    "gradient_semantics": "separate weighted objectives in eval mode; preclip module L2 norms; no optimizer update",
+    "gradient_batches": [
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.08225850760936737,
+            "fusion": 1.3938192129135132,
+            "conditioning_and_queries": 0.012805725447833538,
+            "pcr_head": 10.082612991333008,
+            "world_predictor": 2.3519446849823,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 1.3962444067001343,
+            "all_trainable": 10.447028160095215
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 3.274730988778174e-05,
+            "fusion": 0.0002761460782494396,
+            "conditioning_and_queries": 3.273353058830253e-06,
+            "pcr_head": 0.0,
+            "world_predictor": 0.09522418677806854,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0002780809882096946,
+            "all_trainable": 0.09522458910942078
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": -0.035791713212864694,
+            "fusion": -0.08854133187241632,
+            "shared_encoder_fusion": -0.08802084996448649
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      },
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.03056449629366398,
+            "fusion": 0.4802662432193756,
+            "conditioning_and_queries": 0.008742853999137878,
+            "pcr_head": 3.1531100273132324,
+            "world_predictor": 1.7324937582015991,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.48123782873153687,
+            "all_trainable": 3.6297802925109863
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 8.323984729941003e-06,
+            "fusion": 7.852261478547007e-05,
+            "conditioning_and_queries": 1.08917038232903e-06,
+            "pcr_head": 0.0,
+            "world_predictor": 0.07753541320562363,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 7.896258466644213e-05,
+            "all_trainable": 0.07753545045852661
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": 0.04568599000706741,
+            "fusion": 0.010088135301031033,
+            "shared_encoder_fusion": 0.01031755086414313
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      }
+    ],
+    "observed_representation": {
+      "mean_absolute": 0.7855041027069092,
+      "rms": 1.0001634359359741,
+      "global_std": 1.0001634359359741,
+      "legacy_variance_penalty": 0.8984563946723938,
+      "patient_axis_variance_penalty": 0.9100251197814941,
+      "anchor_patient_pooled_variance": 0.008242872543632984,
+      "anchor_patient_pooled_effective_rank": 2.48568499515039,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.008385789580643177,
+          "patient_axis_variance_penalty": 0.9145148396492004,
+          "patient_pooled_effective_rank": 2.7314323582399433
+        },
+        "T1": {
+          "patients": 19,
+          "patient_axis_variance_mean": 0.015362505801022053,
+          "patient_axis_variance_penalty": 0.8869342803955078,
+          "patient_pooled_effective_rank": 2.0820640557786234
+        },
+        "T2": {
+          "patients": 5,
+          "patient_axis_variance_mean": 0.006173403933644295,
+          "patient_axis_variance_penalty": 0.9286262392997742,
+          "patient_pooled_effective_rank": 2.4572206916564623
+        },
+        "T3": {
+          "patients": 0,
+          "patient_axis_variance_mean": null,
+          "patient_axis_variance_penalty": null,
+          "patient_pooled_effective_rank": null
+        }
+      }
+    },
+    "teacher_representation": {
+      "mean_absolute": 0.7897561192512512,
+      "rms": 0.9999886155128479,
+      "global_std": 0.9999886155128479,
+      "legacy_variance_penalty": 0.6954986453056335,
+      "patient_axis_variance_penalty": 0.7112162709236145,
+      "anchor_patient_pooled_variance": 0.08529037982225418,
+      "anchor_patient_pooled_effective_rank": 2.2261569472370577,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.115027517080307,
+          "patient_axis_variance_penalty": 0.6963455080986023,
+          "patient_pooled_effective_rank": 1.9585938373791714
+        },
+        "T1": {
+          "patients": 29,
+          "patient_axis_variance_mean": 0.10228624194860458,
+          "patient_axis_variance_penalty": 0.7079601883888245,
+          "patient_pooled_effective_rank": 2.316396206833196
+        },
+        "T2": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.10769090801477432,
+          "patient_axis_variance_penalty": 0.7025988698005676,
+          "patient_pooled_effective_rank": 2.1446939005592767
+        },
+        "T3": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.08316656202077866,
+          "patient_axis_variance_penalty": 0.7379605174064636,
+          "patient_pooled_effective_rank": 2.0385434988936906
+        }
+      }
+    },
+    "teacher_drift": {
+      "status": "first_probe",
+      "l1": null,
+      "relative_to_previous_rms": null,
+      "adjacent_copy_change_l1": null
+    },
+    "world": {
+      "status": "evaluated",
+      "world_head_trained": true,
+      "reduction": "mean eligible prefix-targets within patient, then mean patients",
+      "relative_error_guard": "ratio and skill are null if aggregate copy L1 <= 1e-8 or no eligible patients",
+      "target_coordinates": "same checkpoint EMA teacher for model and both copy baselines",
+      "chain_policy": "real continuous visits only; target and all intermediate visits required",
+      "teacher_forcing_copy": "real immediate predecessor",
+      "autonomous_copy": "real landmark state held constant",
+      "metrics": {
+        "horizon_1": {
+          "patients": 23,
+          "prefix_targets": 23,
+          "teacher_forcing_l1": 0.108886465754198,
+          "autonomous_l1": 0.108886465754198,
+          "teacher_forcing_copy_l1": 0.1099663206740566,
+          "autonomous_copy_l1": 0.1099663206740566,
+          "teacher_forcing_relative_to_copy": 0.9901801304868668,
+          "teacher_forcing_skill_vs_copy": 0.009819869513133184,
+          "teacher_forcing_minus_copy": -0.0010798549198585972,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.9901801304868668,
+          "autonomous_skill_vs_copy": 0.009819869513133184,
+          "autonomous_minus_copy": -0.0010798549198585972,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_2": {
+          "patients": 17,
+          "prefix_targets": 17,
+          "teacher_forcing_l1": 0.11210641199175049,
+          "autonomous_l1": 0.1387459438513307,
+          "teacher_forcing_copy_l1": 0.11280844316763036,
+          "autonomous_copy_l1": 0.14768602699041367,
+          "teacher_forcing_relative_to_copy": 0.9937767851752313,
+          "teacher_forcing_skill_vs_copy": 0.00622321482476873,
+          "teacher_forcing_minus_copy": -0.000702031175879872,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.9394656128188534,
+          "autonomous_skill_vs_copy": 0.060534387181146565,
+          "autonomous_minus_copy": -0.008940083139082955,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_3": {
+          "patients": 9,
+          "prefix_targets": 9,
+          "teacher_forcing_l1": 0.08688611288865407,
+          "autonomous_l1": 0.10195902528034316,
+          "teacher_forcing_copy_l1": 0.08281701989471912,
+          "autonomous_copy_l1": 0.11475763304366006,
+          "teacher_forcing_relative_to_copy": 1.0491335355837215,
+          "teacher_forcing_skill_vs_copy": -0.049133535583721466,
+          "teacher_forcing_minus_copy": 0.004069092993934945,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.8884727104954525,
+          "autonomous_skill_vs_copy": 0.11152728950454749,
+          "autonomous_minus_copy": -0.0127986077633169,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_all": {
+          "patients": 23,
+          "prefix_targets": 49,
+          "teacher_forcing_l1": 0.10785041349953498,
+          "autonomous_l1": 0.11927548550285291,
+          "teacher_forcing_copy_l1": 0.1081598800863477,
+          "autonomous_copy_l1": 0.12398263434137123,
+          "teacher_forcing_relative_to_copy": 0.9971388042722895,
+          "teacher_forcing_skill_vs_copy": 0.002861195727710486,
+          "teacher_forcing_minus_copy": -0.00030946658681273165,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.9620338052701981,
+          "autonomous_skill_vs_copy": 0.037966194729801894,
+          "autonomous_minus_copy": -0.0047071488385183186,
+          "autonomous_near_zero_copy_patients": 0
+        }
+      },
+      "teacher_forcing_all_adjacent": {
+        "scope": "all real adjacent supervised pairs, including pairs after a prior missing visit",
+        "reduction": "mean eligible prefix-pairs within patient, then mean patients",
+        "metrics": {
+          "T0_to_T1": {
+            "patients": 10,
+            "prefix_pairs": 10,
+            "teacher_forcing_l1": 0.08606865778565406,
+            "teacher_forcing_copy_l1": 0.08978733196854591,
+            "relative_to_copy": 0.958583531759307,
+            "skill_vs_copy": 0.041416468240693005,
+            "near_zero_copy_patients": 0
+          },
+          "T1_to_T2": {
+            "patients": 18,
+            "prefix_pairs": 18,
+            "teacher_forcing_l1": 0.11721841432154179,
+            "teacher_forcing_copy_l1": 0.11630375310778618,
+            "relative_to_copy": 1.0078644170055968,
+            "skill_vs_copy": -0.007864417005596813,
+            "near_zero_copy_patients": 0
+          },
+          "T2_to_T3": {
+            "patients": 22,
+            "prefix_pairs": 22,
+            "teacher_forcing_l1": 0.10462416098876433,
+            "teacher_forcing_copy_l1": 0.10351865391500971,
+            "relative_to_copy": 1.01067930302361,
+            "skill_vs_copy": -0.010679303023610087,
+            "near_zero_copy_patients": 0
+          },
+          "all": {
+            "patients": 24,
+            "prefix_pairs": 50,
+            "teacher_forcing_l1": 0.10669734815342558,
+            "teacher_forcing_copy_l1": 0.10683776730568044,
+            "relative_to_copy": 0.9986856787089803,
+            "skill_vs_copy": 0.0013143212910197155,
+            "near_zero_copy_patients": 0
+          }
+        }
+      },
+      "spatial_metric": "unweighted all-token L1; same-checkpoint teacher for prediction and copy"
+    },
+    "world_head_trained": true,
+    "teacher_present": true,
+    "teacher_frozen": true,
+    "rng_and_module_modes_preserved": true
+  },
+  {
+    "epoch": 10,
+    "scope": "fixed training probe; not full validation or checkpoint selection",
+    "patients": 32,
+    "labelled_patients": 32,
+    "prefixes": 32,
+    "landmark_counts": {
+      "T0": 13,
+      "T1": 14,
+      "T2": 5
+    },
+    "eval_pcr_nll": 0.6673656664788723,
+    "gradient_semantics": "separate weighted objectives in eval mode; preclip module L2 norms; no optimizer update",
+    "gradient_batches": [
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.01540989801287651,
+            "fusion": 0.6382923126220703,
+            "conditioning_and_queries": 0.05289313569664955,
+            "pcr_head": 7.048095226287842,
+            "world_predictor": 1.3928629159927368,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.6384782791137695,
+            "all_trainable": 7.212916374206543
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 2.89648846774071e-06,
+            "fusion": 0.00010315069084754214,
+            "conditioning_and_queries": 1.5788431255714386e-06,
+            "pcr_head": 0.0,
+            "world_predictor": 0.09695781022310257,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.00010319135617464781,
+            "all_trainable": 0.09695786982774734
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": -0.02616884888929807,
+            "fusion": -0.06946283910216473,
+            "shared_encoder_fusion": -0.06943297274402731
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      },
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.005604238249361515,
+            "fusion": 0.5102384686470032,
+            "conditioning_and_queries": 0.05714847519993782,
+            "pcr_head": 1.6959251165390015,
+            "world_predictor": 0.7444812655448914,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.5102692246437073,
+            "all_trainable": 1.9219924211502075
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 1.3114587318341364e-06,
+            "fusion": 5.282710480969399e-05,
+            "conditioning_and_queries": 7.123641694306571e-07,
+            "pcr_head": 0.0,
+            "world_predictor": 0.08328548818826675,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 5.284338112687692e-05,
+            "all_trainable": 0.08328550308942795
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": -0.05532042983404312,
+            "fusion": 0.02946393385109116,
+            "shared_encoder_fusion": 0.029438008297022075
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      }
+    ],
+    "observed_representation": {
+      "mean_absolute": 0.8077940940856934,
+      "rms": 1.000182032585144,
+      "global_std": 1.0001821517944336,
+      "legacy_variance_penalty": 0.9589464664459229,
+      "patient_axis_variance_penalty": 0.964313805103302,
+      "anchor_patient_pooled_variance": 0.0004631717165466398,
+      "anchor_patient_pooled_effective_rank": 2.1656229349995924,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.001318069756962359,
+          "patient_axis_variance_penalty": 0.965643584728241,
+          "patient_pooled_effective_rank": 2.0985105768554386
+        },
+        "T1": {
+          "patients": 19,
+          "patient_axis_variance_mean": 0.0016970975557342172,
+          "patient_axis_variance_penalty": 0.9612109065055847,
+          "patient_pooled_effective_rank": 2.2405403449690713
+        },
+        "T2": {
+          "patients": 5,
+          "patient_axis_variance_mean": 0.0014252985129132867,
+          "patient_axis_variance_penalty": 0.9660869240760803,
+          "patient_pooled_effective_rank": 1.6355386923157045
+        },
+        "T3": {
+          "patients": 0,
+          "patient_axis_variance_mean": null,
+          "patient_axis_variance_penalty": null,
+          "patient_pooled_effective_rank": null
+        }
+      }
+    },
+    "teacher_representation": {
+      "mean_absolute": 0.7798168063163757,
+      "rms": 0.999932587146759,
+      "global_std": 0.9999326467514038,
+      "legacy_variance_penalty": 0.6479052901268005,
+      "patient_axis_variance_penalty": 0.6619155555963516,
+      "anchor_patient_pooled_variance": 0.12520383298397064,
+      "anchor_patient_pooled_effective_rank": 1.967232388810877,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.1577148288488388,
+          "patient_axis_variance_penalty": 0.6500292420387268,
+          "patient_pooled_effective_rank": 1.768919381466602
+        },
+        "T1": {
+          "patients": 29,
+          "patient_axis_variance_mean": 0.14559246599674225,
+          "patient_axis_variance_penalty": 0.6579768061637878,
+          "patient_pooled_effective_rank": 2.002404596379197
+        },
+        "T2": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.15050630271434784,
+          "patient_axis_variance_penalty": 0.6533981561660767,
+          "patient_pooled_effective_rank": 1.955814030284535
+        },
+        "T3": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.1217430830001831,
+          "patient_axis_variance_penalty": 0.6862580180168152,
+          "patient_pooled_effective_rank": 1.909250938851755
+        }
+      }
+    },
+    "teacher_drift": {
+      "status": "evaluated",
+      "previous_epoch": 5,
+      "l1": 0.2922844886779785,
+      "relative_to_previous_rms": 0.29228781622486705,
+      "adjacent_copy_change_l1": 0.018447302281856537
+    },
+    "world": {
+      "status": "evaluated",
+      "world_head_trained": true,
+      "reduction": "mean eligible prefix-targets within patient, then mean patients",
+      "relative_error_guard": "ratio and skill are null if aggregate copy L1 <= 1e-8 or no eligible patients",
+      "target_coordinates": "same checkpoint EMA teacher for model and both copy baselines",
+      "chain_policy": "real continuous visits only; target and all intermediate visits required",
+      "teacher_forcing_copy": "real immediate predecessor",
+      "autonomous_copy": "real landmark state held constant",
+      "metrics": {
+        "horizon_1": {
+          "patients": 23,
+          "prefix_targets": 23,
+          "teacher_forcing_l1": 0.1187236250742622,
+          "autonomous_l1": 0.1187236250742622,
+          "teacher_forcing_copy_l1": 0.11516643947233325,
+          "autonomous_copy_l1": 0.11516643947233325,
+          "teacher_forcing_relative_to_copy": 1.0308873454647653,
+          "teacher_forcing_skill_vs_copy": -0.030887345464765348,
+          "teacher_forcing_minus_copy": 0.0035571856019289555,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0308873454647653,
+          "autonomous_skill_vs_copy": -0.030887345464765348,
+          "autonomous_minus_copy": 0.0035571856019289555,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_2": {
+          "patients": 17,
+          "prefix_targets": 17,
+          "teacher_forcing_l1": 0.1129994480048909,
+          "autonomous_l1": 0.13397658791612177,
+          "teacher_forcing_copy_l1": 0.11204707184258629,
+          "autonomous_copy_l1": 0.14580161365516045,
+          "teacher_forcing_relative_to_copy": 1.0084997862652099,
+          "teacher_forcing_skill_vs_copy": -0.008499786265209863,
+          "teacher_forcing_minus_copy": 0.0009523761623046051,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.9188964686837665,
+          "autonomous_skill_vs_copy": 0.08110353131623349,
+          "autonomous_minus_copy": -0.01182502573903868,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_3": {
+          "patients": 9,
+          "prefix_targets": 9,
+          "teacher_forcing_l1": 0.10013067887889014,
+          "autonomous_l1": 0.11128149471349186,
+          "teacher_forcing_copy_l1": 0.0930169675913122,
+          "autonomous_copy_l1": 0.12110369528333347,
+          "teacher_forcing_relative_to_copy": 1.076477566102062,
+          "teacher_forcing_skill_vs_copy": -0.07647756610206202,
+          "teacher_forcing_minus_copy": 0.007113711287577942,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.9188942951174063,
+          "autonomous_skill_vs_copy": 0.08110570488259372,
+          "autonomous_minus_copy": -0.009822200569841608,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_all": {
+          "patients": 23,
+          "prefix_targets": 49,
+          "teacher_forcing_l1": 0.11547924389225848,
+          "autonomous_l1": 0.12488653894135916,
+          "teacher_forcing_copy_l1": 0.1129041331131821,
+          "autonomous_copy_l1": 0.12809606892583164,
+          "teacher_forcing_relative_to_copy": 1.0228079407553214,
+          "teacher_forcing_skill_vs_copy": -0.022807940755321443,
+          "teacher_forcing_minus_copy": 0.0025751107790763783,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.9749443522241825,
+          "autonomous_skill_vs_copy": 0.02505564777581748,
+          "autonomous_minus_copy": -0.0032095299844724784,
+          "autonomous_near_zero_copy_patients": 0
+        }
+      },
+      "teacher_forcing_all_adjacent": {
+        "scope": "all real adjacent supervised pairs, including pairs after a prior missing visit",
+        "reduction": "mean eligible prefix-pairs within patient, then mean patients",
+        "metrics": {
+          "T0_to_T1": {
+            "patients": 10,
+            "prefix_pairs": 10,
+            "teacher_forcing_l1": 0.09306365624070168,
+            "teacher_forcing_copy_l1": 0.09208204075694085,
+            "relative_to_copy": 1.0106602272896177,
+            "skill_vs_copy": -0.010660227289617685,
+            "near_zero_copy_patients": 0
+          },
+          "T1_to_T2": {
+            "patients": 18,
+            "prefix_pairs": 18,
+            "teacher_forcing_l1": 0.1291813597910934,
+            "teacher_forcing_copy_l1": 0.12194069371455246,
+            "relative_to_copy": 1.0593785868849526,
+            "skill_vs_copy": -0.05937858688495257,
+            "near_zero_copy_patients": 0
+          },
+          "T2_to_T3": {
+            "patients": 22,
+            "prefix_pairs": 22,
+            "teacher_forcing_l1": 0.10767177966507999,
+            "teacher_forcing_copy_l1": 0.1063405094160275,
+            "relative_to_copy": 1.0125189380449953,
+            "skill_vs_copy": -0.012518938044995265,
+            "near_zero_copy_patients": 0
+          },
+          "all": {
+            "patients": 24,
+            "prefix_pairs": 50,
+            "teacher_forcing_l1": 0.113662195754134,
+            "teacher_forcing_copy_l1": 0.11088575523657103,
+            "relative_to_copy": 1.0250387483192906,
+            "skill_vs_copy": -0.02503874831929065,
+            "near_zero_copy_patients": 0
+          }
+        }
+      },
+      "spatial_metric": "unweighted all-token L1; same-checkpoint teacher for prediction and copy"
+    },
+    "world_head_trained": true,
+    "teacher_present": true,
+    "teacher_frozen": true,
+    "rng_and_module_modes_preserved": true
+  },
+  {
+    "epoch": 15,
+    "scope": "fixed training probe; not full validation or checkpoint selection",
+    "patients": 32,
+    "labelled_patients": 32,
+    "prefixes": 32,
+    "landmark_counts": {
+      "T0": 13,
+      "T1": 14,
+      "T2": 5
+    },
+    "eval_pcr_nll": 0.5785511685535312,
+    "gradient_semantics": "separate weighted objectives in eval mode; preclip module L2 norms; no optimizer update",
+    "gradient_batches": [
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.005270422901958227,
+            "fusion": 0.32158541679382324,
+            "conditioning_and_queries": 0.0626385360956192,
+            "pcr_head": 2.500220775604248,
+            "world_predictor": 0.33297935128211975,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.3216285705566406,
+            "all_trainable": 2.5434911251068115
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 8.978016694527469e-07,
+            "fusion": 4.435583468875848e-05,
+            "conditioning_and_queries": 3.4207307635369943e-06,
+            "pcr_head": 0.0,
+            "world_predictor": 0.09256167709827423,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 4.436492235981859e-05,
+            "all_trainable": 0.09256168454885483
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": -0.39308491801471446,
+            "fusion": -0.21331294949424395,
+            "shared_encoder_fusion": -0.21337097025049945
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      },
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.006474808789789677,
+            "fusion": 0.22421866655349731,
+            "conditioning_and_queries": 0.02889798954129219,
+            "pcr_head": 1.570803165435791,
+            "world_predictor": 0.6721615195274353,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.22431214153766632,
+            "all_trainable": 1.7234774827957153
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 1.7852406699603307e-06,
+            "fusion": 8.484202407998964e-05,
+            "conditioning_and_queries": 5.7175261645170394e-06,
+            "pcr_head": 0.0,
+            "world_predictor": 0.08846424520015717,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 8.486079605063424e-05,
+            "all_trainable": 0.08846428245306015
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": -0.4742879585761613,
+            "fusion": -0.07146715680579241,
+            "shared_encoder_fusion": -0.07170958052586517
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      }
+    ],
+    "observed_representation": {
+      "mean_absolute": 0.7965362071990967,
+      "rms": 0.9997416734695435,
+      "global_std": 0.9997416138648987,
+      "legacy_variance_penalty": 0.9699049592018127,
+      "patient_axis_variance_penalty": 0.9736859798431396,
+      "anchor_patient_pooled_variance": 0.00020627463527489454,
+      "anchor_patient_pooled_effective_rank": 2.354792416564795,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.0006600240594707429,
+          "patient_axis_variance_penalty": 0.9745708107948303,
+          "patient_pooled_effective_rank": 2.2780063622146813
+        },
+        "T1": {
+          "patients": 19,
+          "patient_axis_variance_mean": 0.0008472362533211708,
+          "patient_axis_variance_penalty": 0.9715926051139832,
+          "patient_pooled_effective_rank": 2.4254355796535965
+        },
+        "T2": {
+          "patients": 5,
+          "patient_axis_variance_mean": 0.0007081616786308587,
+          "patient_axis_variance_penalty": 0.9748945236206055,
+          "patient_pooled_effective_rank": 1.7363484391960355
+        },
+        "T3": {
+          "patients": 0,
+          "patient_axis_variance_mean": null,
+          "patient_axis_variance_penalty": null,
+          "patient_pooled_effective_rank": null
+        }
+      }
+    },
+    "teacher_representation": {
+      "mean_absolute": 0.8018284440040588,
+      "rms": 0.9998207688331604,
+      "global_std": 0.9998207688331604,
+      "legacy_variance_penalty": 0.6542777419090271,
+      "patient_axis_variance_penalty": 0.6614839881658554,
+      "anchor_patient_pooled_variance": 0.1003831997513771,
+      "anchor_patient_pooled_effective_rank": 2.113357238154304,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.11649896949529648,
+          "patient_axis_variance_penalty": 0.6986780166625977,
+          "patient_pooled_effective_rank": 1.9945866344078584
+        },
+        "T1": {
+          "patients": 29,
+          "patient_axis_variance_mean": 0.16689558327198029,
+          "patient_axis_variance_penalty": 0.646898090839386,
+          "patient_pooled_effective_rank": 1.6531396022106932
+        },
+        "T2": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.1495409458875656,
+          "patient_axis_variance_penalty": 0.6599399447441101,
+          "patient_pooled_effective_rank": 1.9012389349322278
+        },
+        "T3": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.17262667417526245,
+          "patient_axis_variance_penalty": 0.6404199004173279,
+          "patient_pooled_effective_rank": 1.6577552327631606
+        }
+      }
+    },
+    "teacher_drift": {
+      "status": "evaluated",
+      "previous_epoch": 10,
+      "l1": 0.9253510236740112,
+      "relative_to_previous_rms": 0.9254134084323011,
+      "adjacent_copy_change_l1": 0.13183559477329254
+    },
+    "world": {
+      "status": "evaluated",
+      "world_head_trained": true,
+      "reduction": "mean eligible prefix-targets within patient, then mean patients",
+      "relative_error_guard": "ratio and skill are null if aggregate copy L1 <= 1e-8 or no eligible patients",
+      "target_coordinates": "same checkpoint EMA teacher for model and both copy baselines",
+      "chain_policy": "real continuous visits only; target and all intermediate visits required",
+      "teacher_forcing_copy": "real immediate predecessor",
+      "autonomous_copy": "real landmark state held constant",
+      "metrics": {
+        "horizon_1": {
+          "patients": 23,
+          "prefix_targets": 23,
+          "teacher_forcing_l1": 0.13605110857473768,
+          "autonomous_l1": 0.13605110857473768,
+          "teacher_forcing_copy_l1": 0.13366598360564397,
+          "autonomous_copy_l1": 0.13366598360564397,
+          "teacher_forcing_relative_to_copy": 1.0178439188846324,
+          "teacher_forcing_skill_vs_copy": -0.017843918884632437,
+          "teacher_forcing_minus_copy": 0.0023851249690937104,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0178439188846324,
+          "autonomous_skill_vs_copy": -0.017843918884632437,
+          "autonomous_minus_copy": 0.0023851249690937104,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_2": {
+          "patients": 17,
+          "prefix_targets": 17,
+          "teacher_forcing_l1": 0.11847594489946085,
+          "autonomous_l1": 0.14142823504174457,
+          "teacher_forcing_copy_l1": 0.12003625337691869,
+          "autonomous_copy_l1": 0.1404592948143973,
+          "teacher_forcing_relative_to_copy": 0.9870013563939021,
+          "teacher_forcing_skill_vs_copy": 0.012998643606097926,
+          "teacher_forcing_minus_copy": -0.0015603084774578335,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0068983702974417,
+          "autonomous_skill_vs_copy": -0.006898370297441669,
+          "autonomous_minus_copy": 0.0009689402273472536,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_3": {
+          "patients": 9,
+          "prefix_targets": 9,
+          "teacher_forcing_l1": 0.05978730755547682,
+          "autonomous_l1": 0.11206513974401686,
+          "teacher_forcing_copy_l1": 0.06461343376172914,
+          "autonomous_copy_l1": 0.1152022456129392,
+          "teacher_forcing_relative_to_copy": 0.9253076964761026,
+          "teacher_forcing_skill_vs_copy": 0.07469230352389744,
+          "teacher_forcing_minus_copy": -0.004826126206252314,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.9727687090452863,
+          "autonomous_skill_vs_copy": 0.02723129095471366,
+          "autonomous_minus_copy": -0.003137105868922338,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_all": {
+          "patients": 23,
+          "prefix_targets": 49,
+          "teacher_forcing_l1": 0.13406429362847752,
+          "autonomous_l1": 0.14976891585072313,
+          "teacher_forcing_copy_l1": 0.13385700817773308,
+          "autonomous_copy_l1": 0.1483446927336247,
+          "teacher_forcing_relative_to_copy": 1.0015485588208368,
+          "teacher_forcing_skill_vs_copy": -0.0015485588208368206,
+          "teacher_forcing_minus_copy": 0.00020728545074444327,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0096007689311532,
+          "autonomous_skill_vs_copy": -0.009600768931153247,
+          "autonomous_minus_copy": 0.0014242231170984443,
+          "autonomous_near_zero_copy_patients": 0
+        }
+      },
+      "teacher_forcing_all_adjacent": {
+        "scope": "all real adjacent supervised pairs, including pairs after a prior missing visit",
+        "reduction": "mean eligible prefix-pairs within patient, then mean patients",
+        "metrics": {
+          "T0_to_T1": {
+            "patients": 10,
+            "prefix_pairs": 10,
+            "teacher_forcing_l1": 0.0480304904282093,
+            "teacher_forcing_copy_l1": 0.04525979198515415,
+            "relative_to_copy": 1.0612176574731933,
+            "skill_vs_copy": -0.0612176574731933,
+            "near_zero_copy_patients": 0
+          },
+          "T1_to_T2": {
+            "patients": 18,
+            "prefix_pairs": 18,
+            "teacher_forcing_l1": 0.1525170137691829,
+            "teacher_forcing_copy_l1": 0.15074996960659823,
+            "relative_to_copy": 1.0117216883505582,
+            "skill_vs_copy": -0.011721688350558201,
+            "near_zero_copy_patients": 0
+          },
+          "T2_to_T3": {
+            "patients": 22,
+            "prefix_pairs": 22,
+            "teacher_forcing_l1": 0.11373948144980452,
+            "teacher_forcing_copy_l1": 0.11720226468010382,
+            "relative_to_copy": 0.9704546389120488,
+            "skill_vs_copy": 0.02954536108795125,
+            "near_zero_copy_patients": 0
+          },
+          "all": {
+            "patients": 24,
+            "prefix_pairs": 50,
+            "teacher_forcing_l1": 0.13041692370704064,
+            "teacher_forcing_copy_l1": 0.1302834812344776,
+            "relative_to_copy": 1.0010242470595552,
+            "skill_vs_copy": -0.0010242470595551723,
+            "near_zero_copy_patients": 0
+          }
+        }
+      },
+      "spatial_metric": "unweighted all-token L1; same-checkpoint teacher for prediction and copy"
+    },
+    "world_head_trained": true,
+    "teacher_present": true,
+    "teacher_frozen": true,
+    "rng_and_module_modes_preserved": true
+  },
+  {
+    "epoch": 20,
+    "scope": "fixed training probe; not full validation or checkpoint selection",
+    "patients": 32,
+    "labelled_patients": 32,
+    "prefixes": 32,
+    "landmark_counts": {
+      "T0": 13,
+      "T1": 14,
+      "T2": 5
+    },
+    "eval_pcr_nll": 0.6018966324627399,
+    "gradient_semantics": "separate weighted objectives in eval mode; preclip module L2 norms; no optimizer update",
+    "gradient_batches": [
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.026888251304626465,
+            "fusion": 0.570564866065979,
+            "conditioning_and_queries": 0.08019904792308807,
+            "pcr_head": 9.122653007507324,
+            "world_predictor": 0.6040401458740234,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.571198046207428,
+            "all_trainable": 9.160805702209473
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 6.546597433043644e-07,
+            "fusion": 2.462305019435007e-05,
+            "conditioning_and_queries": 2.2564361188415205e-06,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0971713662147522,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 2.4631752239656635e-05,
+            "all_trainable": 0.0971713662147522
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": -0.8028425127508622,
+            "fusion": -0.3746100825996525,
+            "shared_encoder_fusion": -0.37506710481733074
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      },
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.016172882169485092,
+            "fusion": 0.27833136916160583,
+            "conditioning_and_queries": 0.03186078369617462,
+            "pcr_head": 4.1766581535339355,
+            "world_predictor": 0.5469184517860413,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.2788008451461792,
+            "all_trainable": 4.221651077270508
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 3.7453457935043843e-07,
+            "fusion": 1.756065830704756e-05,
+            "conditioning_and_queries": 1.4674860722152516e-06,
+            "pcr_head": 0.0,
+            "world_predictor": 0.08687520027160645,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 1.7564652807777748e-05,
+            "all_trainable": 0.08687520027160645
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": -0.7757774102971553,
+            "fusion": -0.27704735235250083,
+            "shared_encoder_fusion": -0.2774775160498467
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      }
+    ],
+    "observed_representation": {
+      "mean_absolute": 0.7909468412399292,
+      "rms": 0.9994831681251526,
+      "global_std": 0.9994831681251526,
+      "legacy_variance_penalty": 0.9531607627868652,
+      "patient_axis_variance_penalty": 0.9577694733937582,
+      "anchor_patient_pooled_variance": 0.0014258428709581494,
+      "anchor_patient_pooled_effective_rank": 1.3248222495395447,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.001757343183271587,
+          "patient_axis_variance_penalty": 0.9610592722892761,
+          "patient_pooled_effective_rank": 1.318829193708178
+        },
+        "T1": {
+          "patients": 19,
+          "patient_axis_variance_mean": 0.003068290650844574,
+          "patient_axis_variance_penalty": 0.9509263038635254,
+          "patient_pooled_effective_rank": 1.5538135245531202
+        },
+        "T2": {
+          "patients": 5,
+          "patient_axis_variance_mean": 0.0018192761344835162,
+          "patient_axis_variance_penalty": 0.9613228440284729,
+          "patient_pooled_effective_rank": 1.2426908825903644
+        },
+        "T3": {
+          "patients": 0,
+          "patient_axis_variance_mean": null,
+          "patient_axis_variance_penalty": null,
+          "patient_pooled_effective_rank": null
+        }
+      }
+    },
+    "teacher_representation": {
+      "mean_absolute": 0.7999885678291321,
+      "rms": 0.9997308254241943,
+      "global_std": 0.9997307658195496,
+      "legacy_variance_penalty": 0.9137978553771973,
+      "patient_axis_variance_penalty": 0.9214478135108948,
+      "anchor_patient_pooled_variance": 0.0034703658893704414,
+      "anchor_patient_pooled_effective_rank": 2.9850684432350203,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.006541574373841286,
+          "patient_axis_variance_penalty": 0.9245265126228333,
+          "patient_pooled_effective_rank": 2.9089324990908416
+        },
+        "T1": {
+          "patients": 29,
+          "patient_axis_variance_mean": 0.006960652768611908,
+          "patient_axis_variance_penalty": 0.9221391677856445,
+          "patient_pooled_effective_rank": 3.183654718929284
+        },
+        "T2": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.0069910380989313126,
+          "patient_axis_variance_penalty": 0.9226698875427246,
+          "patient_pooled_effective_rank": 2.679475131752176
+        },
+        "T3": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.008121036924421787,
+          "patient_axis_variance_penalty": 0.9164556860923767,
+          "patient_pooled_effective_rank": 2.7316460666510007
+        }
+      }
+    },
+    "teacher_drift": {
+      "status": "evaluated",
+      "previous_epoch": 15,
+      "l1": 0.2957444489002228,
+      "relative_to_previous_rms": 0.2957974650250274,
+      "adjacent_copy_change_l1": 0.08917982876300812
+    },
+    "world": {
+      "status": "evaluated",
+      "world_head_trained": true,
+      "reduction": "mean eligible prefix-targets within patient, then mean patients",
+      "relative_error_guard": "ratio and skill are null if aggregate copy L1 <= 1e-8 or no eligible patients",
+      "target_coordinates": "same checkpoint EMA teacher for model and both copy baselines",
+      "chain_policy": "real continuous visits only; target and all intermediate visits required",
+      "teacher_forcing_copy": "real immediate predecessor",
+      "autonomous_copy": "real landmark state held constant",
+      "metrics": {
+        "horizon_1": {
+          "patients": 23,
+          "prefix_targets": 23,
+          "teacher_forcing_l1": 0.03607902768999338,
+          "autonomous_l1": 0.03607902768999338,
+          "teacher_forcing_copy_l1": 0.03473772634954556,
+          "autonomous_copy_l1": 0.03473772634954556,
+          "teacher_forcing_relative_to_copy": 1.0386122375123543,
+          "teacher_forcing_skill_vs_copy": -0.03861223751235432,
+          "teacher_forcing_minus_copy": 0.0013413013404478188,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0386122375123543,
+          "autonomous_skill_vs_copy": -0.03861223751235432,
+          "autonomous_minus_copy": 0.0013413013404478188,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_2": {
+          "patients": 17,
+          "prefix_targets": 17,
+          "teacher_forcing_l1": 0.03280474738601376,
+          "autonomous_l1": 0.03986138587488847,
+          "teacher_forcing_copy_l1": 0.03248645173495307,
+          "autonomous_copy_l1": 0.039841289138969255,
+          "teacher_forcing_relative_to_copy": 1.0097977967448573,
+          "teacher_forcing_skill_vs_copy": -0.009797796744857257,
+          "teacher_forcing_minus_copy": 0.0003182956510606877,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0005044198205817,
+          "autonomous_skill_vs_copy": -0.0005044198205816919,
+          "autonomous_minus_copy": 2.0096735919218622e-05,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_3": {
+          "patients": 9,
+          "prefix_targets": 9,
+          "teacher_forcing_l1": 0.02461461453802056,
+          "autonomous_l1": 0.03045023377570841,
+          "teacher_forcing_copy_l1": 0.023411463014781475,
+          "autonomous_copy_l1": 0.03210527905159526,
+          "teacher_forcing_relative_to_copy": 1.0513915564558882,
+          "teacher_forcing_skill_vs_copy": -0.05139155645588822,
+          "teacher_forcing_minus_copy": 0.0012031515232390835,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.948449434959681,
+          "autonomous_skill_vs_copy": 0.05155056504031896,
+          "autonomous_minus_copy": -0.0016550452758868524,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_all": {
+          "patients": 23,
+          "prefix_targets": 49,
+          "teacher_forcing_l1": 0.03537467803023216,
+          "autonomous_l1": 0.03870121996336873,
+          "teacher_forcing_copy_l1": 0.034606139060865716,
+          "autonomous_copy_l1": 0.038399729735987334,
+          "teacher_forcing_relative_to_copy": 1.0222081685568774,
+          "teacher_forcing_skill_vs_copy": -0.02220816855687735,
+          "teacher_forcing_minus_copy": 0.0007685389693664404,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0078513632636024,
+          "autonomous_skill_vs_copy": -0.007851363263602362,
+          "autonomous_minus_copy": 0.00030149022738139297,
+          "autonomous_near_zero_copy_patients": 0
+        }
+      },
+      "teacher_forcing_all_adjacent": {
+        "scope": "all real adjacent supervised pairs, including pairs after a prior missing visit",
+        "reduction": "mean eligible prefix-pairs within patient, then mean patients",
+        "metrics": {
+          "T0_to_T1": {
+            "patients": 10,
+            "prefix_pairs": 10,
+            "teacher_forcing_l1": 0.024955658428370952,
+            "teacher_forcing_copy_l1": 0.02251822641119361,
+            "relative_to_copy": 1.1082426285564708,
+            "skill_vs_copy": -0.10824262855647082,
+            "near_zero_copy_patients": 0
+          },
+          "T1_to_T2": {
+            "patients": 18,
+            "prefix_pairs": 18,
+            "teacher_forcing_l1": 0.03618029199747576,
+            "teacher_forcing_copy_l1": 0.035566328610810966,
+            "relative_to_copy": 1.0172624898505316,
+            "skill_vs_copy": -0.01726248985053158,
+            "near_zero_copy_patients": 0
+          },
+          "T2_to_T3": {
+            "patients": 22,
+            "prefix_pairs": 22,
+            "teacher_forcing_l1": 0.03354200720787048,
+            "teacher_forcing_copy_l1": 0.032887854909693655,
+            "relative_to_copy": 1.0198903911481323,
+            "skill_vs_copy": -0.01989039114813229,
+            "near_zero_copy_patients": 0
+          },
+          "all": {
+            "patients": 24,
+            "prefix_pairs": 50,
+            "teacher_forcing_l1": 0.03513807167635403,
+            "teacher_forcing_copy_l1": 0.03428790136887174,
+            "relative_to_copy": 1.0247950522936966,
+            "skill_vs_copy": -0.024795052293696607,
+            "near_zero_copy_patients": 0
+          }
+        }
+      },
+      "spatial_metric": "unweighted all-token L1; same-checkpoint teacher for prediction and copy"
+    },
+    "world_head_trained": true,
+    "teacher_present": true,
+    "teacher_frozen": true,
+    "rng_and_module_modes_preserved": true
+  },
+  {
+    "epoch": 25,
+    "scope": "fixed training probe; not full validation or checkpoint selection",
+    "patients": 32,
+    "labelled_patients": 32,
+    "prefixes": 32,
+    "landmark_counts": {
+      "T0": 13,
+      "T1": 14,
+      "T2": 5
+    },
+    "eval_pcr_nll": 0.522383714094758,
+    "gradient_semantics": "separate weighted objectives in eval mode; preclip module L2 norms; no optimizer update",
+    "gradient_batches": [
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.012466776184737682,
+            "fusion": 0.7268495559692383,
+            "conditioning_and_queries": 0.0981011614203453,
+            "pcr_head": 1.5311232805252075,
+            "world_predictor": 0.19668926298618317,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.7269564270973206,
+            "all_trainable": 1.7091269493103027
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 8.528062949153536e-07,
+            "fusion": 3.106594522250816e-05,
+            "conditioning_and_queries": 2.858109610315296e-06,
+            "pcr_head": 0.0,
+            "world_predictor": 0.11090593039989471,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 3.107764496235177e-05,
+            "all_trainable": 0.11090593785047531
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": 0.14605647176783731,
+            "fusion": -0.31148872576512976,
+            "shared_encoder_fusion": -0.3112569256401732
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      },
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.012098468840122223,
+            "fusion": 0.8472995758056641,
+            "conditioning_and_queries": 0.08924761414527893,
+            "pcr_head": 0.6942579746246338,
+            "world_predictor": 0.25278130173683167,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.8473858833312988,
+            "all_trainable": 1.1277945041656494
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 7.396247951874102e-07,
+            "fusion": 4.401484693516977e-05,
+            "conditioning_and_queries": 2.1390326310211094e-06,
+            "pcr_head": 0.0,
+            "world_predictor": 0.07637687027454376,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 4.4021060602972284e-05,
+            "all_trainable": 0.07637687772512436
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": -0.774739860537387,
+            "fusion": -0.032256964420880205,
+            "shared_encoder_fusion": -0.03243497651081531
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      }
+    ],
+    "observed_representation": {
+      "mean_absolute": 0.7949879765510559,
+      "rms": 0.9988975524902344,
+      "global_std": 0.9988975524902344,
+      "legacy_variance_penalty": 0.9775261878967285,
+      "patient_axis_variance_penalty": 0.9794467091560364,
+      "anchor_patient_pooled_variance": 0.00021341966930776834,
+      "anchor_patient_pooled_effective_rank": 1.6797843788474318,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.00036378527875058353,
+          "patient_axis_variance_penalty": 0.9797448515892029,
+          "patient_pooled_effective_rank": 1.5695667221028038
+        },
+        "T1": {
+          "patients": 19,
+          "patient_axis_variance_mean": 0.0004554676415864378,
+          "patient_axis_variance_penalty": 0.9778871536254883,
+          "patient_pooled_effective_rank": 1.6171404056456693
+        },
+        "T2": {
+          "patients": 5,
+          "patient_axis_variance_mean": 0.0003367336466908455,
+          "patient_axis_variance_penalty": 0.980708122253418,
+          "patient_pooled_effective_rank": 1.3588752809030789
+        },
+        "T3": {
+          "patients": 0,
+          "patient_axis_variance_mean": null,
+          "patient_axis_variance_penalty": null,
+          "patient_pooled_effective_rank": null
+        }
+      }
+    },
+    "teacher_representation": {
+      "mean_absolute": 0.7965054512023926,
+      "rms": 0.999500572681427,
+      "global_std": 0.999500572681427,
+      "legacy_variance_penalty": 0.9360318779945374,
+      "patient_axis_variance_penalty": 0.9418100267648697,
+      "anchor_patient_pooled_variance": 0.001996715320274234,
+      "anchor_patient_pooled_effective_rank": 2.2412335254898155,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.0034963879734277725,
+          "patient_axis_variance_penalty": 0.9449267387390137,
+          "patient_pooled_effective_rank": 2.1476924423589563
+        },
+        "T1": {
+          "patients": 29,
+          "patient_axis_variance_mean": 0.0038476192858070135,
+          "patient_axis_variance_penalty": 0.9420835375785828,
+          "patient_pooled_effective_rank": 2.4053838540862857
+        },
+        "T2": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.003950110170990229,
+          "patient_axis_variance_penalty": 0.9416740536689758,
+          "patient_pooled_effective_rank": 2.087238955554294
+        },
+        "T3": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.004394183401018381,
+          "patient_axis_variance_penalty": 0.9385557770729065,
+          "patient_pooled_effective_rank": 2.068065086509206
+        }
+      }
+    },
+    "teacher_drift": {
+      "status": "evaluated",
+      "previous_epoch": 20,
+      "l1": 0.1687384694814682,
+      "relative_to_previous_rms": 0.16878390181664252,
+      "adjacent_copy_change_l1": 0.010613352991640568
+    },
+    "world": {
+      "status": "evaluated",
+      "world_head_trained": true,
+      "reduction": "mean eligible prefix-targets within patient, then mean patients",
+      "relative_error_guard": "ratio and skill are null if aggregate copy L1 <= 1e-8 or no eligible patients",
+      "target_coordinates": "same checkpoint EMA teacher for model and both copy baselines",
+      "chain_policy": "real continuous visits only; target and all intermediate visits required",
+      "teacher_forcing_copy": "real immediate predecessor",
+      "autonomous_copy": "real landmark state held constant",
+      "metrics": {
+        "horizon_1": {
+          "patients": 23,
+          "prefix_targets": 23,
+          "teacher_forcing_l1": 0.025913126483235672,
+          "autonomous_l1": 0.025913126483235672,
+          "teacher_forcing_copy_l1": 0.025103766957054966,
+          "autonomous_copy_l1": 0.025103766957054966,
+          "teacher_forcing_relative_to_copy": 1.032240560851496,
+          "teacher_forcing_skill_vs_copy": -0.03224056085149596,
+          "teacher_forcing_minus_copy": 0.0008093595261807057,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.032240560851496,
+          "autonomous_skill_vs_copy": -0.03224056085149596,
+          "autonomous_minus_copy": 0.0008093595261807057,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_2": {
+          "patients": 17,
+          "prefix_targets": 17,
+          "teacher_forcing_l1": 0.02420572761227103,
+          "autonomous_l1": 0.02960317357278922,
+          "teacher_forcing_copy_l1": 0.02324846129426185,
+          "autonomous_copy_l1": 0.029448809266528663,
+          "teacher_forcing_relative_to_copy": 1.0411754698899343,
+          "teacher_forcing_skill_vs_copy": -0.04117546988993426,
+          "teacher_forcing_minus_copy": 0.0009572663180091798,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.005241784306573,
+          "autonomous_skill_vs_copy": -0.005241784306573072,
+          "autonomous_minus_copy": 0.0001543643062605557,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_3": {
+          "patients": 9,
+          "prefix_targets": 9,
+          "teacher_forcing_l1": 0.018626066338684823,
+          "autonomous_l1": 0.022429948879612818,
+          "teacher_forcing_copy_l1": 0.016707318369299173,
+          "autonomous_copy_l1": 0.023463878573642835,
+          "teacher_forcing_relative_to_copy": 1.1148447600610447,
+          "teacher_forcing_skill_vs_copy": -0.11484476006104472,
+          "teacher_forcing_minus_copy": 0.00191874796938565,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.9559352606268838,
+          "autonomous_skill_vs_copy": 0.04406473937311617,
+          "autonomous_minus_copy": -0.0010339296940300169,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_all": {
+          "patients": 23,
+          "prefix_targets": 49,
+          "teacher_forcing_l1": 0.02581320950707447,
+          "autonomous_l1": 0.028244945456854246,
+          "teacher_forcing_copy_l1": 0.024845322108139157,
+          "autonomous_copy_l1": 0.027935298314938944,
+          "teacher_forcing_relative_to_copy": 1.0389565244806482,
+          "teacher_forcing_skill_vs_copy": -0.038956524480648236,
+          "teacher_forcing_minus_copy": 0.0009678873989353125,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0110844401382215,
+          "autonomous_skill_vs_copy": -0.011084440138221519,
+          "autonomous_minus_copy": 0.0003096471419153021,
+          "autonomous_near_zero_copy_patients": 0
+        }
+      },
+      "teacher_forcing_all_adjacent": {
+        "scope": "all real adjacent supervised pairs, including pairs after a prior missing visit",
+        "reduction": "mean eligible prefix-pairs within patient, then mean patients",
+        "metrics": {
+          "T0_to_T1": {
+            "patients": 10,
+            "prefix_pairs": 10,
+            "teacher_forcing_l1": 0.01697837058454752,
+            "teacher_forcing_copy_l1": 0.016375141963362694,
+            "relative_to_copy": 1.0368380697116688,
+            "skill_vs_copy": -0.03683806971166881,
+            "near_zero_copy_patients": 0
+          },
+          "T1_to_T2": {
+            "patients": 18,
+            "prefix_pairs": 18,
+            "teacher_forcing_l1": 0.027040810893393226,
+            "teacher_forcing_copy_l1": 0.02593033357212941,
+            "relative_to_copy": 1.0428254159621528,
+            "skill_vs_copy": -0.042825415962152835,
+            "near_zero_copy_patients": 0
+          },
+          "T2_to_T3": {
+            "patients": 22,
+            "prefix_pairs": 22,
+            "teacher_forcing_l1": 0.024612080898474564,
+            "teacher_forcing_copy_l1": 0.023349458161233502,
+            "relative_to_copy": 1.0540750337126608,
+            "skill_vs_copy": -0.05407503371266076,
+            "near_zero_copy_patients": 0
+          },
+          "all": {
+            "patients": 24,
+            "prefix_pairs": 50,
+            "teacher_forcing_l1": 0.025689751032688137,
+            "teacher_forcing_copy_l1": 0.024693815192828577,
+            "relative_to_copy": 1.0403313879237581,
+            "skill_vs_copy": -0.04033138792375812,
+            "near_zero_copy_patients": 0
+          }
+        }
+      },
+      "spatial_metric": "unweighted all-token L1; same-checkpoint teacher for prediction and copy"
+    },
+    "world_head_trained": true,
+    "teacher_present": true,
+    "teacher_frozen": true,
+    "rng_and_module_modes_preserved": true
+  },
+  {
+    "epoch": 30,
+    "scope": "fixed training probe; not full validation or checkpoint selection",
+    "patients": 32,
+    "labelled_patients": 32,
+    "prefixes": 32,
+    "landmark_counts": {
+      "T0": 13,
+      "T1": 14,
+      "T2": 5
+    },
+    "eval_pcr_nll": 0.5260533066466451,
+    "gradient_semantics": "separate weighted objectives in eval mode; preclip module L2 norms; no optimizer update",
+    "gradient_batches": [
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.03245731443166733,
+            "fusion": 0.5188915729522705,
+            "conditioning_and_queries": 0.09536926448345184,
+            "pcr_head": 3.5941920280456543,
+            "world_predictor": 0.352582722902298,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.519905686378479,
+            "all_trainable": 3.6499216556549072
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 6.776108989470231e-07,
+            "fusion": 2.193489854107611e-05,
+            "conditioning_and_queries": 2.8456356631068047e-06,
+            "pcr_head": 0.0,
+            "world_predictor": 0.11715838313102722,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 2.1945363187114708e-05,
+            "all_trainable": 0.11715837568044662
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": -0.643827637293577,
+            "fusion": -0.32206282772186245,
+            "shared_encoder_fusion": -0.32252238720696985
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      },
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.028857847675681114,
+            "fusion": 0.37491244077682495,
+            "conditioning_and_queries": 0.05675467848777771,
+            "pcr_head": 1.414049744606018,
+            "world_predictor": 0.26087063550949097,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.37602144479751587,
+            "all_trainable": 1.4873478412628174
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 6.307991498033516e-07,
+            "fusion": 2.8956203095731325e-05,
+            "conditioning_and_queries": 2.4315884274983546e-06,
+            "pcr_head": 0.0,
+            "world_predictor": 0.09393355995416641,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 2.8963073418708518e-05,
+            "all_trainable": 0.09393356740474701
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": 0.29231575324195513,
+            "fusion": 0.10368969315158406,
+            "shared_encoder_fusion": 0.10384794705951121
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      }
+    ],
+    "observed_representation": {
+      "mean_absolute": 0.7928969860076904,
+      "rms": 0.9981891512870789,
+      "global_std": 0.9981891512870789,
+      "legacy_variance_penalty": 0.974968671798706,
+      "patient_axis_variance_penalty": 0.9762969613075256,
+      "anchor_patient_pooled_variance": 0.0004063704109285027,
+      "anchor_patient_pooled_effective_rank": 1.5246188931587177,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.0005110332858748734,
+          "patient_axis_variance_penalty": 0.977112352848053,
+          "patient_pooled_effective_rank": 1.4528181135490195
+        },
+        "T1": {
+          "patients": 19,
+          "patient_axis_variance_mean": 0.0006439887220039964,
+          "patient_axis_variance_penalty": 0.9748321175575256,
+          "patient_pooled_effective_rank": 1.517776002312459
+        },
+        "T2": {
+          "patients": 5,
+          "patient_axis_variance_mean": 0.0005462054978124797,
+          "patient_axis_variance_penalty": 0.9769464135169983,
+          "patient_pooled_effective_rank": 1.2340148382105562
+        },
+        "T3": {
+          "patients": 0,
+          "patient_axis_variance_mean": null,
+          "patient_axis_variance_penalty": null,
+          "patient_pooled_effective_rank": null
+        }
+      }
+    },
+    "teacher_representation": {
+      "mean_absolute": 0.7949373722076416,
+      "rms": 0.9992612600326538,
+      "global_std": 0.9992613196372986,
+      "legacy_variance_penalty": 0.9534752368927002,
+      "patient_axis_variance_penalty": 0.9576960653066635,
+      "anchor_patient_pooled_variance": 0.0010338815627619624,
+      "anchor_patient_pooled_effective_rank": 2.0576535331557864,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.0018221661448478699,
+          "patient_axis_variance_penalty": 0.959763765335083,
+          "patient_pooled_effective_rank": 1.9283255840965356
+        },
+        "T1": {
+          "patients": 29,
+          "patient_axis_variance_mean": 0.001997597049921751,
+          "patient_axis_variance_penalty": 0.9578055739402771,
+          "patient_pooled_effective_rank": 2.2091917975850213
+        },
+        "T2": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.002059866674244404,
+          "patient_axis_variance_penalty": 0.9573685526847839,
+          "patient_pooled_effective_rank": 1.9747076229243157
+        },
+        "T3": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.002222658134996891,
+          "patient_axis_variance_penalty": 0.95584636926651,
+          "patient_pooled_effective_rank": 1.914464673332224
+        }
+      }
+    },
+    "teacher_drift": {
+      "status": "evaluated",
+      "previous_epoch": 25,
+      "l1": 0.13329291343688965,
+      "relative_to_previous_rms": 0.13335951682278263,
+      "adjacent_copy_change_l1": 0.007604321464896202
+    },
+    "world": {
+      "status": "evaluated",
+      "world_head_trained": true,
+      "reduction": "mean eligible prefix-targets within patient, then mean patients",
+      "relative_error_guard": "ratio and skill are null if aggregate copy L1 <= 1e-8 or no eligible patients",
+      "target_coordinates": "same checkpoint EMA teacher for model and both copy baselines",
+      "chain_policy": "real continuous visits only; target and all intermediate visits required",
+      "teacher_forcing_copy": "real immediate predecessor",
+      "autonomous_copy": "real landmark state held constant",
+      "metrics": {
+        "horizon_1": {
+          "patients": 23,
+          "prefix_targets": 23,
+          "teacher_forcing_l1": 0.019956110855159553,
+          "autonomous_l1": 0.019956110855159553,
+          "teacher_forcing_copy_l1": 0.017900535917800407,
+          "autonomous_copy_l1": 0.017900535917800407,
+          "teacher_forcing_relative_to_copy": 1.1148331506273546,
+          "teacher_forcing_skill_vs_copy": -0.11483315062735455,
+          "teacher_forcing_minus_copy": 0.002055574937359146,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.1148331506273546,
+          "autonomous_skill_vs_copy": -0.11483315062735455,
+          "autonomous_minus_copy": 0.002055574937359146,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_2": {
+          "patients": 17,
+          "prefix_targets": 17,
+          "teacher_forcing_l1": 0.0174815190189025,
+          "autonomous_l1": 0.022784807774073938,
+          "teacher_forcing_copy_l1": 0.01651920027592603,
+          "autonomous_copy_l1": 0.02093848621691851,
+          "teacher_forcing_relative_to_copy": 1.0582545599606832,
+          "teacher_forcing_skill_vs_copy": -0.05825455996068318,
+          "teacher_forcing_minus_copy": 0.0009623187429764687,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0881783686761262,
+          "autonomous_skill_vs_copy": -0.08817836867612616,
+          "autonomous_minus_copy": 0.0018463215571554274,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_3": {
+          "patients": 9,
+          "prefix_targets": 9,
+          "teacher_forcing_l1": 0.014773690762619177,
+          "autonomous_l1": 0.016754352177182835,
+          "teacher_forcing_copy_l1": 0.012117654706041018,
+          "autonomous_copy_l1": 0.016859385495384533,
+          "teacher_forcing_relative_to_copy": 1.2191873032373208,
+          "teacher_forcing_skill_vs_copy": -0.21918730323732083,
+          "teacher_forcing_minus_copy": 0.0026560360565781593,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.99377003875791,
+          "autonomous_skill_vs_copy": 0.006229961242089965,
+          "autonomous_minus_copy": -0.00010503331820169853,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_all": {
+          "patients": 23,
+          "prefix_targets": 49,
+          "teacher_forcing_l1": 0.019367837873489956,
+          "autonomous_l1": 0.021351142570484375,
+          "teacher_forcing_copy_l1": 0.017666144731818982,
+          "autonomous_copy_l1": 0.019847494458941663,
+          "teacher_forcing_relative_to_copy": 1.096325099080956,
+          "teacher_forcing_skill_vs_copy": -0.0963250990809561,
+          "teacher_forcing_minus_copy": 0.0017016931416709742,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.07576009730867,
+          "autonomous_skill_vs_copy": -0.07576009730867006,
+          "autonomous_minus_copy": 0.0015036481115427124,
+          "autonomous_near_zero_copy_patients": 0
+        }
+      },
+      "teacher_forcing_all_adjacent": {
+        "scope": "all real adjacent supervised pairs, including pairs after a prior missing visit",
+        "reduction": "mean eligible prefix-pairs within patient, then mean patients",
+        "metrics": {
+          "T0_to_T1": {
+            "patients": 10,
+            "prefix_pairs": 10,
+            "teacher_forcing_l1": 0.014966184925287961,
+            "teacher_forcing_copy_l1": 0.01180802215822041,
+            "relative_to_copy": 1.2674590820333893,
+            "skill_vs_copy": -0.2674590820333893,
+            "near_zero_copy_patients": 0
+          },
+          "T1_to_T2": {
+            "patients": 18,
+            "prefix_pairs": 18,
+            "teacher_forcing_l1": 0.019681481851471797,
+            "teacher_forcing_copy_l1": 0.0184502222109586,
+            "relative_to_copy": 1.0667341361223217,
+            "skill_vs_copy": -0.06673413612232171,
+            "near_zero_copy_patients": 0
+          },
+          "T2_to_T3": {
+            "patients": 22,
+            "prefix_pairs": 22,
+            "teacher_forcing_l1": 0.018411469645798206,
+            "teacher_forcing_copy_l1": 0.016692746472968298,
+            "relative_to_copy": 1.1029622761966196,
+            "skill_vs_copy": -0.10296227619661957,
+            "near_zero_copy_patients": 0
+          },
+          "all": {
+            "patients": 24,
+            "prefix_pairs": 50,
+            "teacher_forcing_l1": 0.019387564000984032,
+            "teacher_forcing_copy_l1": 0.017589514560919877,
+            "relative_to_copy": 1.1022228006257224,
+            "skill_vs_copy": -0.10222280062572242,
+            "near_zero_copy_patients": 0
+          }
+        }
+      },
+      "spatial_metric": "unweighted all-token L1; same-checkpoint teacher for prediction and copy"
+    },
+    "world_head_trained": true,
+    "teacher_present": true,
+    "teacher_frozen": true,
+    "rng_and_module_modes_preserved": true
+  },
+  {
+    "epoch": 35,
+    "scope": "fixed training probe; not full validation or checkpoint selection",
+    "patients": 32,
+    "labelled_patients": 32,
+    "prefixes": 32,
+    "landmark_counts": {
+      "T0": 13,
+      "T1": 14,
+      "T2": 5
+    },
+    "eval_pcr_nll": 0.5119532598182559,
+    "gradient_semantics": "separate weighted objectives in eval mode; preclip module L2 norms; no optimizer update",
+    "gradient_batches": [
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.01428417582064867,
+            "fusion": 0.305917888879776,
+            "conditioning_and_queries": 0.0678052008152008,
+            "pcr_head": 1.5920944213867188,
+            "world_predictor": 0.1907035857439041,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.30625119805336,
+            "all_trainable": 1.633866548538208
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 7.472465313185239e-08,
+            "fusion": 1.058054476743564e-05,
+            "conditioning_and_queries": 3.911662531663751e-07,
+            "pcr_head": 0.0,
+            "world_predictor": 0.1399044543504715,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 1.0580808520899154e-05,
+            "all_trainable": 0.1399044394493103
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": -0.13058556807282742,
+            "fusion": -0.11840652031579905,
+            "shared_encoder_fusion": -0.11831771736848624
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      },
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.028355129063129425,
+            "fusion": 0.38435304164886475,
+            "conditioning_and_queries": 0.07644825428724289,
+            "pcr_head": 1.4110405445098877,
+            "world_predictor": 0.2335783988237381,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.3853975832462311,
+            "all_trainable": 1.483229637145996
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 1.7804821084155265e-07,
+            "fusion": 9.818037142395042e-06,
+            "conditioning_and_queries": 8.451590360891714e-07,
+            "pcr_head": 0.0,
+            "world_predictor": 0.08690574765205383,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 9.81965240498539e-06,
+            "all_trainable": 0.08690575510263443
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": 0.7061284792137218,
+            "fusion": 0.26764118222458316,
+            "shared_encoder_fusion": 0.2678138650752954
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      }
+    ],
+    "observed_representation": {
+      "mean_absolute": 0.8048224449157715,
+      "rms": 0.9973845481872559,
+      "global_std": 0.9973844885826111,
+      "legacy_variance_penalty": 0.978004515171051,
+      "patient_axis_variance_penalty": 0.9810957511266073,
+      "anchor_patient_pooled_variance": 5.900235191802494e-05,
+      "anchor_patient_pooled_effective_rank": 2.8139886990799603,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.0003789392940234393,
+          "patient_axis_variance_penalty": 0.979411780834198,
+          "patient_pooled_effective_rank": 1.781948464972844
+        },
+        "T1": {
+          "patients": 19,
+          "patient_axis_variance_mean": 0.000308788672555238,
+          "patient_axis_variance_penalty": 0.9809295535087585,
+          "patient_pooled_effective_rank": 2.4900365671662805
+        },
+        "T2": {
+          "patients": 5,
+          "patient_axis_variance_mean": 0.00026272900868207216,
+          "patient_axis_variance_penalty": 0.9829459190368652,
+          "patient_pooled_effective_rank": 2.3218108224358436
+        },
+        "T3": {
+          "patients": 0,
+          "patient_axis_variance_mean": null,
+          "patient_axis_variance_penalty": null,
+          "patient_pooled_effective_rank": null
+        }
+      }
+    },
+    "teacher_representation": {
+      "mean_absolute": 0.7917448878288269,
+      "rms": 0.99898761510849,
+      "global_std": 0.99898761510849,
+      "legacy_variance_penalty": 0.9554114937782288,
+      "patient_axis_variance_penalty": 0.9587191790342331,
+      "anchor_patient_pooled_variance": 0.0011844991240650415,
+      "anchor_patient_pooled_effective_rank": 1.7130529506655048,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.0017171163344755769,
+          "patient_axis_variance_penalty": 0.9611332416534424,
+          "patient_pooled_effective_rank": 1.641470559771102
+        },
+        "T1": {
+          "patients": 29,
+          "patient_axis_variance_mean": 0.001894786604680121,
+          "patient_axis_variance_penalty": 0.9590144157409668,
+          "patient_pooled_effective_rank": 1.848769709206478
+        },
+        "T2": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.001967182382941246,
+          "patient_axis_variance_penalty": 0.9584614634513855,
+          "patient_pooled_effective_rank": 1.6975804827709209
+        },
+        "T3": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.002207959769293666,
+          "patient_axis_variance_penalty": 0.9562675952911377,
+          "patient_pooled_effective_rank": 1.5681194363128592
+        }
+      }
+    },
+    "teacher_drift": {
+      "status": "evaluated",
+      "previous_epoch": 30,
+      "l1": 0.10744275897741318,
+      "relative_to_previous_rms": 0.10752218991648108,
+      "adjacent_copy_change_l1": 0.0018801490077748895
+    },
+    "world": {
+      "status": "evaluated",
+      "world_head_trained": true,
+      "reduction": "mean eligible prefix-targets within patient, then mean patients",
+      "relative_error_guard": "ratio and skill are null if aggregate copy L1 <= 1e-8 or no eligible patients",
+      "target_coordinates": "same checkpoint EMA teacher for model and both copy baselines",
+      "chain_policy": "real continuous visits only; target and all intermediate visits required",
+      "teacher_forcing_copy": "real immediate predecessor",
+      "autonomous_copy": "real landmark state held constant",
+      "metrics": {
+        "horizon_1": {
+          "patients": 23,
+          "prefix_targets": 23,
+          "teacher_forcing_l1": 0.018991048528772335,
+          "autonomous_l1": 0.018991048528772335,
+          "teacher_forcing_copy_l1": 0.01744698963897384,
+          "autonomous_copy_l1": 0.01744698963897384,
+          "teacher_forcing_relative_to_copy": 1.0885000175817903,
+          "teacher_forcing_skill_vs_copy": -0.08850001758179027,
+          "teacher_forcing_minus_copy": 0.0015440588897984962,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0885000175817903,
+          "autonomous_skill_vs_copy": -0.08850001758179027,
+          "autonomous_minus_copy": 0.0015440588897984962,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_2": {
+          "patients": 17,
+          "prefix_targets": 17,
+          "teacher_forcing_l1": 0.016832104719736996,
+          "autonomous_l1": 0.018749900134828162,
+          "teacher_forcing_copy_l1": 0.015063745599678335,
+          "autonomous_copy_l1": 0.019399429260588744,
+          "teacher_forcing_relative_to_copy": 1.117391727599039,
+          "teacher_forcing_skill_vs_copy": -0.11739172759903904,
+          "teacher_forcing_minus_copy": 0.0017683591200586615,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.9665181322071086,
+          "autonomous_skill_vs_copy": 0.03348186779289142,
+          "autonomous_minus_copy": -0.0006495291257605819,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_3": {
+          "patients": 9,
+          "prefix_targets": 9,
+          "teacher_forcing_l1": 0.012696039811190631,
+          "autonomous_l1": 0.015490619155267874,
+          "teacher_forcing_copy_l1": 0.01122886020069321,
+          "autonomous_copy_l1": 0.016423951937920518,
+          "teacher_forcing_relative_to_copy": 1.130661490505229,
+          "teacher_forcing_skill_vs_copy": -0.13066149050522902,
+          "teacher_forcing_minus_copy": 0.0014671796104974207,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.9431724601861678,
+          "autonomous_skill_vs_copy": 0.05682753981383215,
+          "autonomous_minus_copy": -0.0009333327826526443,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_all": {
+          "patients": 23,
+          "prefix_targets": 49,
+          "teacher_forcing_l1": 0.018578182973399544,
+          "autonomous_l1": 0.01973878095547358,
+          "teacher_forcing_copy_l1": 0.017157482934872743,
+          "autonomous_copy_l1": 0.01933813290130617,
+          "teacher_forcing_relative_to_copy": 1.082803523332622,
+          "teacher_forcing_skill_vs_copy": -0.08280352333262209,
+          "teacher_forcing_minus_copy": 0.0014207000385268002,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0207180318912974,
+          "autonomous_skill_vs_copy": -0.020718031891297395,
+          "autonomous_minus_copy": 0.0004006480541674101,
+          "autonomous_near_zero_copy_patients": 0
+        }
+      },
+      "teacher_forcing_all_adjacent": {
+        "scope": "all real adjacent supervised pairs, including pairs after a prior missing visit",
+        "reduction": "mean eligible prefix-pairs within patient, then mean patients",
+        "metrics": {
+          "T0_to_T1": {
+            "patients": 10,
+            "prefix_pairs": 10,
+            "teacher_forcing_l1": 0.012722901999950409,
+            "teacher_forcing_copy_l1": 0.010794397862628102,
+            "relative_to_copy": 1.1786578706718873,
+            "skill_vs_copy": -0.17865787067188732,
+            "near_zero_copy_patients": 0
+          },
+          "T1_to_T2": {
+            "patients": 18,
+            "prefix_pairs": 18,
+            "teacher_forcing_l1": 0.01919828060393532,
+            "teacher_forcing_copy_l1": 0.017463460952664416,
+            "relative_to_copy": 1.0993399679464007,
+            "skill_vs_copy": -0.09933996794640065,
+            "near_zero_copy_patients": 0
+          },
+          "T2_to_T3": {
+            "patients": 22,
+            "prefix_pairs": 22,
+            "teacher_forcing_l1": 0.017233626006848433,
+            "teacher_forcing_copy_l1": 0.015928554729643194,
+            "relative_to_copy": 1.0819328118185443,
+            "skill_vs_copy": -0.08193281181854428,
+            "near_zero_copy_patients": 0
+          },
+          "all": {
+            "patients": 24,
+            "prefix_pairs": 50,
+            "teacher_forcing_l1": 0.018417991529632773,
+            "teacher_forcing_copy_l1": 0.017038017026303958,
+            "relative_to_copy": 1.0809938446004812,
+            "skill_vs_copy": -0.0809938446004812,
+            "near_zero_copy_patients": 0
+          }
+        }
+      },
+      "spatial_metric": "unweighted all-token L1; same-checkpoint teacher for prediction and copy"
+    },
+    "world_head_trained": true,
+    "teacher_present": true,
+    "teacher_frozen": true,
+    "rng_and_module_modes_preserved": true
+  },
+  {
+    "epoch": 40,
+    "scope": "fixed training probe; not full validation or checkpoint selection",
+    "patients": 32,
+    "labelled_patients": 32,
+    "prefixes": 32,
+    "landmark_counts": {
+      "T0": 13,
+      "T1": 14,
+      "T2": 5
+    },
+    "eval_pcr_nll": 0.534315912052989,
+    "gradient_semantics": "separate weighted objectives in eval mode; preclip module L2 norms; no optimizer update",
+    "gradient_batches": [
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.02499007247388363,
+            "fusion": 0.5691433548927307,
+            "conditioning_and_queries": 0.10836108773946762,
+            "pcr_head": 5.050875663757324,
+            "world_predictor": 0.4364556670188904,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.5696917772293091,
+            "all_trainable": 5.102756977081299
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 1.1749190065302173e-07,
+            "fusion": 1.2008466910629068e-05,
+            "conditioning_and_queries": 7.183591037573933e-07,
+            "pcr_head": 0.0,
+            "world_predictor": 0.12302571535110474,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 1.2009041711280588e-05,
+            "all_trainable": 0.12302571535110474
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": -0.4498794128769827,
+            "fusion": -0.1602721559841169,
+            "shared_encoder_fusion": -0.16030326413195134
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      },
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.01972971111536026,
+            "fusion": 0.6012074947357178,
+            "conditioning_and_queries": 0.08075638860464096,
+            "pcr_head": 3.7944843769073486,
+            "world_predictor": 0.16221484541893005,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.6015310883522034,
+            "all_trainable": 3.8461391925811768
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 1.7220520476257661e-07,
+            "fusion": 1.4751366506970953e-05,
+            "conditioning_and_queries": 9.030981686919404e-07,
+            "pcr_head": 0.0,
+            "world_predictor": 0.08396964520215988,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 1.4752371498616412e-05,
+            "all_trainable": 0.08396964520215988
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": -0.14836508219928857,
+            "fusion": 0.04972296067677235,
+            "shared_encoder_fusion": 0.04963600256688062
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      }
+    ],
+    "observed_representation": {
+      "mean_absolute": 0.7970015406608582,
+      "rms": 0.9965413808822632,
+      "global_std": 0.9965413212776184,
+      "legacy_variance_penalty": 0.9806124567985535,
+      "patient_axis_variance_penalty": 0.9830175836881002,
+      "anchor_patient_pooled_variance": 3.6666875530499965e-05,
+      "anchor_patient_pooled_effective_rank": 3.084624029840583,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.0002585969923529774,
+          "patient_axis_variance_penalty": 0.9820004105567932,
+          "patient_pooled_effective_rank": 1.9527164868126816
+        },
+        "T1": {
+          "patients": 19,
+          "patient_axis_variance_mean": 0.00022754848760087043,
+          "patient_axis_variance_penalty": 0.9827978014945984,
+          "patient_pooled_effective_rank": 2.6301792080001167
+        },
+        "T2": {
+          "patients": 5,
+          "patient_axis_variance_mean": 0.00019940827041864395,
+          "patient_axis_variance_penalty": 0.9842545390129089,
+          "patient_pooled_effective_rank": 2.794524533871002
+        },
+        "T3": {
+          "patients": 0,
+          "patient_axis_variance_mean": null,
+          "patient_axis_variance_penalty": null,
+          "patient_pooled_effective_rank": null
+        }
+      }
+    },
+    "teacher_representation": {
+      "mean_absolute": 0.7946823239326477,
+      "rms": 0.9986404180526733,
+      "global_std": 0.9986404180526733,
+      "legacy_variance_penalty": 0.9292535781860352,
+      "patient_axis_variance_penalty": 0.9368455559015274,
+      "anchor_patient_pooled_variance": 0.0016817777650430799,
+      "anchor_patient_pooled_effective_rank": 1.4980016296134142,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.0023059488739818335,
+          "patient_axis_variance_penalty": 0.9559677243232727,
+          "patient_pooled_effective_rank": 1.5395308154172715
+        },
+        "T1": {
+          "patients": 29,
+          "patient_axis_variance_mean": 0.002658342942595482,
+          "patient_axis_variance_penalty": 0.9530913829803467,
+          "patient_pooled_effective_rank": 1.6664904973613925
+        },
+        "T2": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.015558863990008831,
+          "patient_axis_variance_penalty": 0.8966050148010254,
+          "patient_pooled_effective_rank": 1.1782521064599754
+        },
+        "T3": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.004262434784322977,
+          "patient_axis_variance_penalty": 0.9417181015014648,
+          "patient_pooled_effective_rank": 1.3463121000804543
+        }
+      }
+    },
+    "teacher_drift": {
+      "status": "evaluated",
+      "previous_epoch": 35,
+      "l1": 0.14596661925315857,
+      "relative_to_previous_rms": 0.14611454340933608,
+      "adjacent_copy_change_l1": 0.012136166915297508
+    },
+    "world": {
+      "status": "evaluated",
+      "world_head_trained": true,
+      "reduction": "mean eligible prefix-targets within patient, then mean patients",
+      "relative_error_guard": "ratio and skill are null if aggregate copy L1 <= 1e-8 or no eligible patients",
+      "target_coordinates": "same checkpoint EMA teacher for model and both copy baselines",
+      "chain_policy": "real continuous visits only; target and all intermediate visits required",
+      "teacher_forcing_copy": "real immediate predecessor",
+      "autonomous_copy": "real landmark state held constant",
+      "metrics": {
+        "horizon_1": {
+          "patients": 23,
+          "prefix_targets": 23,
+          "teacher_forcing_l1": 0.033702843863031136,
+          "autonomous_l1": 0.033702843863031136,
+          "teacher_forcing_copy_l1": 0.03215992739221648,
+          "autonomous_copy_l1": 0.03215992739221648,
+          "teacher_forcing_relative_to_copy": 1.047976366737323,
+          "teacher_forcing_skill_vs_copy": -0.04797636673732297,
+          "teacher_forcing_minus_copy": 0.0015429164708146564,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.047976366737323,
+          "autonomous_skill_vs_copy": -0.04797636673732297,
+          "autonomous_minus_copy": 0.0015429164708146564,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_2": {
+          "patients": 17,
+          "prefix_targets": 17,
+          "teacher_forcing_l1": 0.03429020508466398,
+          "autonomous_l1": 0.025073683355003595,
+          "teacher_forcing_copy_l1": 0.03353761635063326,
+          "autonomous_copy_l1": 0.024674079654847875,
+          "teacher_forcing_relative_to_copy": 1.02244013784887,
+          "teacher_forcing_skill_vs_copy": -0.02244013784886989,
+          "teacher_forcing_minus_copy": 0.0007525887340307236,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0161952828938527,
+          "autonomous_skill_vs_copy": -0.016195282893852747,
+          "autonomous_minus_copy": 0.00039960370015571997,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_3": {
+          "patients": 9,
+          "prefix_targets": 9,
+          "teacher_forcing_l1": 0.015387120863629712,
+          "autonomous_l1": 0.01565641935707794,
+          "teacher_forcing_copy_l1": 0.013784087780449126,
+          "autonomous_copy_l1": 0.01636201526141829,
+          "teacher_forcing_relative_to_copy": 1.116295913716849,
+          "teacher_forcing_skill_vs_copy": -0.11629591371684911,
+          "teacher_forcing_minus_copy": 0.001603033083180586,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.9568759781074067,
+          "autonomous_skill_vs_copy": 0.043124021892593345,
+          "autonomous_minus_copy": -0.000705595904340349,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_all": {
+          "patients": 23,
+          "prefix_targets": 49,
+          "teacher_forcing_l1": 0.032441629515285945,
+          "autonomous_l1": 0.02909546940708938,
+          "teacher_forcing_copy_l1": 0.03120022936406937,
+          "autonomous_copy_l1": 0.028270899464943166,
+          "teacher_forcing_relative_to_copy": 1.0397881738858685,
+          "teacher_forcing_skill_vs_copy": -0.03978817388586853,
+          "teacher_forcing_minus_copy": 0.0012414001512165741,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0291667388640644,
+          "autonomous_skill_vs_copy": -0.0291667388640644,
+          "autonomous_minus_copy": 0.0008245699421462124,
+          "autonomous_near_zero_copy_patients": 0
+        }
+      },
+      "teacher_forcing_all_adjacent": {
+        "scope": "all real adjacent supervised pairs, including pairs after a prior missing visit",
+        "reduction": "mean eligible prefix-pairs within patient, then mean patients",
+        "metrics": {
+          "T0_to_T1": {
+            "patients": 10,
+            "prefix_pairs": 10,
+            "teacher_forcing_l1": 0.011621653195470571,
+            "teacher_forcing_copy_l1": 0.00950349709019065,
+            "relative_to_copy": 1.2228817544929063,
+            "skill_vs_copy": -0.22288175449290626,
+            "near_zero_copy_patients": 0
+          },
+          "T1_to_T2": {
+            "patients": 18,
+            "prefix_pairs": 18,
+            "teacher_forcing_l1": 0.039587853010743856,
+            "teacher_forcing_copy_l1": 0.038247566165712975,
+            "relative_to_copy": 1.0350424086914158,
+            "skill_vs_copy": -0.03504240869141584,
+            "near_zero_copy_patients": 0
+          },
+          "T2_to_T3": {
+            "patients": 22,
+            "prefix_pairs": 22,
+            "teacher_forcing_l1": 0.03107900731265545,
+            "teacher_forcing_copy_l1": 0.030273194043812426,
+            "relative_to_copy": 1.0266180459081002,
+            "skill_vs_copy": -0.02661804590810024,
+            "near_zero_copy_patients": 0
+          },
+          "all": {
+            "patients": 24,
+            "prefix_pairs": 50,
+            "teacher_forcing_l1": 0.03175460595068418,
+            "teacher_forcing_copy_l1": 0.030551337842350926,
+            "relative_to_copy": 1.0393851200409712,
+            "skill_vs_copy": -0.03938512004097117,
+            "near_zero_copy_patients": 0
+          }
+        }
+      },
+      "spatial_metric": "unweighted all-token L1; same-checkpoint teacher for prediction and copy"
+    },
+    "world_head_trained": true,
+    "teacher_present": true,
+    "teacher_frozen": true,
+    "rng_and_module_modes_preserved": true
+  },
+  {
+    "epoch": 45,
+    "scope": "fixed training probe; not full validation or checkpoint selection",
+    "patients": 32,
+    "labelled_patients": 32,
+    "prefixes": 32,
+    "landmark_counts": {
+      "T0": 13,
+      "T1": 14,
+      "T2": 5
+    },
+    "eval_pcr_nll": 0.5396964401006699,
+    "gradient_semantics": "separate weighted objectives in eval mode; preclip module L2 norms; no optimizer update",
+    "gradient_batches": [
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.016154024749994278,
+            "fusion": 0.4813513457775116,
+            "conditioning_and_queries": 0.09303341060876846,
+            "pcr_head": 5.548847675323486,
+            "world_predictor": 0.5085182189941406,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.4816223084926605,
+            "all_trainable": 5.593649387359619
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 5.227984445355105e-08,
+            "fusion": 6.3389547904080246e-06,
+            "conditioning_and_queries": 2.1155804574846115e-07,
+            "pcr_head": 0.0,
+            "world_predictor": 0.15456925332546234,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 6.339170340652345e-06,
+            "all_trainable": 0.15456925332546234
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": 0.38540829621225686,
+            "fusion": 0.033526478901079036,
+            "shared_encoder_fusion": 0.03361308374881005
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      },
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.011665895581245422,
+            "fusion": 0.42543846368789673,
+            "conditioning_and_queries": 0.06500281393527985,
+            "pcr_head": 3.7270846366882324,
+            "world_predictor": 0.1631375253200531,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.4255984127521515,
+            "all_trainable": 3.755413770675659
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 9.39001907340753e-08,
+            "fusion": 6.4779032982187346e-06,
+            "conditioning_and_queries": 6.337849640658533e-07,
+            "pcr_head": 0.0,
+            "world_predictor": 0.11769231408834457,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 6.478583600255661e-06,
+            "all_trainable": 0.11769232153892517
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": 0.0159756936738649,
+            "fusion": -0.04629718785007634,
+            "shared_encoder_fusion": -0.04626858411636376
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      }
+    ],
+    "observed_representation": {
+      "mean_absolute": 0.7974894642829895,
+      "rms": 0.9965915083885193,
+      "global_std": 0.9965914487838745,
+      "legacy_variance_penalty": 0.9813385009765625,
+      "patient_axis_variance_penalty": 0.9833208918571472,
+      "anchor_patient_pooled_variance": 3.491129609756172e-05,
+      "anchor_patient_pooled_effective_rank": 2.7967284344221253,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.00022887984232511371,
+          "patient_axis_variance_penalty": 0.9826557040214539,
+          "patient_pooled_effective_rank": 1.9725598505686337
+        },
+        "T1": {
+          "patients": 19,
+          "patient_axis_variance_mean": 0.00021889912022743374,
+          "patient_axis_variance_penalty": 0.982944667339325,
+          "patient_pooled_effective_rank": 2.100314840839077
+        },
+        "T2": {
+          "patients": 5,
+          "patient_axis_variance_mean": 0.00018710947188083082,
+          "patient_axis_variance_penalty": 0.9843623042106628,
+          "patient_pooled_effective_rank": 2.3749859575368646
+        },
+        "T3": {
+          "patients": 0,
+          "patient_axis_variance_mean": null,
+          "patient_axis_variance_penalty": null,
+          "patient_pooled_effective_rank": null
+        }
+      }
+    },
+    "teacher_representation": {
+      "mean_absolute": 0.7967246770858765,
+      "rms": 0.9982355833053589,
+      "global_std": 0.9982355833053589,
+      "legacy_variance_penalty": 0.8409029841423035,
+      "patient_axis_variance_penalty": 0.9026986211538315,
+      "anchor_patient_pooled_variance": 0.0008335046586580575,
+      "anchor_patient_pooled_effective_rank": 1.544940992210126,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.11845754832029343,
+          "patient_axis_variance_penalty": 0.7234668731689453,
+          "patient_pooled_effective_rank": 1.0260313291071044
+        },
+        "T1": {
+          "patients": 29,
+          "patient_axis_variance_mean": 0.001445150002837181,
+          "patient_axis_variance_penalty": 0.9641351103782654,
+          "patient_pooled_effective_rank": 1.7747128282605638
+        },
+        "T2": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.0018147026421502233,
+          "patient_axis_variance_penalty": 0.9605723023414612,
+          "patient_pooled_effective_rank": 1.6019122225446107
+        },
+        "T3": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.0016081412322819233,
+          "patient_axis_variance_penalty": 0.962620198726654,
+          "patient_pooled_effective_rank": 1.7229512310327508
+        }
+      }
+    },
+    "teacher_drift": {
+      "status": "evaluated",
+      "previous_epoch": 40,
+      "l1": 0.10322432219982147,
+      "relative_to_previous_rms": 0.10336485519092709,
+      "adjacent_copy_change_l1": 0.06314167380332947
+    },
+    "world": {
+      "status": "evaluated",
+      "world_head_trained": true,
+      "reduction": "mean eligible prefix-targets within patient, then mean patients",
+      "relative_error_guard": "ratio and skill are null if aggregate copy L1 <= 1e-8 or no eligible patients",
+      "target_coordinates": "same checkpoint EMA teacher for model and both copy baselines",
+      "chain_policy": "real continuous visits only; target and all intermediate visits required",
+      "teacher_forcing_copy": "real immediate predecessor",
+      "autonomous_copy": "real landmark state held constant",
+      "metrics": {
+        "horizon_1": {
+          "patients": 23,
+          "prefix_targets": 23,
+          "teacher_forcing_l1": 0.013755300993342762,
+          "autonomous_l1": 0.013755300993342762,
+          "teacher_forcing_copy_l1": 0.011684998495342292,
+          "autonomous_copy_l1": 0.011684998495342292,
+          "teacher_forcing_relative_to_copy": 1.177176103088563,
+          "teacher_forcing_skill_vs_copy": -0.17717610308856302,
+          "teacher_forcing_minus_copy": 0.0020703024980004703,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.177176103088563,
+          "autonomous_skill_vs_copy": -0.17717610308856302,
+          "autonomous_minus_copy": 0.0020703024980004703,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_2": {
+          "patients": 17,
+          "prefix_targets": 17,
+          "teacher_forcing_l1": 0.016299937495633084,
+          "autonomous_l1": 0.015810104785487056,
+          "teacher_forcing_copy_l1": 0.01508228954694727,
+          "autonomous_copy_l1": 0.01584267568336252,
+          "teacher_forcing_relative_to_copy": 1.0807336276694326,
+          "teacher_forcing_skill_vs_copy": -0.0807336276694326,
+          "teacher_forcing_minus_copy": 0.0012176479486858145,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 0.9979441037280294,
+          "autonomous_skill_vs_copy": 0.0020558962719705587,
+          "autonomous_minus_copy": -3.257089787546408e-05,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_3": {
+          "patients": 9,
+          "prefix_targets": 9,
+          "teacher_forcing_l1": 0.01423275289643142,
+          "autonomous_l1": 0.012588053993466828,
+          "teacher_forcing_copy_l1": 0.013006414235052135,
+          "autonomous_copy_l1": 0.012037721876468923,
+          "teacher_forcing_relative_to_copy": 1.0942872216136494,
+          "teacher_forcing_skill_vs_copy": -0.09428722161364944,
+          "teacher_forcing_minus_copy": 0.001226338661379285,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0457172978945195,
+          "autonomous_skill_vs_copy": -0.045717297894519504,
+          "autonomous_minus_copy": 0.000550332116997905,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_all": {
+          "patients": 23,
+          "prefix_targets": 49,
+          "teacher_forcing_l1": 0.014498456479117707,
+          "autonomous_l1": 0.014263992744457462,
+          "teacher_forcing_copy_l1": 0.012870711287942484,
+          "autonomous_copy_l1": 0.013070542395681789,
+          "teacher_forcing_relative_to_copy": 1.1264689382551938,
+          "teacher_forcing_skill_vs_copy": -0.12646893825519379,
+          "teacher_forcing_minus_copy": 0.001627745191175223,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.091308402715557,
+          "autonomous_skill_vs_copy": -0.09130840271555707,
+          "autonomous_minus_copy": 0.0011934503487756737,
+          "autonomous_near_zero_copy_patients": 0
+        }
+      },
+      "teacher_forcing_all_adjacent": {
+        "scope": "all real adjacent supervised pairs, including pairs after a prior missing visit",
+        "reduction": "mean eligible prefix-pairs within patient, then mean patients",
+        "metrics": {
+          "T0_to_T1": {
+            "patients": 10,
+            "prefix_pairs": 10,
+            "teacher_forcing_l1": 0.010230841347947717,
+            "teacher_forcing_copy_l1": 0.007434598193503917,
+            "relative_to_copy": 1.376112209653382,
+            "skill_vs_copy": -0.376112209653382,
+            "near_zero_copy_patients": 0
+          },
+          "T1_to_T2": {
+            "patients": 18,
+            "prefix_pairs": 18,
+            "teacher_forcing_l1": 0.01676859696292215,
+            "teacher_forcing_copy_l1": 0.01518059309778942,
+            "relative_to_copy": 1.1046074981987346,
+            "skill_vs_copy": -0.1046074981987346,
+            "near_zero_copy_patients": 0
+          },
+          "T2_to_T3": {
+            "patients": 22,
+            "prefix_pairs": 22,
+            "teacher_forcing_l1": 0.015342319130220196,
+            "teacher_forcing_copy_l1": 0.014376041585240851,
+            "relative_to_copy": 1.0672144372461592,
+            "skill_vs_copy": -0.06721443724615916,
+            "near_zero_copy_patients": 0
+          },
+          "all": {
+            "patients": 24,
+            "prefix_pairs": 50,
+            "teacher_forcing_l1": 0.014732210098170778,
+            "teacher_forcing_copy_l1": 0.013236846516115798,
+            "relative_to_copy": 1.1129697757116381,
+            "skill_vs_copy": -0.11296977571163813,
+            "near_zero_copy_patients": 0
+          }
+        }
+      },
+      "spatial_metric": "unweighted all-token L1; same-checkpoint teacher for prediction and copy"
+    },
+    "world_head_trained": true,
+    "teacher_present": true,
+    "teacher_frozen": true,
+    "rng_and_module_modes_preserved": true
+  },
+  {
+    "epoch": 50,
+    "scope": "fixed training probe; not full validation or checkpoint selection",
+    "patients": 32,
+    "labelled_patients": 32,
+    "prefixes": 32,
+    "landmark_counts": {
+      "T0": 13,
+      "T1": 14,
+      "T2": 5
+    },
+    "eval_pcr_nll": 0.5108501594513655,
+    "gradient_semantics": "separate weighted objectives in eval mode; preclip module L2 norms; no optimizer update",
+    "gradient_batches": [
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.013744799420237541,
+            "fusion": 0.3708637058734894,
+            "conditioning_and_queries": 0.0713026151061058,
+            "pcr_head": 3.348322629928589,
+            "world_predictor": 0.3800489008426666,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.37111833691596985,
+            "all_trainable": 3.3909459114074707
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 9.790282007315909e-08,
+            "fusion": 1.3344400031201076e-05,
+            "conditioning_and_queries": 1.8414748126360792e-07,
+            "pcr_head": 0.0,
+            "world_predictor": 0.22749464213848114,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 1.3344759281608276e-05,
+            "all_trainable": 0.22749464213848114
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": 0.42685088380909236,
+            "fusion": 0.04610837838545646,
+            "shared_encoder_fusion": 0.04619148490600857
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      },
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.009847186505794525,
+            "fusion": 0.3033003509044647,
+            "conditioning_and_queries": 0.03558515012264252,
+            "pcr_head": 1.8712235689163208,
+            "world_predictor": 0.1384759098291397,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.30346018075942993,
+            "all_trainable": 1.9010543823242188
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 5.58446160425774e-08,
+            "fusion": 5.892323770240182e-06,
+            "conditioning_and_queries": 1.2235965130003024e-07,
+            "pcr_head": 0.0,
+            "world_predictor": 0.1625737100839615,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 5.892588433198398e-06,
+            "all_trainable": 0.16257372498512268
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": -0.14970415094198708,
+            "fusion": 0.022947386691524373,
+            "shared_encoder_fusion": 0.02288823242997065
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      }
+    ],
+    "observed_representation": {
+      "mean_absolute": 0.7950624823570251,
+      "rms": 0.9955711960792542,
+      "global_std": 0.9955711960792542,
+      "legacy_variance_penalty": 0.9809409976005554,
+      "patient_axis_variance_penalty": 0.9828171332677206,
+      "anchor_patient_pooled_variance": 5.901227632421069e-05,
+      "anchor_patient_pooled_effective_rank": 2.000485166137941,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.0002504696312826127,
+          "patient_axis_variance_penalty": 0.9820923805236816,
+          "patient_pooled_effective_rank": 1.7467448913917836
+        },
+        "T1": {
+          "patients": 19,
+          "patient_axis_variance_mean": 0.00024194219440687448,
+          "patient_axis_variance_penalty": 0.9823147654533386,
+          "patient_pooled_effective_rank": 1.665918359581505
+        },
+        "T2": {
+          "patients": 5,
+          "patient_axis_variance_mean": 0.0001946890988619998,
+          "patient_axis_variance_penalty": 0.9840442538261414,
+          "patient_pooled_effective_rank": 1.6395895189921055
+        },
+        "T3": {
+          "patients": 0,
+          "patient_axis_variance_mean": null,
+          "patient_axis_variance_penalty": null,
+          "patient_pooled_effective_rank": null
+        }
+      }
+    },
+    "teacher_representation": {
+      "mean_absolute": 0.7973783016204834,
+      "rms": 0.9977920055389404,
+      "global_std": 0.9977920055389404,
+      "legacy_variance_penalty": 0.8448877334594727,
+      "patient_axis_variance_penalty": 0.9114399999380112,
+      "anchor_patient_pooled_variance": 0.0002532539365347475,
+      "anchor_patient_pooled_effective_rank": 1.9895215085567832,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.1178133487701416,
+          "patient_axis_variance_penalty": 0.7247605323791504,
+          "patient_pooled_effective_rank": 1.0150516046092708
+        },
+        "T1": {
+          "patients": 29,
+          "patient_axis_variance_mean": 0.0006353447097353637,
+          "patient_axis_variance_penalty": 0.9747805595397949,
+          "patient_pooled_effective_rank": 1.8967905230542939
+        },
+        "T2": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.0007504032109864056,
+          "patient_axis_variance_penalty": 0.9731013774871826,
+          "patient_pooled_effective_rank": 1.680043768148379
+        },
+        "T3": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.0007694824016653001,
+          "patient_axis_variance_penalty": 0.9731175303459167,
+          "patient_pooled_effective_rank": 2.009355777403735
+        }
+      }
+    },
+    "teacher_drift": {
+      "status": "evaluated",
+      "previous_epoch": 45,
+      "l1": 0.05651209130883217,
+      "relative_to_previous_rms": 0.05661197842868841,
+      "adjacent_copy_change_l1": 0.003711777739226818
+    },
+    "world": {
+      "status": "evaluated",
+      "world_head_trained": true,
+      "reduction": "mean eligible prefix-targets within patient, then mean patients",
+      "relative_error_guard": "ratio and skill are null if aggregate copy L1 <= 1e-8 or no eligible patients",
+      "target_coordinates": "same checkpoint EMA teacher for model and both copy baselines",
+      "chain_policy": "real continuous visits only; target and all intermediate visits required",
+      "teacher_forcing_copy": "real immediate predecessor",
+      "autonomous_copy": "real landmark state held constant",
+      "metrics": {
+        "horizon_1": {
+          "patients": 23,
+          "prefix_targets": 23,
+          "teacher_forcing_l1": 0.014156584384972635,
+          "autonomous_l1": 0.014156584384972635,
+          "teacher_forcing_copy_l1": 0.008303142598141794,
+          "autonomous_copy_l1": 0.008303142598141794,
+          "teacher_forcing_relative_to_copy": 1.7049670311745355,
+          "teacher_forcing_skill_vs_copy": -0.7049670311745355,
+          "teacher_forcing_minus_copy": 0.005853441786830841,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.7049670311745355,
+          "autonomous_skill_vs_copy": -0.7049670311745355,
+          "autonomous_minus_copy": 0.005853441786830841,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_2": {
+          "patients": 17,
+          "prefix_targets": 17,
+          "teacher_forcing_l1": 0.01854847919415025,
+          "autonomous_l1": 0.012793003211674444,
+          "teacher_forcing_copy_l1": 0.012632564627839363,
+          "autonomous_copy_l1": 0.012425396331202458,
+          "teacher_forcing_relative_to_copy": 1.468306693105969,
+          "teacher_forcing_skill_vs_copy": -0.46830669310596895,
+          "teacher_forcing_minus_copy": 0.005915914566310888,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0295851231359807,
+          "autonomous_skill_vs_copy": -0.029585123135980718,
+          "autonomous_minus_copy": 0.0003676068804719865,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_3": {
+          "patients": 9,
+          "prefix_targets": 9,
+          "teacher_forcing_l1": 0.016793154180049896,
+          "autonomous_l1": 0.012845881490243806,
+          "teacher_forcing_copy_l1": 0.01108481776383188,
+          "autonomous_copy_l1": 0.00997583433571789,
+          "teacher_forcing_relative_to_copy": 1.5149689005121467,
+          "teacher_forcing_skill_vs_copy": -0.5149689005121467,
+          "teacher_forcing_minus_copy": 0.005708336416218016,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.2876999615210007,
+          "autonomous_skill_vs_copy": -0.28769996152100075,
+          "autonomous_minus_copy": 0.002870047154525915,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_all": {
+          "patients": 23,
+          "prefix_targets": 49,
+          "teacher_forcing_l1": 0.015833629470696484,
+          "autonomous_l1": 0.01373831363921256,
+          "teacher_forcing_copy_l1": 0.009972694417650715,
+          "autonomous_copy_l1": 0.009870176746820409,
+          "teacher_forcing_relative_to_copy": 1.5876982495996743,
+          "teacher_forcing_skill_vs_copy": -0.5876982495996743,
+          "teacher_forcing_minus_copy": 0.005860935053045769,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.391901481768119,
+          "autonomous_skill_vs_copy": -0.391901481768119,
+          "autonomous_minus_copy": 0.003868136892392151,
+          "autonomous_near_zero_copy_patients": 0
+        }
+      },
+      "teacher_forcing_all_adjacent": {
+        "scope": "all real adjacent supervised pairs, including pairs after a prior missing visit",
+        "reduction": "mean eligible prefix-pairs within patient, then mean patients",
+        "metrics": {
+          "T0_to_T1": {
+            "patients": 10,
+            "prefix_pairs": 10,
+            "teacher_forcing_l1": 0.012024960480630398,
+            "teacher_forcing_copy_l1": 0.00628488315269351,
+            "relative_to_copy": 1.913314884060631,
+            "skill_vs_copy": -0.9133148840606311,
+            "near_zero_copy_patients": 0
+          },
+          "T1_to_T2": {
+            "patients": 18,
+            "prefix_pairs": 18,
+            "teacher_forcing_l1": 0.017646642194853887,
+            "teacher_forcing_copy_l1": 0.011151470412086282,
+            "relative_to_copy": 1.5824498064154797,
+            "skill_vs_copy": -0.5824498064154797,
+            "near_zero_copy_patients": 0
+          },
+          "T2_to_T3": {
+            "patients": 22,
+            "prefix_pairs": 22,
+            "teacher_forcing_l1": 0.016816073054955763,
+            "teacher_forcing_copy_l1": 0.011682978513735261,
+            "relative_to_copy": 1.4393652299527646,
+            "skill_vs_copy": -0.4393652299527646,
+            "near_zero_copy_patients": 0
+          },
+          "all": {
+            "patients": 24,
+            "prefix_pairs": 50,
+            "teacher_forcing_l1": 0.015831344773889415,
+            "teacher_forcing_copy_l1": 0.010186814981150543,
+            "relative_to_copy": 1.5541015325382255,
+            "skill_vs_copy": -0.5541015325382255,
+            "near_zero_copy_patients": 0
+          }
+        }
+      },
+      "spatial_metric": "unweighted all-token L1; same-checkpoint teacher for prediction and copy"
+    },
+    "world_head_trained": true,
+    "teacher_present": true,
+    "teacher_frozen": true,
+    "rng_and_module_modes_preserved": true
+  },
+  {
+    "epoch": 55,
+    "scope": "fixed training probe; not full validation or checkpoint selection",
+    "patients": 32,
+    "labelled_patients": 32,
+    "prefixes": 32,
+    "landmark_counts": {
+      "T0": 13,
+      "T1": 14,
+      "T2": 5
+    },
+    "eval_pcr_nll": 0.5736164404079318,
+    "gradient_semantics": "separate weighted objectives in eval mode; preclip module L2 norms; no optimizer update",
+    "gradient_batches": [
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.06419329345226288,
+            "fusion": 0.592645525932312,
+            "conditioning_and_queries": 0.08516691625118256,
+            "pcr_head": 7.072246551513672,
+            "world_predictor": 0.5383231043815613,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.5961119532585144,
+            "all_trainable": 7.118220329284668
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 6.377416639224975e-08,
+            "fusion": 6.802747520850971e-06,
+            "conditioning_and_queries": 1.4023174799149274e-07,
+            "pcr_head": 0.0,
+            "world_predictor": 0.1698758453130722,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 6.803046289860504e-06,
+            "all_trainable": 0.1698758453130722
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": 0.44815205955175524,
+            "fusion": 0.14534891917223658,
+            "shared_encoder_fusion": 0.14494979452111845
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      },
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.020029235631227493,
+            "fusion": 0.4208207130432129,
+            "conditioning_and_queries": 0.06365729868412018,
+            "pcr_head": 4.700552940368652,
+            "world_predictor": 0.13946780562400818,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.4212970733642578,
+            "all_trainable": 4.721884727478027
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 8.332683876233205e-08,
+            "fusion": 5.282965503283776e-06,
+            "conditioning_and_queries": 2.6084825321959215e-07,
+            "pcr_head": 0.0,
+            "world_predictor": 0.11757957935333252,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 5.283622613205807e-06,
+            "all_trainable": 0.11757957935333252
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": 0.25193854221061174,
+            "fusion": -0.07698556837648118,
+            "shared_encoder_fusion": -0.07670005154006311
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      }
+    ],
+    "observed_representation": {
+      "mean_absolute": 0.792235791683197,
+      "rms": 0.9953595399856567,
+      "global_std": 0.9953595399856567,
+      "legacy_variance_penalty": 0.9754765033721924,
+      "patient_axis_variance_penalty": 0.9778413772583008,
+      "anchor_patient_pooled_variance": 0.0002567727060522884,
+      "anchor_patient_pooled_effective_rank": 1.2770609547265326,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.0005881762481294572,
+          "patient_axis_variance_penalty": 0.9758875370025635,
+          "patient_pooled_effective_rank": 1.309792243455602
+        },
+        "T1": {
+          "patients": 19,
+          "patient_axis_variance_mean": 0.0005239997408352792,
+          "patient_axis_variance_penalty": 0.9768912196159363,
+          "patient_pooled_effective_rank": 1.1885234845745776
+        },
+        "T2": {
+          "patients": 5,
+          "patient_axis_variance_mean": 0.0003353561332914978,
+          "patient_axis_variance_penalty": 0.9807453751564026,
+          "patient_pooled_effective_rank": 1.1351572668280812
+        },
+        "T3": {
+          "patients": 0,
+          "patient_axis_variance_mean": null,
+          "patient_axis_variance_penalty": null,
+          "patient_pooled_effective_rank": null
+        }
+      }
+    },
+    "teacher_representation": {
+      "mean_absolute": 0.7963430285453796,
+      "rms": 0.9973301291465759,
+      "global_std": 0.9973301291465759,
+      "legacy_variance_penalty": 0.8466505408287048,
+      "patient_axis_variance_penalty": 0.9145249128341675,
+      "anchor_patient_pooled_variance": 0.00015183337382040918,
+      "anchor_patient_pooled_effective_rank": 2.1420422392837857,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.11701927334070206,
+          "patient_axis_variance_penalty": 0.7262422442436218,
+          "patient_pooled_effective_rank": 1.0119463355292195
+        },
+        "T1": {
+          "patients": 29,
+          "patient_axis_variance_mean": 0.00046483275946229696,
+          "patient_axis_variance_penalty": 0.9777405858039856,
+          "patient_pooled_effective_rank": 1.9684240351315272
+        },
+        "T2": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.0005644108168780804,
+          "patient_axis_variance_penalty": 0.9760367274284363,
+          "patient_pooled_effective_rank": 1.6452414472726793
+        },
+        "T3": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.0004582349502015859,
+          "patient_axis_variance_penalty": 0.9780800938606262,
+          "patient_pooled_effective_rank": 2.083935451189814
+        }
+      }
+    },
+    "teacher_drift": {
+      "status": "evaluated",
+      "previous_epoch": 50,
+      "l1": 0.036578986793756485,
+      "relative_to_previous_rms": 0.03665993171993693,
+      "adjacent_copy_change_l1": 0.0014607526827603579
+    },
+    "world": {
+      "status": "evaluated",
+      "world_head_trained": true,
+      "reduction": "mean eligible prefix-targets within patient, then mean patients",
+      "relative_error_guard": "ratio and skill are null if aggregate copy L1 <= 1e-8 or no eligible patients",
+      "target_coordinates": "same checkpoint EMA teacher for model and both copy baselines",
+      "chain_policy": "real continuous visits only; target and all intermediate visits required",
+      "teacher_forcing_copy": "real immediate predecessor",
+      "autonomous_copy": "real landmark state held constant",
+      "metrics": {
+        "horizon_1": {
+          "patients": 23,
+          "prefix_targets": 23,
+          "teacher_forcing_l1": 0.009617597755530605,
+          "autonomous_l1": 0.009617597755530605,
+          "teacher_forcing_copy_l1": 0.00769033082558409,
+          "autonomous_copy_l1": 0.00769033082558409,
+          "teacher_forcing_relative_to_copy": 1.2506091055972404,
+          "teacher_forcing_skill_vs_copy": -0.25060910559724037,
+          "teacher_forcing_minus_copy": 0.0019272669299465152,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.2506091055972404,
+          "autonomous_skill_vs_copy": -0.25060910559724037,
+          "autonomous_minus_copy": 0.0019272669299465152,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_2": {
+          "patients": 17,
+          "prefix_targets": 17,
+          "teacher_forcing_l1": 0.011969825362457949,
+          "autonomous_l1": 0.01034159551593749,
+          "teacher_forcing_copy_l1": 0.01095528298002832,
+          "autonomous_copy_l1": 0.009909220190499635,
+          "teacher_forcing_relative_to_copy": 1.0926075925449992,
+          "teacher_forcing_skill_vs_copy": -0.09260759254499917,
+          "teacher_forcing_minus_copy": 0.0010145423824296281,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0436336378772155,
+          "autonomous_skill_vs_copy": -0.043633637877215525,
+          "autonomous_minus_copy": 0.0004323753254378542,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_3": {
+          "patients": 9,
+          "prefix_targets": 9,
+          "teacher_forcing_l1": 0.01112629266248809,
+          "autonomous_l1": 0.010391393158998754,
+          "teacher_forcing_copy_l1": 0.01019926726197203,
+          "autonomous_copy_l1": 0.00896397072614895,
+          "teacher_forcing_relative_to_copy": 1.090891372556975,
+          "teacher_forcing_skill_vs_copy": -0.0908913725569751,
+          "teacher_forcing_minus_copy": 0.0009270254005160593,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.1592399703722644,
+          "autonomous_skill_vs_copy": -0.15923997037226445,
+          "autonomous_minus_copy": 0.001427422432849804,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_all": {
+          "patients": 23,
+          "prefix_targets": 49,
+          "teacher_forcing_l1": 0.01027114509159456,
+          "autonomous_l1": 0.009757209484856847,
+          "teacher_forcing_copy_l1": 0.00892939488572217,
+          "autonomous_copy_l1": 0.008519521791258478,
+          "teacher_forcing_relative_to_copy": 1.1502621647988498,
+          "teacher_forcing_skill_vs_copy": -0.1502621647988498,
+          "teacher_forcing_minus_copy": 0.0013417502058723912,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.1452766626958226,
+          "autonomous_skill_vs_copy": -0.14527666269582262,
+          "autonomous_minus_copy": 0.0012376876935983692,
+          "autonomous_near_zero_copy_patients": 0
+        }
+      },
+      "teacher_forcing_all_adjacent": {
+        "scope": "all real adjacent supervised pairs, including pairs after a prior missing visit",
+        "reduction": "mean eligible prefix-pairs within patient, then mean patients",
+        "metrics": {
+          "T0_to_T1": {
+            "patients": 10,
+            "prefix_pairs": 10,
+            "teacher_forcing_l1": 0.00889196409843862,
+            "teacher_forcing_copy_l1": 0.0058373145293444395,
+            "relative_to_copy": 1.5232970664401109,
+            "skill_vs_copy": -0.5232970664401109,
+            "near_zero_copy_patients": 0
+          },
+          "T1_to_T2": {
+            "patients": 18,
+            "prefix_pairs": 18,
+            "teacher_forcing_l1": 0.011631984832800098,
+            "teacher_forcing_copy_l1": 0.010434729034184582,
+            "relative_to_copy": 1.11473760312254,
+            "skill_vs_copy": -0.11473760312254,
+            "near_zero_copy_patients": 0
+          },
+          "T2_to_T3": {
+            "patients": 22,
+            "prefix_pairs": 22,
+            "teacher_forcing_l1": 0.010829368077049201,
+            "teacher_forcing_copy_l1": 0.010008947066539391,
+            "relative_to_copy": 1.0819687630532622,
+            "skill_vs_copy": -0.08196876305326217,
+            "near_zero_copy_patients": 0
+          },
+          "all": {
+            "patients": 24,
+            "prefix_pairs": 50,
+            "teacher_forcing_l1": 0.01033122455313181,
+            "teacher_forcing_copy_l1": 0.009035848364065817,
+            "relative_to_copy": 1.1433596644026813,
+            "skill_vs_copy": -0.14335966440268133,
+            "near_zero_copy_patients": 0
+          }
+        }
+      },
+      "spatial_metric": "unweighted all-token L1; same-checkpoint teacher for prediction and copy"
+    },
+    "world_head_trained": true,
+    "teacher_present": true,
+    "teacher_frozen": true,
+    "rng_and_module_modes_preserved": true
+  },
+  {
+    "epoch": 60,
+    "scope": "fixed training probe; not full validation or checkpoint selection",
+    "patients": 32,
+    "labelled_patients": 32,
+    "prefixes": 32,
+    "landmark_counts": {
+      "T0": 13,
+      "T1": 14,
+      "T2": 5
+    },
+    "eval_pcr_nll": 0.5604211390018463,
+    "gradient_semantics": "separate weighted objectives in eval mode; preclip module L2 norms; no optimizer update",
+    "gradient_batches": [
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.03392372280359268,
+            "fusion": 0.5534869432449341,
+            "conditioning_and_queries": 0.09343994408845901,
+            "pcr_head": 5.107156753540039,
+            "world_predictor": 0.46072718501091003,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.5545255541801453,
+            "all_trainable": 5.158638000488281
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 1.9212336610507919e-07,
+            "fusion": 9.43609938985901e-06,
+            "conditioning_and_queries": 4.878223194282327e-07,
+            "pcr_head": 0.0,
+            "world_predictor": 0.1288209855556488,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 9.438054803467821e-06,
+            "all_trainable": 0.1288209855556488
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": 0.8622309153801869,
+            "fusion": 0.19631838911904964,
+            "shared_encoder_fusion": 0.196983848199315
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      },
+      {
+        "patients": 16,
+        "weighted_gradient_norms": {
+          "task": {
+            "encoder": 0.02633933164179325,
+            "fusion": 0.48228374123573303,
+            "conditioning_and_queries": 0.05890488252043724,
+            "pcr_head": 3.426504373550415,
+            "world_predictor": 0.09511993080377579,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.4830024242401123,
+            "all_trainable": 3.4621875286102295
+          },
+          "jepa": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "reconstruction": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "variance": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "flow": {
+            "encoder": 0.0,
+            "fusion": 0.0,
+            "conditioning_and_queries": 0.0,
+            "pcr_head": 0.0,
+            "world_predictor": 0.0,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 0.0,
+            "all_trainable": 0.0
+          },
+          "rollout": {
+            "encoder": 1.1532161892091608e-07,
+            "fusion": 5.5705704653519206e-06,
+            "conditioning_and_queries": 3.3203681937266083e-07,
+            "pcr_head": 0.0,
+            "world_predictor": 0.07950469106435776,
+            "reconstruction": 0.0,
+            "flow": 0.0,
+            "shared_encoder_fusion": 5.571763722400647e-06,
+            "all_trainable": 0.07950469106435776
+          }
+        },
+        "task_auxiliary_cosines": {
+          "jepa": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "reconstruction": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "variance": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "flow": {
+            "encoder": null,
+            "fusion": null,
+            "shared_encoder_fusion": null
+          },
+          "rollout": {
+            "encoder": -0.4220696007681701,
+            "fusion": 0.03907409648757586,
+            "shared_encoder_fusion": 0.03853122202530217
+          }
+        },
+        "enabled_terms": {
+          "task": true,
+          "jepa": false,
+          "reconstruction": false,
+          "variance": false,
+          "flow": false,
+          "rollout": true
+        },
+        "all_gradient_values_finite": true
+      }
+    ],
+    "observed_representation": {
+      "mean_absolute": 0.790066123008728,
+      "rms": 0.9943760633468628,
+      "global_std": 0.994376003742218,
+      "legacy_variance_penalty": 0.9723467230796814,
+      "patient_axis_variance_penalty": 0.973578155040741,
+      "anchor_patient_pooled_variance": 0.0005251427064649761,
+      "anchor_patient_pooled_effective_rank": 1.1842081933844386,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.0006472342065535486,
+          "patient_axis_variance_penalty": 0.9748725295066833,
+          "patient_pooled_effective_rank": 1.243183041607976
+        },
+        "T1": {
+          "patients": 19,
+          "patient_axis_variance_mean": 0.0008719098404981196,
+          "patient_axis_variance_penalty": 0.971740186214447,
+          "patient_pooled_effective_rank": 1.1665592345428195
+        },
+        "T2": {
+          "patients": 5,
+          "patient_axis_variance_mean": 0.0007316730334423482,
+          "patient_axis_variance_penalty": 0.9741217494010925,
+          "patient_pooled_effective_rank": 1.0801292898182588
+        },
+        "T3": {
+          "patients": 0,
+          "patient_axis_variance_mean": null,
+          "patient_axis_variance_penalty": null,
+          "patient_pooled_effective_rank": null
+        }
+      }
+    },
+    "teacher_representation": {
+      "mean_absolute": 0.7952272295951843,
+      "rms": 0.9968395233154297,
+      "global_std": 0.9968394637107849,
+      "legacy_variance_penalty": 0.9704381823539734,
+      "patient_axis_variance_penalty": 0.9742423444986343,
+      "anchor_patient_pooled_variance": 0.00016722788859624416,
+      "anchor_patient_pooled_effective_rank": 1.8043420810386288,
+      "per_stage": {
+        "T0": {
+          "patients": 32,
+          "patient_axis_variance_mean": 0.0015820908593013883,
+          "patient_axis_variance_penalty": 0.9639349579811096,
+          "patient_pooled_effective_rank": 1.3078111304973716
+        },
+        "T1": {
+          "patients": 29,
+          "patient_axis_variance_mean": 0.00044598744716495275,
+          "patient_axis_variance_penalty": 0.9780404567718506,
+          "patient_pooled_effective_rank": 1.7214566847830453
+        },
+        "T2": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.0005512651987373829,
+          "patient_axis_variance_penalty": 0.9762344360351562,
+          "patient_pooled_effective_rank": 1.4798027853466857
+        },
+        "T3": {
+          "patients": 24,
+          "patient_axis_variance_mean": 0.0004127145220991224,
+          "patient_axis_variance_penalty": 0.9787595272064209,
+          "patient_pooled_effective_rank": 1.7004464957606416
+        }
+      }
+    },
+    "teacher_drift": {
+      "status": "evaluated",
+      "previous_epoch": 55,
+      "l1": 0.05721146985888481,
+      "relative_to_previous_rms": 0.05736462600186476,
+      "adjacent_copy_change_l1": 0.047837477177381516
+    },
+    "world": {
+      "status": "evaluated",
+      "world_head_trained": true,
+      "reduction": "mean eligible prefix-targets within patient, then mean patients",
+      "relative_error_guard": "ratio and skill are null if aggregate copy L1 <= 1e-8 or no eligible patients",
+      "target_coordinates": "same checkpoint EMA teacher for model and both copy baselines",
+      "chain_policy": "real continuous visits only; target and all intermediate visits required",
+      "teacher_forcing_copy": "real immediate predecessor",
+      "autonomous_copy": "real landmark state held constant",
+      "metrics": {
+        "horizon_1": {
+          "patients": 23,
+          "prefix_targets": 23,
+          "teacher_forcing_l1": 0.008093025089929934,
+          "autonomous_l1": 0.008093025089929934,
+          "teacher_forcing_copy_l1": 0.007638486294561754,
+          "autonomous_copy_l1": 0.007638486294561754,
+          "teacher_forcing_relative_to_copy": 1.0595063966655003,
+          "teacher_forcing_skill_vs_copy": -0.05950639666550028,
+          "teacher_forcing_minus_copy": 0.0004545387953681793,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0595063966655003,
+          "autonomous_skill_vs_copy": -0.05950639666550028,
+          "autonomous_minus_copy": 0.0004545387953681793,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_2": {
+          "patients": 17,
+          "prefix_targets": 17,
+          "teacher_forcing_l1": 0.010873875690295416,
+          "autonomous_l1": 0.009481077657683808,
+          "teacher_forcing_copy_l1": 0.01070782943519161,
+          "autonomous_copy_l1": 0.00939706402063808,
+          "teacher_forcing_relative_to_copy": 1.0155069947750652,
+          "teacher_forcing_skill_vs_copy": -0.01550699477506523,
+          "teacher_forcing_minus_copy": 0.0001660462551038057,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0089404133952067,
+          "autonomous_skill_vs_copy": -0.008940413395206681,
+          "autonomous_minus_copy": 8.401363704572777e-05,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_3": {
+          "patients": 9,
+          "prefix_targets": 9,
+          "teacher_forcing_l1": 0.010522924777534273,
+          "autonomous_l1": 0.009188557095411751,
+          "teacher_forcing_copy_l1": 0.010254738128019704,
+          "autonomous_copy_l1": 0.009020514320582151,
+          "teacher_forcing_relative_to_copy": 1.0261524620294091,
+          "teacher_forcing_skill_vs_copy": -0.02615246202940913,
+          "teacher_forcing_minus_copy": 0.000268186649514569,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0186289571589255,
+          "autonomous_skill_vs_copy": -0.01862895715892554,
+          "autonomous_minus_copy": 0.00016804277482959998,
+          "autonomous_near_zero_copy_patients": 0
+        },
+        "horizon_all": {
+          "patients": 23,
+          "prefix_targets": 49,
+          "teacher_forcing_l1": 0.00921030807396586,
+          "autonomous_l1": 0.008652781522697835,
+          "teacher_forcing_copy_l1": 0.008885760007061714,
+          "autonomous_copy_l1": 0.008362659673287491,
+          "teacher_forcing_relative_to_copy": 1.0365245141266723,
+          "teacher_forcing_skill_vs_copy": -0.03652451412667235,
+          "teacher_forcing_minus_copy": 0.0003245480669041463,
+          "teacher_forcing_near_zero_copy_patients": 0,
+          "autonomous_relative_to_copy": 1.0346925333260981,
+          "autonomous_skill_vs_copy": -0.03469253332609812,
+          "autonomous_minus_copy": 0.00029012184941034323,
+          "autonomous_near_zero_copy_patients": 0
+        }
+      },
+      "teacher_forcing_all_adjacent": {
+        "scope": "all real adjacent supervised pairs, including pairs after a prior missing visit",
+        "reduction": "mean eligible prefix-pairs within patient, then mean patients",
+        "metrics": {
+          "T0_to_T1": {
+            "patients": 10,
+            "prefix_pairs": 10,
+            "teacher_forcing_l1": 0.006086779315955937,
+            "teacher_forcing_copy_l1": 0.005511610442772508,
+            "relative_to_copy": 1.1043558646162412,
+            "skill_vs_copy": -0.10435586461624125,
+            "near_zero_copy_patients": 0
+          },
+          "T1_to_T2": {
+            "patients": 18,
+            "prefix_pairs": 18,
+            "teacher_forcing_l1": 0.010694055184204545,
+            "teacher_forcing_copy_l1": 0.01046783471893933,
+            "relative_to_copy": 1.0216110085169683,
+            "skill_vs_copy": -0.02161100851696829,
+            "near_zero_copy_patients": 0
+          },
+          "T2_to_T3": {
+            "patients": 22,
+            "prefix_pairs": 22,
+            "teacher_forcing_l1": 0.010123986666175451,
+            "teacher_forcing_copy_l1": 0.00985600344244052,
+            "relative_to_copy": 1.0271898468075793,
+            "skill_vs_copy": -0.0271898468075793,
+            "near_zero_copy_patients": 0
+          },
+          "all": {
+            "patients": 24,
+            "prefix_pairs": 50,
+            "teacher_forcing_l1": 0.009259324667962372,
+            "teacher_forcing_copy_l1": 0.008947114872474534,
+            "relative_to_copy": 1.0348950248139028,
+            "skill_vs_copy": -0.03489502481390283,
+            "near_zero_copy_patients": 0
+          }
+        }
+      },
+      "spatial_metric": "unweighted all-token L1; same-checkpoint teacher for prediction and copy"
+    },
+    "world_head_trained": true,
+    "teacher_present": true,
+    "teacher_frozen": true,
+    "rng_and_module_modes_preserved": true
+  }
+]

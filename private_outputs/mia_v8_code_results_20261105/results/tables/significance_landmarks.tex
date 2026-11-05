@@ -1,0 +1,39 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Exploratory landmark comparisons. All metrics use approximate, null-centered paired patient-bootstrap tests (99,999 shared draws across seeds, models, and landmarks). All $p$ values are two-sided. $p_{\mathrm{Holm}}$ adjusts jointly over the 69 secondary tests in Tables~\ref{tab:significance_landmarks}--\ref{tab:significance_longitudinal}. Direct and Mean abbreviate DirectReadout and ForecastMean. $^{*}p_{\mathrm{Holm}}<0.05$, $^{**}p_{\mathrm{Holm}}<0.01$, $^{***}p_{\mathrm{Holm}}<0.001$; ns, not significant after the stated correction. Intervals are unadjusted 95\% patient-bootstrap intervals (2,000 shared draws) and need not agree with adjusted test decisions. All analyses condition on the fixed, retrospectively selected seed42/44/71/2026 ensembles; seeds are not resampled.}
+\label{tab:significance_landmarks}
+\begin{tabular}{lllrrrc}
+\toprule
+Comparison & Landmark & Metric & Difference [95\% CI] & $p$ & $p_{\mathrm{Holm}}$ & Sig. \\
+\midrule
+Direct -- NoJEPA & T0 & AUROC & +0.0071 [-0.0028, +0.0168] & 0.1427 & 1.0000 & ns \\
+Direct -- NoJEPA & T0 & AP & +0.0034 [-0.0105, +0.0177] & 0.6257 & 1.0000 & ns \\
+Direct -- NoJEPA & T0 & F1 & +0.0061 [-0.0127, +0.0250] & 0.5055 & 1.0000 & ns \\
+Direct -- NoJEPA & T1 & AUROC & +0.0118 [+0.0024, +0.0217] & 0.0170 & 1.0000 & ns \\
+Direct -- NoJEPA & T1 & AP & +0.0099 [-0.0038, +0.0240] & 0.1656 & 1.0000 & ns \\
+Direct -- NoJEPA & T1 & F1 & -0.0011 [-0.0170, +0.0136] & 0.8851 & 1.0000 & ns \\
+Direct -- NoJEPA & T2 & AUROC & +0.0099 [-0.0003, +0.0208] & 0.0648 & 1.0000 & ns \\
+Direct -- NoJEPA & T2 & AP & +0.0069 [-0.0077, +0.0229] & 0.3744 & 1.0000 & ns \\
+Direct -- NoJEPA & T2 & F1 & +0.0140 [-0.0107, +0.0420] & 0.2770 & 1.0000 & ns \\
+Mean -- NoJEPA & T0 & AUROC & +0.0206 [+0.0084, +0.0330] & 0.0019 & 0.1241 & ns \\
+Mean -- NoJEPA & T0 & AP & +0.0264 [+0.0070, +0.0459] & 0.0093 & 0.5884 & ns \\
+Mean -- NoJEPA & T0 & F1 & +0.0407 [+0.0047, +0.0861] & 0.0459 & 1.0000 & ns \\
+Mean -- NoJEPA & T1 & AUROC & +0.0243 [+0.0117, +0.0372] & 0.0004 & 0.0248 & * \\
+Mean -- NoJEPA & T1 & AP & +0.0294 [+0.0040, +0.0530] & 0.0217 & 1.0000 & ns \\
+Mean -- NoJEPA & T1 & F1 & +0.0421 [+0.0067, +0.0827] & 0.0289 & 1.0000 & ns \\
+Mean -- NoJEPA & T2 & AUROC & +0.0224 [+0.0100, +0.0353] & 0.0006 & 0.0394 & * \\
+Mean -- NoJEPA & T2 & AP & +0.0318 [+0.0089, +0.0560] & 0.0106 & 0.6460 & ns \\
+Mean -- NoJEPA & T2 & F1 & +0.0304 [-0.0049, +0.0702] & 0.1080 & 1.0000 & ns \\
+Mean -- Direct & T0 & AUROC & +0.0135 [+0.0014, +0.0255] & 0.0326 & 1.0000 & ns \\
+Mean -- Direct & T0 & AP & +0.0231 [+0.0036, +0.0428] & 0.0253 & 1.0000 & ns \\
+Mean -- Direct & T0 & F1 & +0.0347 [-0.0054, +0.0836] & 0.1160 & 1.0000 & ns \\
+Mean -- Direct & T1 & AUROC & +0.0125 [+0.0023, +0.0233] & 0.0213 & 1.0000 & ns \\
+Mean -- Direct & T1 & AP & +0.0195 [+0.0021, +0.0381] & 0.0373 & 1.0000 & ns \\
+Mean -- Direct & T1 & F1 & +0.0432 [+0.0051, +0.0892] & 0.0397 & 1.0000 & ns \\
+Mean -- Direct & T2 & AUROC & +0.0126 [+0.0017, +0.0230] & 0.0231 & 1.0000 & ns \\
+Mean -- Direct & T2 & AP & +0.0249 [+0.0046, +0.0483] & 0.0255 & 1.0000 & ns \\
+Mean -- Direct & T2 & F1 & +0.0163 [-0.0097, +0.0429] & 0.2332 & 1.0000 & ns \\
+\bottomrule
+\end{tabular}
+\end{table*}

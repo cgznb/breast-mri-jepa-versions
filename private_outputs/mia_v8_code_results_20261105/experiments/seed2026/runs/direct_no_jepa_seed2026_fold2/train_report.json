@@ -1,0 +1,64 @@
+{
+  "completed": true,
+  "completed_steps": 2583,
+  "total_steps": 8200,
+  "schedule": "one_stage",
+  "protocol": "direct_pcr_t0_t2_observed",
+  "lr_scheduler": "warmup_cosine",
+  "final_lr": 3.681544508139182e-05,
+  "learning_rates": {
+    "network": 3.681544508139182e-05,
+    "pretrained_encoder": 3.681544508139182e-05
+  },
+  "encoder_type": "vq_encoder",
+  "encoder_training": "finetune",
+  "encoder_frozen": false,
+  "pretrained_encoder_trainable": true,
+  "pretrained_encoder_frozen": false,
+  "initialization": {
+    "type": "pretrained_vq_encoder",
+    "checkpoint": {
+      "path": "/personal_fast_storage/VLA-PCRV1/data/pretrained/codec.pt",
+      "size_bytes": 8479721,
+      "mtime_ns": 1789795933290353248
+    },
+    "model_weights_loaded": true,
+    "encoder_metadata": {
+      "schema": "symm_world_codec_v2",
+      "numeric_contract": "registered_ROI32_shared_training_DCE0_normalization",
+      "architecture": {
+        "image_channels": 1,
+        "hidden_channels": 16,
+        "embedding_dim": 8,
+        "downsample_factor": 4,
+        "bottleneck_blocks": 1,
+        "num_groups": 32
+      },
+      "loaded_parameter_tensors": 34
+    }
+  },
+  "training_unit": "epochs",
+  "stop_reason": "early_stopping",
+  "completed_epochs": 63,
+  "max_epochs": 200,
+  "batches_per_epoch": 41,
+  "early_stopping_patience": 50,
+  "early_stopping_min_delta": 0.0,
+  "bad_epochs": 50,
+  "landmarks": "t0_t2",
+  "selection_protocol": "patient_equal_prefix_f1",
+  "selection_split": "val",
+  "independent_test": false,
+  "best_validation_nll": 0.6353541253016562,
+  "best_selection_score": 0.535575679172057,
+  "best_validation_f1": 0.535575679172057,
+  "selection_metric": "f1",
+  "best_epoch": 13,
+  "best_step": 533,
+  "selection_mode": "max",
+  "f1_threshold": 0.5,
+  "prediction_training": "hybrid",
+  "last_checkpoint": "/projects/xts0030/public/cxx/medium976_t0_t2_no_tf_add4seed_30_43_809_2026_v1/runs/direct_no_jepa_seed2026_fold2/last.pt",
+  "best_checkpoint": "/projects/xts0030/public/cxx/medium976_t0_t2_no_tf_add4seed_30_43_809_2026_v1/runs/direct_no_jepa_seed2026_fold2/best.pt",
+  "synthetic": false
+}
