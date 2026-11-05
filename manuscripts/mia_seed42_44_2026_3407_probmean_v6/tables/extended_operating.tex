@@ -1,0 +1,26 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Operating characteristics at threshold 0.5. Entries average the four seed-specific fivefold probability-ensemble metrics; Macro first averages T0--T2 within each seed. The same 175 patients appear in every evaluation.}
+\label{tab:extended_operating}
+\begin{tabular}{llrrrrrr}
+\toprule
+Model & Landmark & Sens. & Spec. & PPV & NPV & BA & MCC \\
+\midrule
+NoJEPA & T0 & 0.607 & 0.706 & 0.493 & 0.793 & 0.657 & 0.299 \\
+NoJEPA & T1 & 0.621 & 0.704 & 0.497 & 0.798 & 0.662 & 0.309 \\
+NoJEPA & T2 & 0.647 & 0.670 & 0.483 & 0.803 & 0.659 & 0.301 \\
+NoJEPA & Macro & 0.625 & 0.693 & 0.491 & 0.798 & 0.659 & 0.303 \\
+\midrule
+DirectReadout & T0 & 0.598 & 0.729 & 0.511 & 0.795 & 0.664 & 0.317 \\
+DirectReadout & T1 & 0.607 & 0.721 & 0.507 & 0.797 & 0.664 & 0.316 \\
+DirectReadout & T2 & 0.652 & 0.672 & 0.485 & 0.804 & 0.662 & 0.306 \\
+DirectReadout & Macro & 0.619 & 0.707 & 0.501 & 0.799 & 0.663 & 0.313 \\
+\midrule
+ForecastAttention & T0 & 0.652 & 0.685 & 0.493 & 0.808 & 0.668 & 0.318 \\
+ForecastAttention & T1 & 0.665 & 0.658 & 0.481 & 0.808 & 0.661 & 0.305 \\
+ForecastAttention & T2 & 0.683 & 0.649 & 0.481 & 0.815 & 0.666 & 0.313 \\
+ForecastAttention & Macro & 0.667 & 0.664 & 0.485 & 0.810 & 0.665 & 0.312 \\
+\bottomrule
+\end{tabular}
+\end{table*}

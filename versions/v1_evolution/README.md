@@ -4,6 +4,8 @@
 
 输入是截至当前阶段真实可用的 MRI、4 项临床变量和治疗 Arm；输出是最终 pCR 概率和可选未来隐状态。正式实验关闭 MRI flow，**最优方案不生成未来 MRI 图像**。完整张量、格式、mask 和命令见 [输入输出说明](docs/INPUT_OUTPUT_ZH.md)。
 
+新增可选的[变化条件残差 attention 读出](docs/CHANGE_RESIDUAL_ATTENTION_ZH.md)：结合当前状态、预测变化和 pCR-query 学习空间权重，并与 mean 混合。此分支尚无训练效果结论。
+
 ## 历史最优方案
 
 每次训练按“患者内平均合法观察前缀 NLL，再跨患者平均”选择 best。下表为种子 17 / 43 的均值，不是两模型集成。

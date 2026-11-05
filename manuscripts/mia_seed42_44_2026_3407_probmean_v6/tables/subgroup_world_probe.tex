@@ -1,0 +1,15 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Archived epoch 20 fixed-training-probe diagnostics for seeds 42, 44, 2026, and 3407. Each entry is the mean $\pm$ sample SD of four seed-specific five-fold mean skills, distinct from probability ensembling for pCR. Skill is $1-\mathrm{L1}_{forecast}/\mathrm{L1}_{copy}$ within each snapshot\textquotesingle s EMA coordinates; positive is better than holding the landmark state constant. Forecast targets require a continuous actually observed visit chain. These are training-probe summaries, not best-checkpoint holdout forecast evaluations. NoJEPA has no trained-world diagnostic.}
+\label{tab:worldprobe}
+\begin{tabular}{lrrr}
+\toprule
+Model & Horizon 1 skill & Horizon 2 skill & Horizon 3 skill \\
+\midrule
+NoJEPA & -- & -- & -- \\
+DirectReadout & +0.009 $\pm$ 0.018 & +0.052 $\pm$ 0.015 & +0.159 $\pm$ 0.073 \\
+ForecastAttention & -0.051 $\pm$ 0.020 & -0.052 $\pm$ 0.036 & +0.012 $\pm$ 0.018 \\
+\bottomrule
+\end{tabular}
+\end{table*}

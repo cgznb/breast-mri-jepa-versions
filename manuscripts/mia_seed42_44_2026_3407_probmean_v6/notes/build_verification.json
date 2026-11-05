@@ -1,0 +1,373 @@
+{
+  "verified_at_utc": "2026-11-04T09:55:55.473873+00:00",
+  "training_seeds": [
+    42,
+    44,
+    2026,
+    3407
+  ],
+  "folds_per_seed": 5,
+  "reporting_estimand": "Within each training seed, average the five fold probabilities per patient and landmark before computing metrics; report equal mean and sample SD ddof1 over four seed-specific metrics. Macro is equal T0/T1/T2 metric mean within seed. No cross-seed prediction-probability ensemble.",
+  "patients": 175,
+  "positives": 56,
+  "test_split": "fixed internal downstream holdout",
+  "independent_test": false,
+  "pdf": {
+    "path": "main.pdf",
+    "pages": 28,
+    "bytes": 925270,
+    "sha256": "1f3ab8be79a8ed1d36dd3eb2f690fe08f4c9cdbcde81efef78e803ffd97ef4ba"
+  },
+  "source_audit": {
+    "receipt": "notes/source_audit.json",
+    "sha256": "6e008615aa964a0455c7d75c1e711d76f37e3040d752999492e6a5e48df9bb69",
+    "source_runs": 80,
+    "registered_reports_verified": 240
+  },
+  "numerical_verification": {
+    "receipt": "notes/numerical_verification.json",
+    "sha256": "52feeed280874489788cbf1f4196c5c303299ef23c1687b6c88828555a5024ed",
+    "all_checks_passed": true
+  },
+  "subgroup_and_mechanism_verification": {
+    "receipt": "notes/subgroup_and_forecast.md",
+    "sha256": "7e1d826aa10f4f1060c4b883345e98bf04dc22b1642c07d6caa9b7598858c56f",
+    "subgroup_values_checked": 5616,
+    "mechanism_summary_values_checked": 192,
+    "max_absolute_error": 4.440892098500626e-16
+  },
+  "typesetting_warning_counts": {
+    "undefined_references": 0,
+    "undefined_citations": 0,
+    "missing_characters": 0,
+    "overfull_boxes": 0,
+    "multiply_defined_labels": 0,
+    "float_too_large": 0
+  },
+  "visual_checks": {
+    "all_eight_figure_contact_sheet": "passed",
+    "page_11_main_results_table": "passed",
+    "page_13_principal_significance_table": "passed",
+    "page_20_direct_individual_seed_table": "passed",
+    "page_21_forecast_individual_seed_table": "passed"
+  },
+  "scientific_review": {
+    "status": "passed",
+    "reviewer": "independent subgroup-figure agent",
+    "scope": "Four-seed aggregation, main and secondary significance, unfavorable findings, subgroup and mechanism boundaries, threshold policy, table references"
+  },
+  "significance": {
+    "family_holm": {
+      "principal_macro_9": {
+        "tests": 9,
+        "significant_at_0.05": 1
+      },
+      "secondary_81": {
+        "tests": 81,
+        "significant_at_0.05": 1
+      }
+    },
+    "all_90_holm": {
+      "tests": 90,
+      "significant_at_0.05": 1
+    },
+    "monte_carlo_stability_receipt": "data/monte_carlo_stability.json",
+    "monte_carlo_check_replaces_uniform_90_test_table": false
+  },
+  "privacy_export_audit": {
+    "status": "passed",
+    "independent_agent_text_files_checked_before_build_receipt_and_manifest": 140,
+    "holdout_identifiers_checked": 175,
+    "patient_identifier_matches": 0,
+    "csv_files_checked": 23,
+    "csv_rows_checked": 16444,
+    "csv_seed_values": [
+      "2026",
+      "3407",
+      "42",
+      "42,44,2026,3407",
+      "44"
+    ],
+    "forbidden_patient_csv_fields_found": 0,
+    "old_three_seed_export_files_found": 0,
+    "patient_level_predictions_exported": false,
+    "anonymous_development_mri_renderings_retained": true,
+    "final_export_text_files_checked": 144,
+    "final_export_text_identifier_matches": 0,
+    "working_pdf_text_identifier_matches": 0
+  },
+  "independent_package_build": {
+    "status": "passed",
+    "built_at_utc": "2026-11-04T09:55:54.663617+00:00",
+    "method": "Extract packaged sources into new temporary directory; bash build.sh using bundled inputs",
+    "pdf_pages": 28,
+    "pdf_sha256": "dd479823d8e2165d0252c32f72f44e7874a214d7ab6309ef5e2b2231dac1ec74",
+    "pdftotext_layout_byte_identical_to_working_pdf": true,
+    "extracted_pdf_text_sha256": "8b6f343db5d3a403f0acd1b9773f7779adcf91a69f1fa7921d8e0557534ba2dc",
+    "typesetting_inputs_compared": 63,
+    "typesetting_input_sha256_all_match": true,
+    "typesetting_inputs": [
+      {
+        "path": "build.sh",
+        "sha256": "e545ae4bdeba648cd3af49684de96c8a95a957870fee897a15ca3bcefd3f28fd"
+      },
+      {
+        "path": "elsarticle-harv.bst",
+        "sha256": "f1f4e7503b7e9e225b0b4c7be370a82a34f4f9b0b7fe99c32bb5c7aa91b8da34"
+      },
+      {
+        "path": "elsarticle.cls",
+        "sha256": "01addb492c5d075b320636ac3a30d8a5762fa937220dea07a5e107042d25384d"
+      },
+      {
+        "path": "figures/calibration_utility.pdf",
+        "sha256": "d26f905295db6479b9ba6c10d1f480dcab8b1af084e62d695d70c453c4ebbe1d"
+      },
+      {
+        "path": "figures/calibration_utility.png",
+        "sha256": "b9978009bbc9bb6e90850c9cc6cf9f50f7e6abfa612a03085da3490bc9530fd5"
+      },
+      {
+        "path": "figures/discrimination.pdf",
+        "sha256": "f53e55e028f769851f68823caeef384cb07c52b6f60b9074bbdc3c1eb8f7237e"
+      },
+      {
+        "path": "figures/discrimination.png",
+        "sha256": "2cb2fd919f39969adfaa5133f1f679b2f8a7c16cce80497d6b67efe29cba7f0f"
+      },
+      {
+        "path": "figures/forecast_mechanism.pdf",
+        "sha256": "7965474d6cba42b51510f503d97b9bee32e0f594ea0531f46d5f6ee4b31839b1"
+      },
+      {
+        "path": "figures/forecast_mechanism.png",
+        "sha256": "7167c444604a69af864b0bcdf2aa9d300037b8a389b1712aa22fa5546d4269a7"
+      },
+      {
+        "path": "figures/framework.pdf",
+        "sha256": "f56ae852b487a5bcf627e2f58479bd9be635f85a50719a2bff9e9dc3b95f0c37"
+      },
+      {
+        "path": "figures/framework.png",
+        "sha256": "75ce610292fc93f4b6fb00dbd9bc2acb8744c5b814c3ac85f5c6645df268ed9b"
+      },
+      {
+        "path": "figures/framework.tex",
+        "sha256": "e8c90f07da03e9ce9f939f38245ac37ff8e162173cc2af016178e62f25d45dee"
+      },
+      {
+        "path": "figures/landmark_performance.pdf",
+        "sha256": "19c69fc542a29c5556c7843445b64545b86d7aa880b11e87c2e90b6b3f1d9793"
+      },
+      {
+        "path": "figures/landmark_performance.png",
+        "sha256": "addd5fcec18ead445feea1e5c188c1481ed737e676aae56c88b5ef0d0866d596"
+      },
+      {
+        "path": "figures/outcome_score_changes.pdf",
+        "sha256": "34cb58e8d5b150ae0223c322d53c47d063f548ad2704d0cac1cd64868a44c049"
+      },
+      {
+        "path": "figures/outcome_score_changes.png",
+        "sha256": "2c685a6f0e414f3743b7009ec0ef2151cb3b9d46273af2b41312b40030beec92"
+      },
+      {
+        "path": "figures/paired_comparisons.pdf",
+        "sha256": "8315c80c4291a00496b0bc76eb4f4d3594b3f8b884e490257818519e2fc3accb"
+      },
+      {
+        "path": "figures/paired_comparisons.png",
+        "sha256": "67e5c4e15a58399e2cf148f590f3d7e1b5d72d6eb60a1578c23eeb32c01f81bb"
+      },
+      {
+        "path": "figures/subgroup_operating.pdf",
+        "sha256": "50473b9c765d5bd1ba6c185cc18109a376020872aafa20a834b322fe4869c8dd"
+      },
+      {
+        "path": "figures/subgroup_operating.png",
+        "sha256": "9463497588701b36de70044524cf5e29744257e36873c586abee0085ef7cf03b"
+      },
+      {
+        "path": "main.tex",
+        "sha256": "4b4ed85b200f5a81554868fe4bc7aa80886dea5daa25be46eaaa82d056f60b5f"
+      },
+      {
+        "path": "references.bib",
+        "sha256": "c94c14d349a75f41276a9b5733b6c5bdd4f7d0fd45fd712b518c16f39ae630c1"
+      },
+      {
+        "path": "sections/conclusion.tex",
+        "sha256": "1e566708e589fccd9fa9262a72cbf530e38e4d088dccf218f9e600a266484162"
+      },
+      {
+        "path": "sections/dataset.tex",
+        "sha256": "3a7a8cc1fba0aa362ceed803d6b6a92c0a4c6bceba1d9d28ad68e3cfd353fff7"
+      },
+      {
+        "path": "sections/discussion.tex",
+        "sha256": "7e20e02166cd4db51b6adc2c95f85095eb037af5ffa92d241091c07ea0d8e6d8"
+      },
+      {
+        "path": "sections/experiments.tex",
+        "sha256": "6c78950706ac5c8ee2d109ccbe9dfab19fbebec5f9f0fe5ad0e3025969b0897c"
+      },
+      {
+        "path": "sections/introduction.tex",
+        "sha256": "a0f93e0860820febedda797f00edc09d744c79de55f204532e634b3197fd634b"
+      },
+      {
+        "path": "sections/methods.tex",
+        "sha256": "11b83fb7033ed61c3dc4145038a7646ad02af6c700c4e45800e0d835776087e8"
+      },
+      {
+        "path": "sections/related_work.tex",
+        "sha256": "76cabadce3b506d10c00e32fd0f2501ec4bb683ed56454a6cc5ebe4ae9440bdf"
+      },
+      {
+        "path": "sections/results.tex",
+        "sha256": "33310b6a1f99d06d07a246d76e709c9590545e86fc7a4163b188dc7788917a05"
+      },
+      {
+        "path": "sections/supplement.tex",
+        "sha256": "7923114a9bc3621b29bc99f1c67476a1ebb0b062b5080a87220861809ecac194"
+      },
+      {
+        "path": "tables/bootstrap.tex",
+        "sha256": "0520fa8b0b287d4b72f7b914d3a5bbc526f76d573af4b5cebfa3d7e2bd594dfd"
+      },
+      {
+        "path": "tables/calibration.tex",
+        "sha256": "2ac9a3e66a993a7dc44d6599abfa99ac7374cd2dacc99c7de9abe0121ac581f8"
+      },
+      {
+        "path": "tables/extended_macro_metrics.tex",
+        "sha256": "1c076ad8ba91a64b278b98193234f352a000928d2db737587c58632f117da481"
+      },
+      {
+        "path": "tables/extended_operating.tex",
+        "sha256": "6cb21389367209a67387cf54ce405e9f06f834c643a06b5923d9598b4cd4e81e"
+      },
+      {
+        "path": "tables/extended_threshold.tex",
+        "sha256": "2b3974869564e7c8111fc241f1a79553a74b3a2b86672868e24906ebd23f2665"
+      },
+      {
+        "path": "tables/main_results.tex",
+        "sha256": "f5e7827b8fbc7e270d355e191533650d63b4722330135d97f59afe06f306c3e0"
+      },
+      {
+        "path": "tables/pooling.tex",
+        "sha256": "0d9b81a95f18251e69a8203bf3b9633f763228b872ecf2fc5c35ff80bb045a02"
+      },
+      {
+        "path": "tables/seed_results.tex",
+        "sha256": "e9124ce4b67fa736093c17f0f631ff15946519e0b0eba65d6f975a1d912d9026"
+      },
+      {
+        "path": "tables/seed_results_forecast.tex",
+        "sha256": "98f42a7dcb7ba90bb930cf4eae4beb2416b1d860ddc6e97a0ead49f7985e0254"
+      },
+      {
+        "path": "tables/significance_extended.tex",
+        "sha256": "c8add73ea0d469edf89ee3df02acfe919a6ed4d1fc10788e31673158e2d9fe15"
+      },
+      {
+        "path": "tables/significance_landmarks.tex",
+        "sha256": "ef9b85258cd143286174b45fa509474e20eb837a5df66afc06778f5482bd9c99"
+      },
+      {
+        "path": "tables/significance_longitudinal.tex",
+        "sha256": "a91ba84e9d073ad4444a9d4e65bb38623cb0b0a22783db5c7b7c24b5bf8d427e"
+      },
+      {
+        "path": "tables/significance_pooling.tex",
+        "sha256": "4192ef79f075de47e9548820e9518d603827611150a84fd211623703048915fb"
+      },
+      {
+        "path": "tables/subgroup_results.tex",
+        "sha256": "8f85793344b5eb4616ee579f4bdf2e4a44f93f86d2e799af5dcfc78413a0b9be"
+      },
+      {
+        "path": "tables/subgroup_world_probe.tex",
+        "sha256": "08eb5c130918252e606398e1e919937c5802eddf9916f46260512d54a6d1cf51"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/1pseperateaug.pdf",
+        "sha256": "61e73d5472464c1b7eef57699e9e0866bd25ca95ee0ca7fc5d1774ecfd8f4918"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/1psingleauthorgroup.pdf",
+        "sha256": "105450d45d83e5169c8b49c8feb06a06b6c5827328e01645a7a675d900fac770"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elsdoc.pdf",
+        "sha256": "9019ceb0c6ae7e082192b5f6ebcd548bd819d9a772b1ebec8ab34012c4e8172c"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elsdoc.tex",
+        "sha256": "5f397d4418159fa2e7159f1422ab2566a268071b54c20b58a067f95ab5057c7f"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-1p.pdf",
+        "sha256": "30365ffa871fb4ff7d2e84bc2e5f41ab104ed469b57b9676ecb4ee073130a91f"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-1pdoubleblind.pdf",
+        "sha256": "02359c8daeeb0b1f5d18d26074dffd6b658a776a10df37d5b9b4c5c71ccfb1e9"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-3p.pdf",
+        "sha256": "15867ffd741871fee443c97ac695f7808523af5f420453f46db3e104f2d9bfeb"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-3pd.pdf",
+        "sha256": "6ebd18300706ba4c9c6aa8195dad1a7d9d2e37a8e51cbb5ca861b87e69566b3e"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/elstest-5p.pdf",
+        "sha256": "47641df5dd96df7b8f036f379df2a5ae3138c64be88335e8de802ea2bd1fe572"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/doc/jfigs.pdf",
+        "sha256": "1c9cbfe1bed0b5f00e003b5768eb58e064561b62e2ab61d6fd652e904095ed6a"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-harv.bst",
+        "sha256": "f1f4e7503b7e9e225b0b4c7be370a82a34f4f9b0b7fe99c32bb5c7aa91b8da34"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-num-names.bst",
+        "sha256": "e7ce499923c323d537c6d2b3860d747f261261921e3735a64b8f8234e4961cdb"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-num.bst",
+        "sha256": "0db2e53b2378cbe5815e436c1afe9dcac67123a32406fa8f11fad7978808e202"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-template-harv.tex",
+        "sha256": "f38d90a86c045a026c29e0fc08dc630447047475db9f43157feb84afab17b5be"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-template-num-names.tex",
+        "sha256": "59c721067d692a5f534bade43f7b7f64fe28e64df4246012c4d9bf1b7067e504"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle-template-num.tex",
+        "sha256": "cbd7247fd453f458056f59070c84b275d53b8d97cb05140bd610b5efbd0d47a8"
+      },
+      {
+        "path": "vendor/elsarticle/elsarticle/elsarticle.cls",
+        "sha256": "01addb492c5d075b320636ac3a30d8a5762fa937220dea07a5e107042d25384d"
+      }
+    ],
+    "typesetting_warning_counts": {
+      "undefined_references": 0,
+      "undefined_citations": 0,
+      "missing_characters": 0,
+      "overfull_boxes": 0,
+      "multiply_defined_labels": 0,
+      "float_too_large": 0
+    }
+  },
+  "limitations": "Manuscript draft; author, ethics, pCR definition and upstream provenance items remain marked TO COMPLETE. Same internal holdout across seeds; retrospective selection and conditional fixed-model inference remain explicit."
+}

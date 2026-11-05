@@ -1,0 +1,21 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Exploratory principal Macro comparisons. All metrics use approximate, null-centered paired patient-bootstrap tests with 99,999 shared resamples. Within each draw, metrics are computed for each seed then equally averaged. All $p$ values are two-sided. Holm$_9$ adjusts the nine entries here; Holm$_{90}$ is the sensitivity analysis over all principal and secondary tests. Sig. refers to Holm$_9$. Direct and Attention abbreviate DirectReadout and ForecastAttention. $^{*}p_{\mathrm{Holm}}<0.05$, $^{**}p_{\mathrm{Holm}}<0.01$, $^{***}p_{\mathrm{Holm}}<0.001$; ns, not significant after the stated correction. Intervals are unadjusted 95\% patient-bootstrap intervals (2,000 shared draws) and need not agree with adjusted test decisions. All analyses condition on the fixed, retrospectively selected seed42/44/2026/3407 ensembles; seeds are not resampled.}
+\label{tab:bootstrap}
+\begin{tabular}{llrrrrc}
+\toprule
+Comparison & Metric & Difference [95\% CI] & $p$ & $p_{\mathrm{Holm},9}$ & $p_{\mathrm{Holm},90}$ & Sig. \\
+\midrule
+Direct -- NoJEPA & AUROC & +0.0092 [-0.0028, +0.0216] & 0.1273 & 0.7638 & 1.0000 & ns \\
+Direct -- NoJEPA & AP & +0.0103 [-0.0046, +0.0255] & 0.1721 & 0.8603 & 1.0000 & ns \\
+Direct -- NoJEPA & F1 & +0.0033 [-0.0135, +0.0184] & 0.6713 & 1.0000 & 1.0000 & ns \\
+Attention -- NoJEPA & AUROC & +0.0179 [+0.0071, +0.0297] & 0.0031 & 0.0275 & 0.2662 & * \\
+Attention -- NoJEPA & AP & +0.0250 [+0.0065, +0.0458] & 0.0125 & 0.1003 & 1.0000 & ns \\
+Attention -- NoJEPA & F1 & +0.0112 [-0.0096, +0.0355] & 0.3223 & 0.9668 & 1.0000 & ns \\
+Attention -- Direct & AUROC & +0.0087 [-0.0055, +0.0230] & 0.2190 & 0.8759 & 1.0000 & ns \\
+Attention -- Direct & AP & +0.0147 [-0.0014, +0.0332] & 0.0951 & 0.6654 & 1.0000 & ns \\
+Attention -- Direct & F1 & +0.0080 [-0.0165, +0.0373] & 0.5598 & 1.0000 & 1.0000 & ns \\
+\bottomrule
+\end{tabular}
+\end{table*}

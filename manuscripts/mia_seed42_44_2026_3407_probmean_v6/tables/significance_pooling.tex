@@ -1,0 +1,24 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Exploratory pooling comparisons: ForecastAttention minus ForecastMean. All metrics use approximate, null-centered paired patient-bootstrap tests (99,999 shared draws across seeds, models, and landmarks). All $p$ values are two-sided. $p_{\mathrm{Holm}}$ adjusts jointly over the 81 secondary tests in Tables~\ref{tab:significance_landmarks}--\ref{tab:significance_longitudinal}. Direct and Attention abbreviate DirectReadout and ForecastAttention. $^{*}p_{\mathrm{Holm}}<0.05$, $^{**}p_{\mathrm{Holm}}<0.01$, $^{***}p_{\mathrm{Holm}}<0.001$; ns, not significant after the stated correction. Intervals are unadjusted 95\% patient-bootstrap intervals (2,000 shared draws) and need not agree with adjusted test decisions. All analyses condition on the fixed, retrospectively selected seed42/44/2026/3407 ensembles; seeds are not resampled.}
+\label{tab:significance_pooling}
+\begin{tabular}{llrrrc}
+\toprule
+Landmark & Metric & Difference [95\% CI] & $p$ & $p_{\mathrm{Holm}}$ & Sig. \\
+\midrule
+T0 & AUROC & +0.0007 [-0.0102, +0.0115] & 0.9013 & 1.0000 & ns \\
+T0 & AP & +0.0102 [-0.0074, +0.0279] & 0.2418 & 1.0000 & ns \\
+T0 & F1 & -0.0009 [-0.0244, +0.0218] & 0.9385 & 1.0000 & ns \\
+T1 & AUROC & +0.0002 [-0.0091, +0.0099] & 0.9757 & 1.0000 & ns \\
+T1 & AP & +0.0046 [-0.0104, +0.0205] & 0.5589 & 1.0000 & ns \\
+T1 & F1 & -0.0193 [-0.0394, -0.0006] & 0.0457 & 1.0000 & ns \\
+T2 & AUROC & +0.0030 [-0.0074, +0.0139] & 0.5712 & 1.0000 & ns \\
+T2 & AP & +0.0027 [-0.0134, +0.0188] & 0.7188 & 1.0000 & ns \\
+T2 & F1 & -0.0078 [-0.0262, +0.0121] & 0.4088 & 1.0000 & ns \\
+Macro & AUROC & +0.0013 [-0.0085, +0.0114] & 0.7957 & 1.0000 & ns \\
+Macro & AP & +0.0059 [-0.0088, +0.0209] & 0.4206 & 1.0000 & ns \\
+Macro & F1 & -0.0093 [-0.0271, +0.0075] & 0.2802 & 1.0000 & ns \\
+\bottomrule
+\end{tabular}
+\end{table*}

@@ -1,0 +1,27 @@
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\caption{All 14 macro metrics for the principal variants: point estimate [95\% patient-bootstrap percentile interval]. Within each of seeds 44,2026,3407, five fold probabilities are averaged per patient, metrics are computed and averaged over T0--T2, then seed metrics are equally averaged. Threshold-dependent metrics use 0.5. Identical patient resamples preserve pairing across models and landmarks. Entries are marginal model intervals; paired differences are reported separately. Intervals condition on the fitted ensembles and exclude retraining and retrospective selection uncertainty. Downward arrows identify metrics for which lower is better.}
+\label{tab:extended_macro}
+\begin{tabular}{lccc}
+\toprule
+Metric & NoJEPA & DirectReadout & ForecastAttention \\
+\midrule
+AUROC & 0.7293 [0.6449, 0.8044] & 0.7339 [0.6502, 0.8071] & 0.7458 [0.6623, 0.8161] \\
+AP & 0.5914 [0.4677, 0.7076] & 0.6046 [0.4836, 0.7180] & 0.6188 [0.4955, 0.7321] \\
+F1 & 0.5546 [0.4512, 0.6481] & 0.5533 [0.4514, 0.6451] & 0.5663 [0.4656, 0.6526] \\
+Accuracy & 0.6667 [0.5981, 0.7314] & 0.6717 [0.6051, 0.7340] & 0.6603 [0.5930, 0.7232] \\
+Sensitivity & 0.6488 [0.5293, 0.7664] & 0.6369 [0.5211, 0.7565] & 0.6925 [0.5717, 0.8081] \\
+Specificity & 0.6751 [0.5891, 0.7527] & 0.6881 [0.6086, 0.7633] & 0.6452 [0.5629, 0.7244] \\
+PPV & 0.4854 [0.3757, 0.5933] & 0.4904 [0.3805, 0.6012] & 0.4808 [0.3764, 0.5850] \\
+NPV & 0.8037 [0.7229, 0.8788] & 0.8018 [0.7215, 0.8766] & 0.8172 [0.7368, 0.8906] \\
+Balanced accuracy & 0.6619 [0.5875, 0.7328] & 0.6625 [0.5900, 0.7319] & 0.6688 [0.5979, 0.7367] \\
+MCC & 0.3060 [0.1680, 0.4387] & 0.3082 [0.1713, 0.4414] & 0.3172 [0.1826, 0.4445] \\
+Youden index & 0.3239 [0.1749, 0.4655] & 0.3250 [0.1801, 0.4638] & 0.3377 [0.1958, 0.4733] \\
+NLL $\downarrow$ & 0.5939 [0.5411, 0.6506] & 0.5883 [0.5311, 0.6525] & 0.5959 [0.5485, 0.6469] \\
+Brier score $\downarrow$ & 0.2050 [0.1815, 0.2302] & 0.2032 [0.1773, 0.2310] & 0.2057 [0.1844, 0.2289] \\
+ECE $\downarrow$ & 0.1420 [0.1062, 0.2073] & 0.1403 [0.1098, 0.2031] & 0.1579 [0.1131, 0.2207] \\
+\bottomrule
+\end{tabular}
+\end{table*}

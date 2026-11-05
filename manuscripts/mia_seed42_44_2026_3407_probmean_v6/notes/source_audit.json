@@ -1,0 +1,122 @@
+{
+  "verified_at_utc": "2026-11-04T09:45:27.506737+00:00",
+  "read_only_source_audit": true,
+  "training_started": false,
+  "checkpoint_payloads_read": false,
+  "seeds": [
+    42,
+    44,
+    2026,
+    3407
+  ],
+  "models": [
+    "direct_no_jepa",
+    "direct_readout",
+    "forecast_attention",
+    "forecast_mean"
+  ],
+  "suite_by_seed": {
+    "42": "/projects/xts0030/public/cxx/medium976_t0_t2_no_tf_add3seed_17_29_42_v1",
+    "44": "/projects/xts0030/public/cxx/medium976_t0_t2_no_tf_cv5_multiseed_v1",
+    "2026": "/projects/xts0030/public/cxx/medium976_t0_t2_no_tf_add4seed_30_43_809_2026_v1",
+    "3407": "/projects/xts0030/public/cxx/medium976_t0_t2_no_tf_add5seed_7_71_123_3407_2027_v1"
+  },
+  "suite_matrix_status": {
+    "44": {
+      "status": "completed",
+      "training_completed": 60,
+      "evaluation_completed": 60,
+      "suite_jobs": 60
+    },
+    "42": {
+      "status": "completed",
+      "training_completed": 60,
+      "evaluation_completed": 60,
+      "suite_jobs": 60
+    },
+    "2026": {
+      "status": "completed",
+      "training_completed": 80,
+      "evaluation_completed": 80,
+      "suite_jobs": 80
+    },
+    "3407": {
+      "status": "completed",
+      "training_completed": 100,
+      "evaluation_completed": 100,
+      "suite_jobs": 100
+    }
+  },
+  "selected_runs": 80,
+  "selected_runs_per_seed": 20,
+  "completed_receipts_verified": 80,
+  "selected_matrix_jobs_completed": 80,
+  "worker_receipts_completed": 80,
+  "registered_reports_verified_by_bytes_and_mtime_ns": 240,
+  "manifest_identity_checks": 80,
+  "training_done_identity_checks": 80,
+  "run_identity_file_checks": 80,
+  "input_config_identity_checks": 80,
+  "codec_asset_identity_checks": 80,
+  "runtime_identity_checks": 7360,
+  "runtime_files_per_run": 92,
+  "unique_runtime_files_hashed": 368,
+  "runtime_sha256_equal_by_relative_path_across_suites": true,
+  "matched_model_fold_config_comparisons_against_seed44": 60,
+  "config_differing_fields": [
+    "seed"
+  ],
+  "same_test_patient_and_label_vectors": 240,
+  "patients_per_landmark": 175,
+  "positive_outcomes_per_landmark": 56,
+  "cohort_patients": 976,
+  "test_landmarks": [
+    "T0",
+    "T1",
+    "T2"
+  ],
+  "test_split": "internal downstream holdout",
+  "independent_test": false,
+  "manifest_test_membership_and_pcr_labels_verified": true,
+  "validation_manifest_membership_and_pcr_labels_verified": true,
+  "validation_vector_checks": 240,
+  "codec_asset": {
+    "path": "/personal_fast_storage/VLA-PCRV1/data/pretrained/codec.pt",
+    "bytes": 8479721,
+    "mtime_ns": 1789795933290353248
+  },
+  "shared_manifest_sha256_by_fold": {
+    "1": "4330676fff6015a9abec7b4097e8d9a380479042183feda9790162d5447353e8",
+    "2": "cd1d6498ee21a5ee71a0ad51ca21e9ed0947ecf62015025d8030051189bcc0ed",
+    "3": "fa42d84839c38137b95d9b22fa64d8cb7ecd795929bc6a09b145058ca88e40c7",
+    "4": "556f6e0d70d72a42a9689d60e34035afa09d45e4cfd5df66cd87a5feb32381cc",
+    "5": "076d64d43309af7e9a4df90047ea53efe524291bd4dd3c87e32c3507de0143f5"
+  },
+  "shared_manifest_root": "/personal_fast_storage/VLA-PCRV1/data/registered_roi32_medium976_v1/cv_manifests",
+  "selected_evaluation_completed_at_beijing": {
+    "44": {
+      "first": "2026-10-29T22:32:13.316655+08:00",
+      "last": "2026-10-29T22:37:01.268125+08:00"
+    },
+    "42": {
+      "first": "2026-10-31T00:55:03.102254+08:00",
+      "last": "2026-10-31T00:59:19.167879+08:00"
+    },
+    "2026": {
+      "first": "2026-11-03T12:19:22.609606+08:00",
+      "last": "2026-11-03T12:23:02.692000+08:00"
+    },
+    "3407": {
+      "first": "2026-11-04T16:27:49.194987+08:00",
+      "last": "2026-11-04T16:32:12.889643+08:00"
+    }
+  },
+  "exported_patient_identifiers": false,
+  "exported_patient_predictions": false,
+  "scope_limitations": [
+    "Runtime comparison covers the 92 recorded frozen model/runtime files; scheduler files may differ.",
+    "Reports, manifests, configurations, runtime and source identities were checked; checkpoint payloads were not read.",
+    "No raw MRI geometry, pretraining patient overlap, external independence, or anatomical registration was newly audited.",
+    "Seed3407 was added retrospectively after inspection of previous seed results; this source audit does not remove seed-selection uncertainty."
+  ]
+}

@@ -64,6 +64,8 @@ class RawJEPAConfig:
     pcr_readout: str = "direct"
     spatial_readout: str = "mean"
     pcr_delta_reference: str = "current"
+    pcr_attention_dim: int = 32
+    pcr_attention_mix_init: float = .1
     world_residual: bool = False
     history_delta: bool = False
     lesion_world_weighting: bool = False
@@ -135,8 +137,20 @@ class RawJEPAConfig:
             raise ValueError("Disabled world model requires direct pCR readout and enable_flow=false")
         if self.pcr_readout == "zero_state" and self.enable_world_model:
             raise ValueError("zero_state pCR readout requires enable_world_model=false")
-        if not isinstance(self.spatial_readout, str) or self.spatial_readout not in {"mean", "attention"}:
-            raise ValueError("spatial_readout must be mean or attention")
+        if (not isinstance(self.spatial_readout, str) or
+                self.spatial_readout not in {"mean", "attention", "change_residual_attention"}):
+            raise ValueError("spatial_readout must be mean, attention or change_residual_attention")
+        if (isinstance(self.pcr_attention_dim, bool) or not isinstance(self.pcr_attention_dim, int)
+                or self.pcr_attention_dim < 1):
+            raise ValueError("pcr_attention_dim must be a positive integer")
+        if (isinstance(self.pcr_attention_mix_init, bool)
+                or not isinstance(self.pcr_attention_mix_init, (int, float))
+                or not math.isfinite(self.pcr_attention_mix_init)
+                or not 0 < self.pcr_attention_mix_init < 1):
+            raise ValueError("pcr_attention_mix_init must be strictly between 0 and 1")
+        if (self.spatial_readout == "change_residual_attention"
+                and (not self.enable_world_model or self.pcr_readout in {"direct", "zero_state"})):
+            raise ValueError("change_residual_attention requires a state-based pCR readout")
         if (not isinstance(self.pcr_delta_reference, str) or
                 self.pcr_delta_reference not in {"current", "t0"}):
             raise ValueError("pcr_delta_reference must be current or t0")

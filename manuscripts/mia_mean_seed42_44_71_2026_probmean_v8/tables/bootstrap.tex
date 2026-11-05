@@ -1,0 +1,21 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Exploratory principal Macro comparisons. All metrics use approximate, null-centered paired patient-bootstrap tests with 99,999 shared resamples. Within each draw, metrics are computed for each seed then equally averaged. All $p$ values are two-sided. Holm$_9$ adjusts the nine entries here; Holm$_{78}$ is the sensitivity analysis over all 78 principal and secondary tests. Sig. refers to Holm$_9$. Direct and Mean abbreviate DirectReadout and ForecastMean. $^{*}p_{\mathrm{Holm}}<0.05$, $^{**}p_{\mathrm{Holm}}<0.01$, $^{***}p_{\mathrm{Holm}}<0.001$; ns, not significant after the stated correction. Intervals are unadjusted 95\% patient-bootstrap intervals (2,000 shared draws) and need not agree with adjusted test decisions. All analyses condition on the fixed, retrospectively selected seed42/44/71/2026 ensembles; seeds are not resampled.}
+\label{tab:bootstrap}
+\begin{tabular}{llrrrrc}
+\toprule
+Comparison & Metric & Difference [95\% CI] & $p$ & $p_{\mathrm{Holm},9}$ & $p_{\mathrm{Holm},78}$ & Sig. \\
+\midrule
+Direct -- NoJEPA & AUROC & +0.0096 [+0.0002, +0.0193] & 0.0468 & 0.2257 & 1.0000 & ns \\
+Direct -- NoJEPA & AP & +0.0067 [-0.0055, +0.0203] & 0.3092 & 0.6185 & 1.0000 & ns \\
+Direct -- NoJEPA & F1 & +0.0063 [-0.0098, +0.0216] & 0.4079 & 0.6185 & 1.0000 & ns \\
+Mean -- NoJEPA & AUROC & +0.0225 [+0.0106, +0.0347] & 0.0005 & 0.0045 & 0.0385 & ** \\
+Mean -- NoJEPA & AP & +0.0292 [+0.0078, +0.0508] & 0.0102 & 0.0816 & 0.7140 & ns \\
+Mean -- NoJEPA & F1 & +0.0377 [+0.0034, +0.0782] & 0.0451 & 0.2257 & 1.0000 & ns \\
+Mean -- Direct & AUROC & +0.0129 [+0.0021, +0.0236] & 0.0202 & 0.1370 & 1.0000 & ns \\
+Mean -- Direct & AP & +0.0225 [+0.0043, +0.0411] & 0.0196 & 0.1370 & 1.0000 & ns \\
+Mean -- Direct & F1 & +0.0314 [+0.0003, +0.0697] & 0.0730 & 0.2257 & 1.0000 & ns \\
+\bottomrule
+\end{tabular}
+\end{table*}

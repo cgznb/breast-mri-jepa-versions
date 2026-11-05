@@ -98,6 +98,31 @@ class TimeCausalWorldPredictor(nn.Module):
         return prediction.masked_fill(~active, 0)
 
 
+class ChangeConditionedSpatialScorer(nn.Module):
+    """Patient-conditioned scores with a learned mixture of mean and attention."""
+
+    def __init__(self, dim, hidden_dim, mix_init):
+        super().__init__()
+        self.current_norm = nn.LayerNorm(dim)
+        self.change_norm = nn.LayerNorm(dim)
+        self.query_norm = nn.LayerNorm(dim)
+        self.current_proj = nn.Linear(dim, hidden_dim, bias=False)
+        self.change_proj = nn.Linear(dim, hidden_dim, bias=False)
+        self.query_proj = nn.Linear(dim, hidden_dim, bias=False)
+        self.score = nn.Linear(hidden_dim, 1, bias=False)
+        nn.init.zeros_(self.score.weight)
+        # A nonzero mixture lets the zero-initialized scorer learn immediately.
+        self.mix_logit = nn.Parameter(torch.tensor(math.log(mix_init / (1 - mix_init))))
+
+    def forward(self, current, change, query):
+        # Query conditioning must precede the nonlinearity; adding one scalar
+        # query score to every position would cancel under spatial softmax.
+        hidden = (self.current_proj(self.current_norm(current))
+                  + self.change_proj(self.change_norm(change))
+                  + self.query_proj(self.query_norm(query))[:, None])
+        return self.score(hidden.tanh()).squeeze(-1)
+
+
 class RawVLAJEPA(nn.Module):
     """Source-only shared backbone with configurable state-based pCR readout."""
 
@@ -138,6 +163,10 @@ class RawVLAJEPA(nn.Module):
                 self.pcr_spatial_scorer = nn.Sequential(
                     nn.LayerNorm(cfg.dim), nn.Linear(cfg.dim, 1, bias=False))
                 nn.init.zeros_(self.pcr_spatial_scorer[-1].weight)
+        elif cfg.enable_world_model and cfg.spatial_readout == "change_residual_attention":
+            with torch.random.fork_rng(devices=[]):
+                self.pcr_spatial_scorer = ChangeConditionedSpatialScorer(
+                    cfg.dim, cfg.pcr_attention_dim, cfg.pcr_attention_mix_init)
 
     def train(self, mode=True):
         super().train(mode)
@@ -238,7 +267,7 @@ class RawVLAJEPA(nn.Module):
     def _pcr_state_readout(self, inp, pcr_features, terminal, current, baseline):
         """Shared TF/inference readout in the EMA teacher's spatial coordinates.
 
-        The terminal weights also pool the change, so both state branches
+        Shared spatial weights pool terminal and change, so both state branches
         describe the same spatial regions. Attention summarizes token readout;
         it does not establish anatomical localization after Transformer mixing.
         """
@@ -254,15 +283,24 @@ class RawVLAJEPA(nn.Module):
             terminal_features = terminal.mean(1)
             change_features = change.mean(1)
         else:
-            weights = self.pcr_spatial_scorer(terminal).squeeze(-1).float().softmax(1)
+            if self.cfg.spatial_readout == "change_residual_attention":
+                scores = self.pcr_spatial_scorer(current, change, pcr_features.mean(1))
+                learned_weights = scores.float().softmax(1)
+                mix = self.pcr_spatial_scorer.mix_logit.float().sigmoid()
+                weights = (1 - mix) / terminal.shape[1] + mix * learned_weights
+                diagnostics.update(
+                    pcr_spatial_learned_attention=learned_weights.detach(),
+                    pcr_spatial_attention_mix=mix.detach().expand(len(terminal)))
+            else:
+                weights = self.pcr_spatial_scorer(terminal).squeeze(-1).float().softmax(1)
             spatial_weights = weights.to(terminal.dtype).unsqueeze(-1)
             terminal_features = (terminal * spatial_weights).sum(1)
             change_features = (change * spatial_weights).sum(1)
             detached = weights.detach()
             entropy = -(detached * detached.clamp_min(torch.finfo(detached.dtype).tiny).log()).sum(1)
-            diagnostics = {"pcr_spatial_attention": detached,
-                           "pcr_spatial_attention_entropy": entropy,
-                           "pcr_spatial_effective_tokens": entropy.exp()}
+            diagnostics.update(pcr_spatial_attention=detached,
+                               pcr_spatial_attention_entropy=entropy,
+                               pcr_spatial_effective_tokens=entropy.exp())
         return torch.cat((pcr_features.mean(1), terminal_features, change_features), -1), diagnostics
 
     def _internal_query_mask(self, inp):

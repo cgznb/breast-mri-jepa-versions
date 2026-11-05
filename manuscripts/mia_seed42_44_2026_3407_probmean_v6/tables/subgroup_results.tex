@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Exploratory subgroup discrimination using seeds 42, 44, 2026, and 3407. Within each seed, five fold probabilities are averaged per patient before computing AUROC; Macro averages T0--T2 AUROCs. Model entries are means $\pm$ sample SD across the four seed metrics. Paired patient-bootstrap intervals for the mean ForecastAttention minus NoJEPA difference condition on all fitted models and keep the seed set fixed. Age 50 is an exploratory reporting cutpoint. Namespace groups are parts of one clinical release, not external cohorts.}
+\label{tab:subgroups}
+\begin{tabular}{lrrr}
+\toprule
+Subgroup ($n$/pCR+) & NoJEPA & Full & $\Delta$ AUROC [95\% interval] \\
+\midrule
+HR+/HER2- (68/11) & 0.683 $\pm$ 0.019 & 0.709 $\pm$ 0.015 & +0.026 [-0.001, +0.056] \\
+HR+/HER2+ (31/12) & 0.635 $\pm$ 0.012 & 0.646 $\pm$ 0.026 & +0.011 [-0.046, +0.073] \\
+HR-/HER2+ (14/7) & 0.828 $\pm$ 0.022 & 0.871 $\pm$ 0.029 & +0.043 [-0.019, +0.132] \\
+HR-/HER2- (62/26) & 0.639 $\pm$ 0.005 & 0.661 $\pm$ 0.019 & +0.022 [-0.006, +0.052] \\
+Age $<$50 (90/29) & 0.672 $\pm$ 0.012 & 0.688 $\pm$ 0.004 & +0.016 [+0.000, +0.032] \\
+Age $\geq$50 (85/27) & 0.784 $\pm$ 0.006 & 0.803 $\pm$ 0.009 & +0.019 [+0.002, +0.041] \\
+ISPY2 namespace (125/39) & 0.683 $\pm$ 0.008 & 0.701 $\pm$ 0.003 & +0.018 [+0.003, +0.035] \\
+ACRIN-6698 namespace (50/17) & 0.844 $\pm$ 0.006 & 0.861 $\pm$ 0.011 & +0.016 [+0.000, +0.034] \\
+\bottomrule
+\end{tabular}
+\end{table*}

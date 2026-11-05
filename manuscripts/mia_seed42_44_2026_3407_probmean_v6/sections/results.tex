@@ -1,0 +1,82 @@
+\section{Results}
+\label{sec:results}
+\subsection{Discrimination across four training seeds}
+All 60 principal-model runs and 20 supplementary mean-pooling runs completed training and formal evaluation. Eighty evaluation receipts and 240 registered report identities were verified. Every seed-specific predictor averaged five fold probabilities for each of the same 175 holdout patients, including 56 positive outcomes. We then calculated metrics within each seed and averaged the metrics across seeds 42, 44, 2026, and 3407. Table~\ref{tab:main} reports means with sample seed standard deviations; conditional patient intervals and paired tests are reported separately.
+\input{tables/main_results}
+
+\fullmodel{} had mean T0/T1/T2 AUROCs of 0.7438/0.7448/0.7459 and AP values of 0.6188/0.6172/0.6164 (Fig.~\ref{fig:discrimination}). Its Macro AUROC/AP/F1 was 0.7449/0.6175/0.5596, with seed standard deviations of 0.0040/0.0084/0.0142. Corresponding means were 0.7269/0.5924/0.5484 for \nojepa{} and 0.7361/0.6027/0.5517 for \direct{}. The full model had the highest mean AUROC and AP at every landmark among all four variants and the highest mean Macro F1 among the three principal variants. Its T2 F1 was 0.5621, compared with 0.5552 for \direct{} and 0.5508 for \nojepa{}. These are averages of metrics from four separately evaluated ensembles, not metrics of a combined predictor.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/discrimination.pdf}
+\caption{Discrimination across seeds 42, 44, 2026, and 3407. (A--C) Mean ROC curves; (D--F) mean precision--recall curves. Curves are computed from five-fold ensemble probabilities separately within each seed, interpolated on a common grid, and equally averaged across seeds. Shading gives pointwise conditional 95\% shared-patient-bootstrap intervals for the mean curve. Colored metric values are means of the directly computed seed-specific AUROC or non-interpolated AP; they need not equal the area under the displayed mean curve. The dotted PR reference is the 0.32 positive prevalence.}
+\label{fig:discrimination}
+\end{figure*}
+
+Under direct readout, adding future-state supervision increased mean Macro AUROC/AP/F1 by +0.0092/+0.0103/+0.0033. The complete forecast-attention readout gave further mean increases of +0.0087/+0.0147/+0.0080 relative to \direct{}. These means conceal variation among the seeds. The direct-versus-\nojepa{} Macro AUROC difference was positive at seeds 42, 44, and 3407 but negative at seed 2026 (0.7230 versus 0.7251). Likewise, \fullmodel{} exceeded \direct{} in Macro AUROC at seeds 44, 2026, and 3407 but was slightly lower at seed 42 (0.7419 versus 0.7428). At the newly included seed 3407, Macro AUROC was 0.7348/0.7386/0.7432 for \nojepa{}/\direct{}/\fullmodel{}, respectively, but direct-readout F1 was slightly below \nojepa{} (0.5654 versus 0.5661). The full-versus-\nojepa{} Macro AUROC difference was positive at all four selected seeds. The supplementary seed tables retain these individual results; the subset does not establish uniform behavior across all possible seeds.
+
+The supplementary \meanmodel{} had mean Macro AUROC/AP/F1 of 0.7436/0.6116/0.5690 (Table~\ref{tab:pooling}). Attention had higher AUROC and AP point estimates, while mean pooling had the highest mean Macro F1 among all four variants. The attention-minus-mean differences were +0.0013 [$-0.0085$, 0.0114] for AUROC, +0.0059 [$-0.0088$, 0.0209] for AP, and $-0.0093$ [$-0.0271$, 0.0075] for F1. All three unadjusted patient intervals included zero. This comparison provides no uniform attention advantage.
+
+Paired patient intervals qualify the descriptive rankings (Fig.~\ref{fig:paired}). The mean Macro AUROC difference for \fullmodel{} versus \nojepa{} was +0.0179 [0.0071, 0.0297]. The corresponding \direct{}--\nojepa{} difference was +0.0092 [$-0.0028$, 0.0216], and the \fullmodel{}--\direct{} difference was +0.0087 [$-0.0055$, 0.0230]. The full-versus-\nojepa{} AP difference was +0.0250 [0.0065, 0.0458], whereas its F1 difference was +0.0112 [$-0.0096$, 0.0355]. All three full-versus-direct Macro intervals included zero. These intervals concern patient sampling conditional on the selected fitted predictors and are distinct from the descriptive seed standard deviations.
+The full-versus-\nojepa{} Macro AUROC difference had an approximate paired-bootstrap raw $p=0.00306$ and $p_{\mathrm{Holm}}=0.02754$ within the nine-comparison principal family. It was the only principal comparison below the family-adjusted 0.05 criterion. Its adjusted value increased to 0.26622 when all 90 reported tests were considered together. The AP comparison had raw/within-family adjusted $p=0.01254/0.10032$, and the full-versus-direct AUROC comparison had 0.21898/0.87592. Thus support for the complete-versus-control AUROC difference depends on the reporting family and remains exploratory. Nonsignificant comparisons do not establish equivalence.
+\input{tables/bootstrap}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/paired_comparisons.pdf}
+\caption{Paired seed-mean metric differences at T0, T1, T2, and Macro. Colors distinguish auxiliary supervision, additional forecast readout, and the complete-model contrast. Squares denote Macro estimates. Bars are unadjusted 95\% patient-bootstrap intervals. Every draw is shared across seeds, models, and landmarks; metrics are computed within seed before averaging. Adjusted tests appear in Tables~\ref{tab:bootstrap} and~\ref{tab:significance_landmarks}. Folds, seeds, and repeated landmarks do not create independent test cohorts.}
+\label{fig:paired}
+\end{figure*}
+
+\subsection{Threshold behavior and class imbalance}
+\input{tables/extended_operating}
+At threshold 0.5, mean Macro sensitivity/NPV was 0.6667/0.8100 for \fullmodel{}, compared with 0.6190/0.7987 for \direct{}. These increases accompanied lower specificity (0.6639 versus 0.7073) and PPV (0.4850 versus 0.5010). The paired mean sensitivity difference was +0.0476 [0.0123, 0.0880], while the specificity difference was $-0.0434$ [$-0.0643$, $-0.0241$]. These unadjusted intervals describe an operating trade-off rather than a general classification improvement. The specificity decrease had raw $p=0.00012$, secondary-family Holm $p=0.00972$, and all-90 Holm $p=0.01080$. It was the only secondary comparison meeting its family-adjusted 0.05 criterion and the only comparison meeting the all-90 criterion. The sensitivity increase did not pass its secondary-family criterion ($p_{\mathrm{Holm}}=0.99075$).
+
+The additional 999,999-resample numerical stability check gave specificity $p=0.000092$ (Monte Carlo standard error approximately 0.0000096). Holding the other 89 values fixed yielded secondary-family and all-90 adjusted values of 0.007452 and 0.008280, respectively, preserving the adverse-specificity conclusion. Main tables retain the uniformly generated 99,999-resample values.
+
+
+The full model's seed-mean true-positive counts at T0/T1/T2 were 36.50/37.25/38.25, with false-positive counts 37.50/40.75/41.75. These are averages of integer counts from four correlated predictors, not fractional patients or a single combined confusion matrix. T1 added positive predictions while mean F1 decreased from 0.5609 at T0 to 0.5559; T2 F1 then increased to 0.5621. Later information can change error balance differently from ranking.
+
+Among the principal variants, \fullmodel{} had the highest mean Macro balanced accuracy (0.6653), while \direct{} had slightly higher MCC (0.3127 versus 0.3122) and accuracy (0.6790 versus 0.6648). \nojepa{} had balanced accuracy 0.6591, MCC 0.3033, and accuracy 0.6714. Every principal model's mean Macro accuracy was below the all-negative reference of 0.68 in this cohort. The supplementary \meanmodel{} reached balanced accuracy 0.6735, MCC 0.3268, and accuracy 0.6738. Accuracy, ranking, and class-specific errors therefore give different descriptive orderings.
+
+OOF-selected Youden thresholds changed mean holdout Macro F1 from 0.5484 to 0.5515 for \nojepa{}, 0.5517 to 0.5469 for \direct{}, 0.5596 to 0.5599 for \fullmodel{}, and 0.5690 to 0.5631 for \meanmodel{} (Table~\ref{tab:extended_threshold}). Thus the alternative threshold produced small increases for \nojepa{} and \fullmodel{} but decreases for the other variants. These results concern transfer of thresholds fitted on single-model OOF scores to within-seed five-model ensemble scores; they neither optimize a holdout threshold nor establish independent ensemble calibration.
+
+\subsection{Longitudinal information and probability quality}
+The paired seed-mean T2--T0 AUROC change was +0.0021 [$-0.0030$, 0.0079] for \fullmodel{}, $-0.0022$ [$-0.0070$, 0.0021] for \nojepa{}, and +0.0012 [$-0.0034$, 0.0058] for \direct{}. The full model's corresponding AP change was $-0.0025$ [$-0.0128$, 0.0079] and F1 change +0.0011 [$-0.0152$, 0.0173]. All these longitudinal intervals included zero. The increasing mean AUROC for forecast attention across landmarks therefore remains a small descriptive trend, accompanied by slightly decreasing mean AP. Fig.~\ref{fig:scorechanges} shows outcome-conditioned distributions of changes in seed-specific ensemble probabilities.
+
+\input{tables/calibration}
+Mean Macro NLL/Brier/ECE was 0.5900/0.2033/0.1469 for \fullmodel{}, compared with 0.5817/0.2003/0.1288 for \direct{} and 0.5898/0.2032/0.1299 for \nojepa{}. Forecast attention had worse point estimates of all three probability-quality metrics than both direct-readout controls, although its NLL and Brier differences from \nojepa{} were small. The better ranking means therefore did not translate into better probability-quality means. All 14 Macro metrics and their conditional patient intervals appear in Table~\ref{tab:extended_macro}.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/calibration_utility.pdf}
+\caption{Probability quality and hypothetical decision utility across four seeds. (A--C) Reliability summaries first form five equal-count probability-rank groups of 35 patients within each seed-specific five-fold ensemble and then average the group summaries across seeds. They differ from the ten equal-width bins used for ECE. (D--F) Net-benefit curves are computed separately within seeds and then averaged, with treat-all and treat-none references. Scores are not recalibrated. No clinical escalation or de-escalation strategy is validated.}
+\label{fig:calutility}
+\end{figure*}
+
+\subsection{Hypothetical net benefit}
+Decision curves did not preserve the discrimination ranking across thresholds. At a hypothetical threshold of 0.30, mean Macro net benefit was 0.1163 for \direct{} and 0.1031 for \fullmodel{}. At 0.50, it was $-0.0086$ for \nojepa{}, $-0.0010$ for \direct{}, and $-0.0152$ for \fullmodel{}. At 0.70 the ordering reversed, with +0.0002 for \fullmodel{} and $-0.0333$ for \direct{}. These values average seed-specific decision curves, use uncalibrated probabilities, and assume a generic positive action. They do not establish an acceptable clinical threshold or validate a management pathway.
+
+\subsection{Exploratory biological and acquisition-related subgroups}
+The four HR/HER2 groups had positive seed-mean Macro AUROC differences between \fullmodel{} and \nojepa{} (Fig.~\ref{fig:subgroups}; Table~\ref{tab:subgroups}). The HR-positive/HER2-negative group had a difference of +0.0257 [$-0.0010$, 0.0556] among 68 patients, including 11 positive outcomes. Other differences were +0.0113 [$-0.0457$, 0.0730] in HR-positive/HER2-positive patients (31, 12 positive), +0.0425 [$-0.0187$, 0.1320] in HR-negative/HER2-positive patients (14, 7 positive), and +0.0219 [$-0.0057$, 0.0516] in HR-negative/HER2-negative patients (62, 26 positive). All four unadjusted intervals included zero. These summaries do not establish an interaction or a confirmed subtype-specific benefit.
+
+In the HR-positive/HER2-negative group, forecast attention's mean Macro sensitivity/specificity was 0.1591/0.9649, compared with 0.1364/0.9810 for \nojepa{}. Thus low sensitivity at threshold 0.5 persisted despite the positive AUROC difference. \direct{} had sensitivity/specificity 0.1212/0.9825 and a slightly higher mean AUROC than forecast attention (0.7125 versus 0.7087). The age groups also had positive full-versus-control differences, but their unadjusted exploratory intervals do not support an age-interaction conclusion. Source namespaces share one clinical release and do not constitute external validation. The partially clipped baseline-component group contained only 11 patients and one positive outcome; its AUROC and AP were suppressed under the minimum-outcome rule.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/subgroup_operating.pdf}
+\caption{Exploratory subgroup and operating-point summaries, with metrics computed within seed and then equally averaged across seeds 42, 44, 2026, and 3407. (A) Macro AUROC differences between ForecastAttention and NoJEPA within HR/HER2 and age groups, with patient counts, positive outcomes, and unadjusted shared-patient intervals. No subgroup-interaction claim is made. (B) Mean specificity and sensitivity at threshold 0.5 across landmarks; colors identify models and markers identify landmarks.}
+\label{fig:subgroups}
+\end{figure*}
+
+\subsection{Archived forecast and gradient diagnostics}
+Archived fixed-training-probe diagnostics describe individual models separately from the pCR holdout analysis (Fig.~\ref{fig:mechanism}). At common epoch 20, mean copy-normalized forecast skills for \direct{} were +0.0090, +0.0524, and +0.1590 at one-, two-, and three-step horizons. Corresponding values for \fullmodel{} were $-0.0509$, $-0.0516$, and +0.0122 (Table~\ref{tab:worldprobe}). Statistics were normalized within each snapshot's EMA coordinates, averaged across five folds within seed, and then averaged across the four seeds. Separate models' latent states were not ensembled. These diagnostics do not support attributing forecast attention's pCR ranking to uniformly more accurate latent forecasts.
+
+The probe requires the real landmark, target, and every intermediate examination, whereas the training objective masks unavailable future targets. Eligible populations therefore vary by horizon; only 5--9 patients per probe were eligible at three steps. These measurements are not selected-checkpoint holdout forecast evaluations. The predictor's pCR-loss gradient norm was zero for \direct{} and had mean 1.0123 for \fullmodel{}; weighted rollout-gradient means were 0.1570 and 0.1662. These values support the expected gradient routing, but gradient magnitude is not a biological effect size. \nojepa{} had no available trained-world diagnostic and was not assigned an artificial zero skill.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/forecast_mechanism.pdf}
+\caption{Archived fixed-training-probe diagnostics across four seeds. (A) Copy-normalized forecast skill at common epoch 20. (B) Predictor gradient norms from pCR and weighted rollout losses. (C) Three-step skill across epochs with complete diagnostic coverage. Statistics are calculated within each snapshot's EMA coordinates, averaged across folds within seed, and summarized across seeds. Error bars in A and B and shading in C show the descriptive sample SD of the four seed-specific fold means. These are training diagnostics, distinct from pCR probability ensembling; real continuous visit chains are required, and three-step eligibility is only 5--9 patients per probe.}
+\label{fig:mechanism}
+\end{figure*}

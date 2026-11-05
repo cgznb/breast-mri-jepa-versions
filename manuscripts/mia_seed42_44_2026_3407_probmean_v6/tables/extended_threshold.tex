@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Threshold sensitivity analysis: four-seed mean Macro metrics. Each seed uses landmark-specific Youden thresholds from its disjoint validation-fold scores. OOF single-model scores differ from test fivefold ensemble scores; this is sensitivity analysis, not independent ensemble calibration. No test labels choose thresholds.}
+\label{tab:extended_threshold}
+\begin{tabular}{llrrrr}
+\toprule
+Model & Policy & F1 & Sens. & Spec. & MCC \\
+\midrule
+NoJEPA & 0.5 & 0.548 & 0.625 & 0.693 & 0.303 \\
+NoJEPA & OOF validation Youden & 0.551 & 0.638 & 0.683 & 0.305 \\
+\midrule
+DirectReadout & 0.5 & 0.552 & 0.619 & 0.707 & 0.313 \\
+DirectReadout & OOF validation Youden & 0.547 & 0.607 & 0.713 & 0.308 \\
+\midrule
+ForecastAttention & 0.5 & 0.560 & 0.667 & 0.664 & 0.312 \\
+ForecastAttention & OOF validation Youden & 0.560 & 0.662 & 0.670 & 0.314 \\
+\bottomrule
+\end{tabular}
+\end{table*}
